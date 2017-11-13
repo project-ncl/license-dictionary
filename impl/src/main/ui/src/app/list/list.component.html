@@ -1,0 +1,26 @@
+<h1>License list</h1>
+<form class="form form-inline">
+  <input type="text"
+         [(ngModel)]="searchTerm"
+         (keyup.enter)="searchForLicenses()"
+         placeholder="Enter a search term"
+         name="name"/>
+  <button type="button" (click)="searchForLicenses()">Find</button>
+</form>
+<table class="table table-striped">
+  <tr *ngFor="let license of licenses">
+    <td width="75%">
+      <h4>{{license.name}}</h4>
+      <span>URL: <a href="{{license.url}}">{{license.url}}</a></span>
+      <span>Text URL: <a href="{{license.textUrl}}">{{license.textUrl}}</a></span>
+      <div>
+        <span>Content</span>
+        <span>{{license.content}}</span>
+      </div>
+    </td>
+    <td>
+      <a (click)="edit(license.id)"><i class="glyphicon glyphicon-edit"></i>Edit</a><br/>
+      <a (click)="remove(license.id)"><i class="glyphicon glyphicon-remove"></i>Remove</a>
+    </td>
+  </tr>
+</table>

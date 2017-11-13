@@ -1,0 +1,18 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+        http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+    <engine>
+        <property name="deploymentExportPath">target/deployments</property>
+    </engine>
+
+    <container qualifier="run-test" default="true">
+    </container>
+
+    <container qualifier="debug-test">
+        <configuration>
+            <property name="javaVmArguments">-Xrunjdwp:transport=dt_socket,address=5012,server=y,suspend=y</property>
+        </configuration>
+    </container>
+</arquillian>
