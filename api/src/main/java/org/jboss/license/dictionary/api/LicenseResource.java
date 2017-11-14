@@ -1,9 +1,12 @@
 package org.jboss.license.dictionary.api;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -28,6 +31,19 @@ public interface LicenseResource {
             @QueryParam("urlAlias") String urlAlias,
             @QueryParam("searchTerm") String searchTerm);
 
+    @PUT
+    @Path("/{id}")
+    License updateLicense(@PathParam("id") Integer licenseId,
+                          FullLicenseData license);
+
+    @DELETE
+    @Path("/{id}")
+    void deleteLicense(@PathParam("id") Integer licenseId);
+
     @POST
-    License addLicense(License license);
+    License addLicense(FullLicenseData license);
+
+    @GET
+    @Path("/{id}")
+    License getLicense(@PathParam("id") Integer licenseId);
 }

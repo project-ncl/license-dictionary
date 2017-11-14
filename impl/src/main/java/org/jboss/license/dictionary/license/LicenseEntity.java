@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jboss.license.dictionary.api.LicenseStatus;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -28,17 +29,31 @@ public class LicenseEntity {
     @Setter
     private String name;
     @Setter
+    private String abbreviation;
+    @Setter
     private String url;
+    @Setter
+    private LicenseStatus status;
+
     @ElementCollection
     @Setter
     private Set<String> nameAliases;
     @ElementCollection
     @Setter
     private Set<String> urlAliases;
-
     @Setter
     private String textUrl;
     @Lob
     @Setter
     private String content;
+    @Setter
+    private String fedoraAbbrevation;
+    @Setter
+    private String fedoraName;
+    @Setter
+    private String spdxName;
+    @Setter
+    private String spdxAbbreviation;
+    @Setter
+    private String spdxUrl;
 }

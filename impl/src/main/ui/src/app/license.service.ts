@@ -5,33 +5,6 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class LicenseService {
 
-  licenses: License[] = [
-    {
-      id: 5, name: 'ASL 1.0', url: 'http://example.com', textUrl: 'http://example.com/text',
-      content: "Mock contentMock \ncontentMock contentMock contentMock contentMock contentMock contentMock" +
-      " contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock " +
-      "contentMock contentMock contentMock contentMock contentMock content", urlAliases: [], nameAliases: []
-    },
-    {
-      id: 4, name: 'ASgL 2.0', url: 'http://example.com', textUrl: 'http://example.com/text',
-      content: "Mock contentMock \ncontentMock contentMock contentMock contentMock contentMock contentMock" +
-      " contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock " +
-      "contentMock contentMock contentMock contentMock contentMock content", urlAliases: [], nameAliases: []
-    },
-    {
-      id: 1, name: 'AfSL 4.0', url: 'http://example.com', textUrl: 'http://example.com/text',
-      content: "Mock contentMock \ncontentMock contentMock contentMock contentMock contentMock contentMock" +
-      " contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock " +
-      "contentMock contentMock contentMock contentMock contentMock content", urlAliases: [], nameAliases: []
-    },
-    {
-      id: 3, name: 'AbSL 3.0', url: 'http://example.com', textUrl: 'http://example.com/text',
-      content: "Mock contentMock \ncontentMock contentMock contentMock contentMock contentMock contentMock" +
-      " contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock contentMock " +
-      "contentMock contentMock contentMock contentMock contentMock content", urlAliases: [], nameAliases: []
-    }
-  ];
-
   constructor(private http: HttpClient) {
   }
 
@@ -49,9 +22,8 @@ export class LicenseService {
     return this.http.get<License[]>('/rest/licenses', {params: params});
   }
 
-
   removeLicense(id: number) {
-    this.licenses = this.licenses.filter(l => l.id != id);
+    return this.http.delete(`rest/licenses/${id}`);
   }
 
   updateLicense(id: number, license: License): Observable<License> {
@@ -67,6 +39,7 @@ export class LicenseService {
 export interface License {
   id: number,
   name: string,
+  abbreviation: string,
   url: string,
   textUrl: string,
   content: string,

@@ -12,12 +12,14 @@ import {LicenseService} from "./license.service";
 import {ConfirmationComponent} from './confirmation/confirmation.component';
 import {ConfirmationService} from "./confirmation.service";
 import {HttpHeadersInterceptor} from "./http-config.service";
+import { ImportComponent } from './import/import.component';
 
 const appRoutes: Routes = [
   {path: '', component: ListComponent},
   {path: 'edit', component: EditComponent},
   {path: 'edit/id/:id', component: EditComponent},
-  {path: 'confirm', component: ConfirmationComponent}
+  {path: 'confirm', component: ConfirmationComponent},
+  {path: 'import', component: ImportComponent}
 ];
 
 @NgModule({
@@ -25,7 +27,8 @@ const appRoutes: Routes = [
     AppComponent,
     ListComponent,
     EditComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    ImportComponent
   ],
   imports: [
     BrowserModule,

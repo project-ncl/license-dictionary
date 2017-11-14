@@ -1,5 +1,8 @@
 package org.jboss.license.dictionary.license;
 
+import org.jboss.license.dictionary.BadRequestException;
+import org.jboss.license.dictionary.NotFoundException;
+import org.jboss.license.dictionary.api.FullLicenseData;
 import org.jboss.license.dictionary.api.License;
 import org.jboss.license.dictionary.api.LicenseResource;
 import org.jboss.license.dictionary.utils.ErrorDto;
@@ -9,20 +12,15 @@ import org.modelmapper.TypeToken;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
 /**
@@ -63,20 +61,14 @@ public class LicenseResourceImpl implements LicenseResource {
             String searchTerm) {
         long singleResultIndicatorCount = nonNullCount(name, url, nameAlias, urlAlias);
         if (singleResultIndicatorCount > 1) {
-            throw new ClientErrorException(
-                    Response.status(SC_BAD_REQUEST)
-                            .entity("Not more than one query parameter {name, url, nameAlias, urlAlias} should be provided")
-                            .build()
-            );
+            throw new BadRequestException("Not more than one query parameter " +
+                    "{name, url, nameAlias, urlAlias} should be provided");
         }
 
         if (singleResultIndicatorCount > 0) {
             if (searchTerm != null) {
-                throw new ClientErrorException(
-                        Response.status(SC_BAD_REQUEST)
-                                .entity("searchTerm cannot be mixed with neither of {name, url, nameAlias, urlAlias} query parameters")
-                                .build()
-                );
+                throw new BadRequestException("searchTerm cannot be mixed " +
+                        "with neither of {name, url, nameAlias, urlAlias} query parameters");
             }
 
             LicenseEntity entity;
@@ -102,23 +94,36 @@ public class LicenseResourceImpl implements LicenseResource {
         }
     }
 
-    @GET
-    @Path("/{id}")
-    public License getLicense(@PathParam("id") Integer licenseId) {
+    @Override
+    @Transactional
+    public License updateLicense(Integer licenseId, FullLicenseData license) {
+        Optional<LicenseEntity> maybeLicenseEntity = licenseStore.getById(licenseId);
+
+        LicenseEntity entity = maybeLicenseEntity.orElseThrow(
+                () -> new NotFoundException("No license found for id " + licenseId));
+        fullMapper.map(license, entity);
+
+        return limitedMapper.map(entity, License.class);
+    }
+
+    @Override
+    public void deleteLicense(Integer licenseId) {
+        if (!licenseStore.delete(licenseId)) {
+            throw new NotFoundException("No license found for id " + licenseId);
+        }
+    }
+
+    @Override
+    public License getLicense(Integer licenseId) {
         LicenseEntity entity =
                 licenseStore.getById(licenseId)
-                        .orElseThrow(() -> new ClientErrorException(Response
-                                        .status(SC_NOT_FOUND)
-                                        .entity("No license found for id " + licenseId)
-                                        .build()
-                                )
-                        );
+                        .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
         return fullMapper.map(entity, License.class);
     }
 
     @Override
     @Transactional
-    public License addLicense(License license) {
+    public License addLicense(FullLicenseData license) {
         validate(license);
         license.getTextUrl();// mstodo fetch content and set to entity
         LicenseEntity entity = fullMapper.map(license, LicenseEntity.class);
@@ -127,7 +132,7 @@ public class LicenseResourceImpl implements LicenseResource {
     }
 
     // mstodo: this does not work!
-    private void validate(License license) {
+    private void validate(FullLicenseData license) {
         ErrorDto errors = new ErrorDto();
         licenseStore.getForName(license.getName())
                 .ifPresent(

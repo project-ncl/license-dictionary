@@ -6,10 +6,10 @@ import org.jboss.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -118,5 +118,18 @@ public class LicenseStore {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    public boolean delete(Integer licenseId) {
+        Query query = entityManager.createQuery("DELETE from LicenseEntity where id = :licenseId");
+        query.setParameter("licenseId", licenseId);
+        int deletedRows = query.executeUpdate();
+        return deletedRows > 0;
+    }
+
+    @Transactional
+    public void replaceAllLicensesWith(List<LicenseEntity> entities) {
+        entityManager.createQuery("DELETE FROM LicenseEntity").executeUpdate();
+        entities.forEach(entityManager::persist);
     }
 }

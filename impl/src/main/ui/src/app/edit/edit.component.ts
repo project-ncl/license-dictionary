@@ -28,6 +28,7 @@ export class EditComponent implements OnInit {
       this.license = {
         id: null,
         name: '',
+        abbreviation: '',
         url: '',
         textUrl: '',
         content: '',

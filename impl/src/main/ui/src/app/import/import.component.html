@@ -1,0 +1,20 @@
+<div class="container">
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{successMessage}}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{errorMessage}}
+  </div>
+
+  <h2>Warning! Upload will wipe out all the defined licenses.</h2>
+  <form class="form form-inline">
+    <label for="uploadInput">Select file to upload: </label>
+    <input type="file"
+           id="uploadInput"
+           name="uploadInput"
+           [(ngModel)]="upload"
+           (change)="updateFile($event)"
+    />
+    <button type="button" (click)="importLicenses()">Import</button>
+  </form>
+</div>

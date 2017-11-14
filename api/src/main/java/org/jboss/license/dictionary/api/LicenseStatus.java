@@ -9,6 +9,6 @@ package org.jboss.license.dictionary.api;
  */
 public enum LicenseStatus {
     AWAITING_APPROVAL,
-    APPROVED,
-    MODIFICATION_REQUIRED
+    NOT_APPROVED,
+    APPROVED
 }

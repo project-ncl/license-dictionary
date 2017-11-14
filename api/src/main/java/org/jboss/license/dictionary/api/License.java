@@ -15,6 +15,7 @@ public class License {
     private Integer id;
     @NotBlank
     private String name;
+    private String abbreviation;
     @NotBlank
     private String url;
 
@@ -88,5 +89,13 @@ public class License {
 
     public void setTextUrl(String textUrl) {
         this.textUrl = textUrl;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }

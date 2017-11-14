@@ -1,6 +1,6 @@
 <div class="container">
-  <div *ngIf="errorMessage">
-    <h3>Unable to save. {{errorMessage}}</h3>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <strong>Error saving license</strong>{{errorMessage}}
   </div>
   <form (submit)="saveLicense()" class="form-horizontal">
     <div class="form-group">

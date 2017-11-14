@@ -3,6 +3,8 @@ package org.jboss.license.dictionary.license;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.license.dictionary.BadRequestException;
+import org.jboss.license.dictionary.api.FullLicenseData;
 import org.jboss.license.dictionary.api.License;
 import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -42,6 +44,7 @@ public class LicenseResourceTest {
                 .addPackage(ErrorDto.class.getPackage())
                 .addPackage(License.class.getPackage())
                 .addPackage(License.class.getPackage())
+                .addPackage(BadRequestException.class.getPackage())
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
@@ -57,7 +60,7 @@ public class LicenseResourceTest {
     public void setUp() {
 
         if (resource.getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
-            License license = new License();
+            FullLicenseData license = new FullLicenseData();
             license.setName(MY_LICENSE_NAME);
             license.setUrl(MY_LICENSE_URL);
             license.setContent("foffoofososfoasfoaosf");
@@ -95,7 +98,7 @@ public class LicenseResourceTest {
 
     @Test
     public void shouldGetLicenseById() {
-        License license = new License();
+        FullLicenseData license = new FullLicenseData();
         license.setName("licenseReadById");
         license.setUrl("by-id.example.com");
         license.setNameAliases(new TreeSet<>(asList("alias1", "alias2")));
