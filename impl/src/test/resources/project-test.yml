@@ -1,0 +1,10 @@
+swarm:
+  port:
+    offset: 101
+  datasources:
+    data-sources:
+      LicensesDS:
+        driver-name: h2
+        connection-url: jdbc:h2:mem:test
+        user-name: sa
+        password: sa

@@ -15,6 +15,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -43,9 +45,9 @@ public class LicenseResourceTest {
                 .addPackage(LicenseEntity.class.getPackage())
                 .addPackage(ErrorDto.class.getPackage())
                 .addPackage(License.class.getPackage())
-                .addPackage(License.class.getPackage())
                 .addPackage(BadRequestException.class.getPackage())
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+                .addAsResource("project-test.yml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
         PomEquippedResolveStage stage = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeAndTestDependencies();
@@ -53,6 +55,11 @@ public class LicenseResourceTest {
 
 
         return webArchive.addAsLibraries(libs);
+    }
+
+    @CreateSwarm
+    public static Swarm newContainer() throws Exception {
+        return new Swarm().withProfile("test");
     }
 
 

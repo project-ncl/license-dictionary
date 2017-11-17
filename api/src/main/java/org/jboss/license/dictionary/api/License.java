@@ -1,8 +1,6 @@
 package org.jboss.license.dictionary.api;
 
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -97,5 +95,43 @@ public class License {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        License license = (License) o;
+
+        if (id != null ? !id.equals(license.id) : license.id != null) return false;
+        if (name != null ? !name.equals(license.name) : license.name != null) return false;
+        if (abbreviation != null ? !abbreviation.equals(license.abbreviation) : license.abbreviation != null)
+            return false;
+        if (url != null ? !url.equals(license.url) : license.url != null) return false;
+        if (textUrl != null ? !textUrl.equals(license.textUrl) : license.textUrl != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (textUrl != null ? textUrl.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "License{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", abbreviation='" + abbreviation + '\'' +
+                ", url='" + url + '\'' +
+                ", textUrl='" + textUrl + '\'' +
+                '}';
     }
 }

@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +87,7 @@ public class LicenseStore {
         return license;
     }
 
+    @Transactional
     public List<LicenseEntity> getAll() {
         return entityManager.createQuery("SELECT e FROM LicenseEntity e", LicenseEntity.class)
                 .getResultList();
@@ -93,6 +95,7 @@ public class LicenseStore {
 
     // mstodo pagination won't work with it!
     // mstodo for now only name or url substring or exact match of alias are supported
+    // mstodo make it case insensitive
     public Set<LicenseEntity> findBySearchTerm(String searchTerm) {
         Set<LicenseEntity> resultSet = new TreeSet<>(Comparator.comparing(LicenseEntity::getName));
         
@@ -128,8 +131,8 @@ public class LicenseStore {
     }
 
     @Transactional
-    public void replaceAllLicensesWith(List<LicenseEntity> entities) {
-        entityManager.createQuery("DELETE FROM LicenseEntity").executeUpdate();
+    public void replaceAllLicensesWith(Collection<LicenseEntity> entities) {
+        getAll().forEach(entityManager::remove);
         entities.forEach(entityManager::persist);
     }
 }

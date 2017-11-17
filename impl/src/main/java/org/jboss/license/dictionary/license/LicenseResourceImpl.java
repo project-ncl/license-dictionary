@@ -7,13 +7,10 @@ import org.jboss.license.dictionary.api.License;
 import org.jboss.license.dictionary.api.LicenseResource;
 import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.logging.Logger;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Path;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.jboss.license.dictionary.utils.Mappers.*;
 import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
 /**
@@ -33,24 +31,8 @@ public class LicenseResourceImpl implements LicenseResource {
 
     private static final Logger log = Logger.getLogger(LicenseResourceImpl.class);
 
-    private static final Type licenseListType = new TypeToken<List<License>>() {
-    }.getType();
-
-    private ModelMapper limitedMapper;
-    private ModelMapper fullMapper;
     @Inject
     private LicenseStore licenseStore;
-
-    public LicenseResourceImpl() {
-        limitedMapper = new ModelMapper();
-        limitedMapper.typeMap(LicenseEntity.class, License.class)
-                .addMappings(mapping -> {
-                    mapping.skip(License::setUrlAliases);
-                    mapping.skip(License::setNameAliases);
-                });
-
-        fullMapper = new ModelMapper();
-    }
 
     @Override
     public List<License> getLicenses(

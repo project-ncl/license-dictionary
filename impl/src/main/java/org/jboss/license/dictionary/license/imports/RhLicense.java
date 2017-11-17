@@ -2,8 +2,11 @@ package org.jboss.license.dictionary.license.imports;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.license.dictionary.api.FullLicenseData;
 import org.jboss.license.dictionary.api.LicenseStatus;
-import org.jboss.license.dictionary.license.LicenseEntity;
+
+import java.util.Arrays;
 
 /**
  * mstodo: Header
@@ -30,11 +33,9 @@ public class RhLicense {
 
     private String approved;
 
-    public LicenseEntity toLicenseEntity(String name) {
-        LicenseEntity entity = new LicenseEntity();
-        entity.setName(name);
+    public FullLicenseData toFullLicenseData(String alias) {
+        FullLicenseData entity = new FullLicenseData();
 
-        entity.setUrl(url);
         entity.setContent(license_text);
         entity.setTextUrl(license_text_url);
 
@@ -46,7 +47,25 @@ public class RhLicense {
         entity.setSpdxUrl(spdx_license_url);
 
         entity.setStatus(getLicenseStatus());
+
+        entity.setName(getName());
+        entity.setUrl(firstNotBlank(url, spdx_license_url));
+        entity.setAbbreviation(firstNotBlank(fedora_abbrev, spdx_abbrev));
+
+        entity.getNameAliases().add(alias);
+
         return entity;
+    }
+
+    public String getName() {
+        return firstNotBlank(fedora_name, spdx_name);
+    }
+
+    private static String firstNotBlank(String... values) {
+        return Arrays.stream(values)
+                .filter(StringUtils::isNotBlank)
+                .findFirst()
+                .orElse(null);
     }
 
     private LicenseStatus getLicenseStatus() {

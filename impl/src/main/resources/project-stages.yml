@@ -1,3 +1,39 @@
 swarm:
   port:
     offset: 101
+  datasources:
+    data-sources:
+      LicensesDS:
+        driver-name: postgresql
+        connection-url: jdbc:postgresql://localhost:5432/license-dictionary
+        user-name: license-dictionary
+        valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker
+        validate-on-match: true
+        background-validation: false
+        exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+---
+project:
+  stage: docker-postgres
+swarm:
+  datasources:
+    data-sources:
+      LicensesDS:
+        driver-name: postgresql
+        connection-url: jdbc:postgresql://172.171.17.117:5432/license-dictionary
+        user-name: license-dictionary
+        password: 123
+        valid-connection-checker-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker
+        validate-on-match: true
+        background-validation: false
+        exception-sorter-class-name: org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+---
+project:
+  stage: h2
+swarm:
+  datasources:
+    data-sources:
+      LicensesDS:
+        driver-name: h2
+        connection-url: jdbc:h2:mem:test
+        user-name: sa
+        password: sa

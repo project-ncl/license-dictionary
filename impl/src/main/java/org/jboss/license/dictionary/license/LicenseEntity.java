@@ -6,8 +6,10 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jboss.license.dictionary.api.LicenseStatus;
 
+import javax.persistence.Basic;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -34,7 +36,6 @@ public class LicenseEntity {
     private String url;
     @Setter
     private LicenseStatus status;
-
     @ElementCollection
     @Setter
     private Set<String> nameAliases;
@@ -44,6 +45,7 @@ public class LicenseEntity {
     @Setter
     private String textUrl;
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Setter
     private String content;
     @Setter
