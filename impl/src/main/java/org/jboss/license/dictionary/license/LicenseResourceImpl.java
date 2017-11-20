@@ -8,11 +8,13 @@ import org.jboss.license.dictionary.api.LicenseResource;
 import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Path;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
  * Date: 8/30/17
  */
 @Path(LicenseResource.LICENSES)
+@ApplicationScoped
 public class LicenseResourceImpl implements LicenseResource {
 
     private static final Logger log = Logger.getLogger(LicenseResourceImpl.class);
@@ -34,8 +37,13 @@ public class LicenseResourceImpl implements LicenseResource {
     @Inject
     private LicenseStore licenseStore;
 
+    @PostConstruct
+    public void init() {
+        licenseStore.init();
+    }
+
     @Override
-    public List<License> getLicenses(
+    public Collection<License> getLicenses(
             String name,
             String url,
             String nameAlias,
@@ -53,7 +61,7 @@ public class LicenseResourceImpl implements LicenseResource {
                         "with neither of {name, url, nameAlias, urlAlias} query parameters");
             }
 
-            LicenseEntity entity;
+            FullLicenseData entity;
             if (name != null) {
                 entity = valueOrNotFound(licenseStore.getForName(name), "No license was found for name %s", name);
             } else if (url != null) {
@@ -65,7 +73,7 @@ public class LicenseResourceImpl implements LicenseResource {
             }
             return Collections.singletonList(limitedMapper.map(entity, License.class));
         } else {
-            List<LicenseEntity> results;
+            Collection<FullLicenseData> results;
             if (searchTerm != null) {
                 results = licenseStore.findBySearchTerm(searchTerm)
                         .stream().collect(Collectors.toList());
@@ -79,17 +87,18 @@ public class LicenseResourceImpl implements LicenseResource {
     @Override
     @Transactional
     public License updateLicense(Integer licenseId, FullLicenseData license) {
-        Optional<LicenseEntity> maybeLicenseEntity = licenseStore.getById(licenseId);
+        Optional<FullLicenseData> maybeLicense = licenseStore.getById(licenseId);
 
-        LicenseEntity entity = maybeLicenseEntity.orElseThrow(
+        FullLicenseData licenseData = maybeLicense.orElseThrow(
                 () -> new NotFoundException("No license found for id " + licenseId));
-        fullMapper.map(license, entity);
+        fullMapper.map(license, licenseData);
 
-        return limitedMapper.map(entity, License.class);
+        return limitedMapper.map(licenseData, License.class);
     }
 
     @Override
     public void deleteLicense(Integer licenseId) {
+        log.info("deleting license: " + licenseId);
         if (!licenseStore.delete(licenseId)) {
             throw new NotFoundException("No license found for id " + licenseId);
         }
@@ -97,7 +106,7 @@ public class LicenseResourceImpl implements LicenseResource {
 
     @Override
     public License getLicense(Integer licenseId) {
-        LicenseEntity entity =
+        FullLicenseData entity =
                 licenseStore.getById(licenseId)
                         .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
         return fullMapper.map(entity, License.class);
@@ -108,9 +117,7 @@ public class LicenseResourceImpl implements LicenseResource {
     public License addLicense(FullLicenseData license) {
         validate(license);
         license.getTextUrl();// mstodo fetch content and set to entity
-        LicenseEntity entity = fullMapper.map(license, LicenseEntity.class);
-        licenseStore.save(entity);
-        return fullMapper.map(entity, License.class);
+        return licenseStore.save(license);
     }
 
     // mstodo: this does not work!

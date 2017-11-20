@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {License, LicenseService} from "../license.service";
+import {EmptyLicense, License, LicenseService} from "../license.service";
 
 @Component({
   selector: 'app-edit',
@@ -25,19 +25,11 @@ export class EditComponent implements OnInit {
 
   ngOnInit() {
     this.route.url.subscribe((segments: UrlSegment[]) => {
-      this.license = {
-        id: null,
-        name: '',
-        abbreviation: '',
-        url: '',
-        textUrl: '',
-        content: '',
-        urlAliases: [],
-        nameAliases: []
-      };
-      if (segments[1] && segments[1].toString() === 'id' && segments[2]) {
-        console.log("an id was passed");
-        this.id = Number(segments[2]);
+      this.license = new EmptyLicense();
+      let idAsObject = segments[1];
+      if (idAsObject) {
+        console.log("an id was passed", idAsObject);
+        this.id = Number(idAsObject);
         this.licenseService.getLicense(this.id).subscribe(license => this.license = license);
       }
     });

@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
@@ -24,7 +24,7 @@ public interface LicenseResource {
     String LICENSES = "/licenses";
 
     @GET
-    List<License> getLicenses(
+    Collection<License> getLicenses(
             @QueryParam("name") String name,
             @QueryParam("url") String url,
             @QueryParam("nameAlias") String nameAlias,

@@ -4,14 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.license.dictionary.BadRequestException;
 import org.jboss.license.dictionary.api.FullLicenseData;
-import org.jboss.license.dictionary.license.LicenseEntity;
 import org.jboss.license.dictionary.license.LicenseStore;
-import org.jboss.license.dictionary.utils.Mappers;
 import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,8 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * mstodo: Header
- *
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  * <br>
  * Date: 11/13/17
@@ -52,15 +49,22 @@ public class ImportEndpoint {
             rhLicenses.forEach(
                     (alias, license) -> {
                         FullLicenseData licenseData = license.toFullLicenseData(alias);
-                        licensesByName.put(license.getName(), licenseData);
+                        if (StringUtils.isBlank(licenseData.getName())) {
+                            throw new BadRequestException("Invalid license: " + licenseData);
+                        }
+                        if (licenseData.getName().startsWith("#")) {
+                            log.debugf("skipping a commented license", licenseData);
+                        } else {
+                            licensesByName.put(licenseData.getName(), licenseData);
+                        }
                     }
             );
 
             verifyLicenseEntries(licensesByName.asMap());
-            Collection<LicenseEntity> entities = licensesByName.asMap().values()
+            Collection<FullLicenseData> entities = licensesByName.asMap().values()
                     .stream()
                     .map(this::mergeEntries)
-                    .map(l -> Mappers.fullMapper.map(l, LicenseEntity.class))
+                    .peek(FullLicenseData::checkIntegrity)
                     .collect(Collectors.toList());
 
             store.replaceAllLicensesWith(entities);
@@ -80,10 +84,23 @@ public class ImportEndpoint {
     }
 
     private void verifyLicenseEntries(Map<String, Collection<FullLicenseData>> licenseDataByName) {
-        licenseDataByName.values().stream()
+        String errors = licenseDataByName.values().stream()
+                .peek(this::merge)
                 .flatMap(this::listConflictingAttributes)
                 .collect(Collectors.joining("\n"));
+        log.errorf("Import errors found, the import results will be undeterministic for the mentioned cases: %s",
+                errors);
+//        mstodo bring the folowing back
+//        throw new BadRequestException("Invalid data, errors: " + errors);
     }
+
+    // mstodo remove
+    private void merge(Collection<FullLicenseData> licenseData) {
+        FullLicenseData first = licenseData.iterator().next();
+        licenseData.stream().skip(1)
+                .forEach(other -> first.mergeFrom(other));
+    }
+
 
     private Stream<String> listConflictingAttributes(Collection<FullLicenseData> licenses) {
         FullLicenseData firstLicense = licenses.iterator().next();

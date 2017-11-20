@@ -20,7 +20,7 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 import java.util.TreeSet;
 
 import static java.util.Arrays.asList;
@@ -65,7 +65,6 @@ public class LicenseResourceTest {
 
     @Before
     public void setUp() {
-
         if (resource.getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
             FullLicenseData license = new FullLicenseData();
             license.setName(MY_LICENSE_NAME);
@@ -80,25 +79,25 @@ public class LicenseResourceTest {
 
     @Test
     public void shouldGetLicenseByName() {
-        License mylicense = resource.getLicenses(MY_LICENSE_NAME, null, null, null, null).get(0);
+        License mylicense = resource.getLicenses(MY_LICENSE_NAME, null, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }
 
     @Test
     public void shouldGetLicenseByExactSearchTerm() {
-        List<License> licenses = resource.getLicenses(null, null, null, null, "mylicense");
+        Collection<License> licenses = resource.getLicenses(null, null, null, null, "mylicense");
         assertThat(licenses).hasSize(1);
-        License mylicense = licenses.get(0);
+        License mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }
 
     @Test
     public void shouldGetLicenseBySubstringSearchTerm() {
-        List<License> licenses = resource.getLicenses(null, null, null, null, "ylicense");
+        Collection<License> licenses = resource.getLicenses(null, null, null, null, "ylicense");
         assertThat(licenses).hasSize(1);
-        License mylicense = licenses.get(0);
+        License mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }

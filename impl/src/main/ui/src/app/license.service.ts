@@ -22,7 +22,8 @@ export class LicenseService {
     return this.http.get<License[]>('/rest/licenses', {params: params});
   }
 
-  removeLicense(id: number) {
+  removeLicense(id: number): Observable<any> {
+    console.log("removing license ", id);
     return this.http.delete(`rest/licenses/${id}`);
   }
 
@@ -39,10 +40,23 @@ export class LicenseService {
 export interface License {
   id: number,
   name: string,
+  status: string,
   abbreviation: string,
   url: string,
   textUrl: string,
   content: string,
   urlAliases: string[],
+  nameAliases: string[]
+}
+
+export class EmptyLicense implements License {
+  id: number;
+  name: string;
+  status: string;
+  abbreviation: string;
+  url: string;
+  textUrl: string;
+  content: string;
+  urlAliases: string[];
   nameAliases: string[]
 }

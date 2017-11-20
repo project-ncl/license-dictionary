@@ -18,6 +18,9 @@ import java.util.List;
 public class Mappers {
     public static final Type licenseListType = new TypeToken<List<License>>() {
     }.getType();
+    public static final Type licenseEntityListType = new TypeToken<List<LicenseEntity>>() {
+    }.getType();
+
     public static final ModelMapper fullMapper;
     public static final ModelMapper limitedMapper;
 
@@ -25,8 +28,7 @@ public class Mappers {
         limitedMapper = new ModelMapper();
         limitedMapper.typeMap(LicenseEntity.class, License.class)
                 .addMappings(mapping -> {
-                    mapping.skip(License::setUrlAliases);
-                    mapping.skip(License::setNameAliases);
+                    mapping.skip(License::setContent);
                 });
 
         fullMapper = new ModelMapper();

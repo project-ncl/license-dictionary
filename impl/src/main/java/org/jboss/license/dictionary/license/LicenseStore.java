@@ -1,22 +1,25 @@
 package org.jboss.license.dictionary.license;
 
-import org.jboss.license.dictionary.utils.QueryUtils;
+import org.jboss.license.dictionary.api.FullLicenseData;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
+import static org.jboss.license.dictionary.utils.Mappers.licenseEntityListType;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
@@ -27,78 +30,64 @@ import java.util.stream.Stream;
 public class LicenseStore {
     private static final Logger log = Logger.getLogger(LicenseStore.class);
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Inject
+    private LicenseDbStore dbStore;
 
-    // mstodo simplify
+    private Map<Integer, FullLicenseData> licensesById;
+
     @Transactional
-    public Optional<LicenseEntity> getById(Integer licenseId) {
-        TypedQuery<LicenseEntity> query = entityManager.createQuery(
-                "SELECT e FROM LicenseEntity e WHERE e.id = :id",
-                LicenseEntity.class
-        );
-        query.setParameter("id", licenseId);
-        Optional<LicenseEntity> result = QueryUtils.getSingleResult(query);
-        result.ifPresent(license -> {
-            license.getNameAliases().size();
-            license.getUrlAliases().size();
-        });
-        return result;
+    public synchronized void init() {
+        if (licensesById != null) {
+            log.warn("License Store was already initialized! skipping");
+            return;
+        } else {
+            log.warn("Started License Store initialization");
+            load();
+            log.info("Finished License Store initialization");
+        }
     }
 
-    public Optional<LicenseEntity> getForName(String name) {
-        String query = "SELECT e FROM LicenseEntity e WHERE :name = e.name";
-
-        return QueryUtils.getSingleResult(
-                entityManager.createQuery(query, LicenseEntity.class)
-                        .setParameter("name", name)
-        );
+    public Optional<FullLicenseData> getById(Integer licenseId) {
+        return Optional.ofNullable(licensesById.get(licenseId));
     }
 
-    public Optional<LicenseEntity> getForUrl(String url) {
-        String query = "SELECT e FROM LicenseEntity e WHERE :url = e.url";
-
-        return QueryUtils.getSingleResult(
-                entityManager.createQuery(query, LicenseEntity.class)
-                        .setParameter("url", url)
-        );
+    public Optional<FullLicenseData> getForName(String name) {
+        return findSingle(l -> searchEquals(name, l.getName()));
     }
 
-    public Optional<LicenseEntity> getForNameAlias(String name) {
-        String query = "SELECT e FROM LicenseEntity e WHERE :name MEMBER OF e.nameAliases";
-
-        return QueryUtils.getSingleResult(
-                entityManager.createQuery(query, LicenseEntity.class)
-                        .setParameter("name", name)
-        );
+    public Optional<FullLicenseData> getForUrl(String url) {
+        return findSingle(l -> searchEquals(url, l.getUrl()));
     }
 
-    public Optional<LicenseEntity> getForUrlAlias(String url) {
-        String query = "SELECT e FROM LicenseEntity e WHERE :alias MEMBER OF e.urlAliases";
-
-        return QueryUtils.getSingleResult(
-                entityManager.createQuery(query, LicenseEntity.class)
-                        .setParameter("alias", url)
-        );
+    public Optional<FullLicenseData> getForNameAlias(String name) {
+        return findSingle(l -> isOneOf(l.getNameAliases(), name));
     }
 
-    public LicenseEntity save(LicenseEntity license) {
-        entityManager.persist(license);
+    public Optional<FullLicenseData> getForUrlAlias(String url) {
+        return findSingle(l -> isOneOf(l.getUrlAliases(), url));
+    }
+
+    public FullLicenseData save(FullLicenseData license) {
+        LicenseEntity entity = fullMapper.map(license, LicenseEntity.class);
+        entity = dbStore.save(entity);
+
+        license = fullMapper.map(entity, FullLicenseData.class);
+        licensesById.put(entity.getId(), license);
         return license;
     }
 
-    @Transactional
-    public List<LicenseEntity> getAll() {
-        return entityManager.createQuery("SELECT e FROM LicenseEntity e", LicenseEntity.class)
-                .getResultList();
+    public Collection<FullLicenseData> getAll() {
+        ArrayList<FullLicenseData> result = new ArrayList<>(licensesById.values());
+        result.sort(
+                Comparator.comparing(FullLicenseData::getName)
+        );
+        return result;
     }
 
-    // mstodo pagination won't work with it!
-    // mstodo for now only name or url substring or exact match of alias are supported
-    // mstodo make it case insensitive
-    public Set<LicenseEntity> findBySearchTerm(String searchTerm) {
-        Set<LicenseEntity> resultSet = new TreeSet<>(Comparator.comparing(LicenseEntity::getName));
-        
+    public Set<FullLicenseData> findBySearchTerm(String denormalizedSearchTerm) {
+        final String searchTerm = denormalizedSearchTerm.toLowerCase();
+        Set<FullLicenseData> resultSet = new TreeSet<>(Comparator.comparing(FullLicenseData::getName));
+
         resultSet.addAll(
                 join(getForName(searchTerm),
                         getForUrl(searchTerm),
@@ -106,12 +95,10 @@ public class LicenseStore {
                         getForUrlAlias(searchTerm))
         );
 
-
-        resultSet.addAll(entityManager.createQuery(
-                "SELECT distinct e FROM LicenseEntity e " +
-                        "WHERE e.name LIKE :searchTerm or " +
-                        "e.url LIKE :searchTerm", LicenseEntity.class)
-                .setParameter("searchTerm", "%" + searchTerm + "%").getResultList());
+        licensesById.values()
+                .stream()
+                .filter(l -> l.toFullString().toLowerCase().contains(searchTerm))
+                .forEach(resultSet::add);
 
         return resultSet;
     }
@@ -123,16 +110,50 @@ public class LicenseStore {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public boolean delete(Integer licenseId) {
-        Query query = entityManager.createQuery("DELETE from LicenseEntity where id = :licenseId");
-        query.setParameter("licenseId", licenseId);
-        int deletedRows = query.executeUpdate();
-        return deletedRows > 0;
+        boolean result = dbStore.delete(licenseId);
+        licensesById.remove(licenseId);
+        return result;
     }
 
     @Transactional
-    public void replaceAllLicensesWith(Collection<LicenseEntity> entities) {
-        getAll().forEach(entityManager::remove);
-        entities.forEach(entityManager::persist);
+    public void replaceAllLicensesWith(Collection<FullLicenseData> licenses) {
+        log.infof("started replacing licenses with import data. Licenses to import: %d", licenses.size());
+        List<LicenseEntity> entityList = fullMapper.map(licenses, licenseEntityListType);
+        log.infof("will replace existing entities with %d new entities", entityList.size());
+        dbStore.replaceAllLicensesWith(entityList);
+        log.info("started loading imported entities");
+        load();
+        log.info("finished loading imported entities");
+    }
+
+    @Transactional
+    public synchronized void load() {
+        licensesById = dbStore.getAll().stream()
+                .map(entity -> fullMapper.map(entity, FullLicenseData.class))
+                .peek(FullLicenseData::checkIntegrity)
+                .collect(Collectors.toMap(l -> l.getId(), l -> l));
+    }
+
+    private Optional<FullLicenseData> findSingle(Predicate<FullLicenseData> predicate) {
+        return licensesById.values().stream()
+                .filter(predicate)
+                .findAny();
+    }
+
+    private boolean isOneOf(Collection<String> values, String value) {
+        if (value == null) {
+            return false;
+        }
+        String normalizedValue = value.toLowerCase();
+        return values.stream()
+                .anyMatch(v -> v.toLowerCase().equals(normalizedValue));
+    }
+
+    private boolean searchEquals(String value1, String value2) {
+        return value1 != null
+                && value2 != null
+                && value1.toLowerCase().equals(value2.toLowerCase());
     }
 }

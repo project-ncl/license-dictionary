@@ -31,25 +31,8 @@ export class ListComponent implements OnInit {
       .subscribe(licenses => this.licenses = licenses);
   }
 
-  remove = id => {
-    this.licenseService.getLicense(id)
-      .subscribe(license => {
-        this.confirmationService.init(
-          "Remove license [" + license.id + "] '" + license.name + "'?",
-          () => {
-            this.licenseService.removeLicense(id)
-          },
-          () => {
-            console.log("canceled removing license : " + license.id)
-          },
-          ["/"]
-        );
-      });
-  };
-
-  edit = id => {
-    console.log("id = ", id);
-    this.router.navigate(["/edit", "id", id])
+  view = id => {
+    this.router.navigate(["/view", "id", id])
   }
 
 }

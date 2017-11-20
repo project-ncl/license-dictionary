@@ -9,18 +9,47 @@
 </form>
 <table class="table table-striped">
   <tr *ngFor="let license of licenses">
-    <td width="75%">
-      <h4>{{license.name}}</h4>
-      <span>URL: <a href="{{license.url}}">{{license.url}}</a></span>
-      <span>Text URL: <a href="{{license.textUrl}}">{{license.textUrl}}</a></span>
-      <div>
-        <span>Content</span>
-        <span>{{license.content}}</span>
+    <td class="row-{{license.status}}">
+      <div class="row">
+        <div class="col-sm-9">
+          <h4><a href="/view/{{license.id}}" class="black-url">{{license.name}}</a></h4>
+        </div>
+        <div class="col-sm-3 state state-{{license.status}}">
+          {{license.status}}
+        </div>
       </div>
-    </td>
-    <td>
-      <a (click)="edit(license.id)"><i class="glyphicon glyphicon-edit"></i>Edit</a><br/>
-      <a (click)="remove(license.id)"><i class="glyphicon glyphicon-remove"></i>Remove</a>
+      <table class="urls-table">
+        <tr>
+          <td><strong>URL</strong></td>
+          <td><a href="{{license.url}}">{{license.url}}</a></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Text URL</strong></td>
+          <td>
+            <a href="{{license.textUrl}}">{{license.textUrl}}</a>
+          </td>
+        </tr>
+      </table>
+
+      <table class="table">
+        <thead>
+        <tr>
+          <td>Aliases</td>
+          <td>URL Aliases</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>
+            <div *ngFor="let alias of license.nameAliases">{{alias}}<br></div>
+          </td>
+          <td>
+            <div *ngFor="let urlAlias of license.urlAliases">{{urlAlias}}<br></div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </td>
   </tr>
 </table>

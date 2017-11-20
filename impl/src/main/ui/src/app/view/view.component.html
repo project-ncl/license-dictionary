@@ -1,0 +1,46 @@
+<div class="container">
+  <button class="button action-button" (click)="edit(license.id)"><i class="glyphicon glyphicon-edit"></i>Edit</button>
+  <br/>
+  <button class="button action-button" (click)="remove(license.id)"><i class="glyphicon glyphicon-remove"></i>Remove
+  </button>
+  <div class="row">
+    <div class="col-sm-9">
+      <h1>{{license.name}}</h1>
+    </div>
+    <div class="col-sm-3 state state-{{license.status}}">
+      {{license.status}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2 control-label">URL:</div>
+    <div class="col-sm-10">
+      <a href="{{license.url}}">{{license.url}}</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2 control-label">Text URL:</div>
+    <div class="col-sm-10">
+      <a href="{{license.textUrl}}">{{license.textUrl}}</a>
+    </div>
+  </div>
+
+  <div class="row list-section">
+    <h3>Aliases</h3>
+    <ul *ngFor="let alias of license.nameAliases">
+      <li>{{alias}}</li>
+    </ul>
+  </div>
+
+  <div class="row list-section">
+    <h3>URL Aliases</h3>
+    <ul>
+      <li *ngFor="let alias of license.urlAliases">
+        <a href="{{alias}}">{{alias}}</a>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    {{license.content}}
+  </div>
+</div>

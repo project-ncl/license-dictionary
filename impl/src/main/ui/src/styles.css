@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+.state {
+  font-size: large;
+  font-weight: bolder;
+}
+
+.state-AWAITING_APPROVAL {
+  color: darkorange;
+}
+
+.state-NOT_APPROVED {
+  color: red;
+}
+
+.state-APPROVED {
+  color: green;
+}

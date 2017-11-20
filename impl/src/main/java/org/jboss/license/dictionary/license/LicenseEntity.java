@@ -9,6 +9,8 @@ import org.jboss.license.dictionary.api.LicenseStatus;
 import javax.persistence.Basic;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,6 +37,7 @@ public class LicenseEntity {
     @Setter
     private String url;
     @Setter
+    @Enumerated(EnumType.STRING)
     private LicenseStatus status;
     @ElementCollection
     @Setter

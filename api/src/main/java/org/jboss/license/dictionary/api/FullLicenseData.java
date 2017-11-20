@@ -1,5 +1,7 @@
 package org.jboss.license.dictionary.api;
 
+import java.util.stream.Collectors;
+
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  * <br>
@@ -92,5 +94,36 @@ public class FullLicenseData extends License {
                 ", spdxAbbreviation='" + spdxAbbreviation + '\'' +
                 ", spdxUrl='" + spdxUrl + '\'' +
                 '}';
+    }
+
+    public String toFullString() {
+        StringBuilder result = new StringBuilder(toString());
+        result.append(", urlAliases: [")
+                .append(getUrlAliases().stream().collect(Collectors.joining(",")))
+                .append("], nameAliases: [")
+                .append(getNameAliases().stream().collect(Collectors.joining(",")))
+                .append("]");
+        return result.toString();
+    }
+
+    public static void checkIntegrity(FullLicenseData fullLicenseData) {
+        if (fullLicenseData.getName() == null
+//                || fullLicenseData.getUrl() == null // mstodo uncomment
+                ) {
+            throw new IllegalStateException("License data is incomplete " + fullLicenseData.toFullString());
+        }
+    }
+
+    public void mergeFrom(FullLicenseData other) {
+        fedoraName = fedoraName == null ? other.fedoraName : fedoraName;
+        fedoraAbbrevation = fedoraAbbrevation == null ? other.fedoraAbbrevation : fedoraAbbrevation;
+        spdxName = spdxName == null ? other.spdxName : spdxName;
+        spdxAbbreviation = spdxAbbreviation == null ? other.spdxAbbreviation : spdxAbbreviation;
+        spdxUrl = spdxUrl == null ? other.spdxUrl : spdxUrl;
+
+        setName(getName() == null ? other.getName() : getName());
+        setAbbreviation(getAbbreviation() == null ? other.getAbbreviation() : getAbbreviation());
+        setUrl(getUrl() == null ? other.getUrl() : getUrl());
+        setTextUrl(getTextUrl() == null ? other.getTextUrl() : getTextUrl());
     }
 }

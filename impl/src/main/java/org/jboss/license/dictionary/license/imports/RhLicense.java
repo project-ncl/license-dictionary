@@ -48,7 +48,7 @@ public class RhLicense {
 
         entity.setStatus(getLicenseStatus());
 
-        entity.setName(getName());
+        entity.setName(getName(alias));
         entity.setUrl(firstNotBlank(url, spdx_license_url));
         entity.setAbbreviation(firstNotBlank(fedora_abbrev, spdx_abbrev));
 
@@ -57,8 +57,11 @@ public class RhLicense {
         return entity;
     }
 
-    public String getName() {
-        return firstNotBlank(fedora_name, spdx_name);
+    public String getName(String alias) {
+        String name = firstNotBlank(fedora_name, spdx_name);
+        return name != null && !name.trim().isEmpty() ?
+                name
+                : alias;
     }
 
     private static String firstNotBlank(String... values) {
