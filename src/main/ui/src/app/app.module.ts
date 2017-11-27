@@ -1,11 +1,12 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 
 
 import {AppComponent} from './app.component';
+import {AuthService} from './auth.service';
 import {ListComponent} from './list/list.component';
 import {EditComponent} from './edit/edit.component';
 import {LicenseService} from "./license.service";
@@ -40,9 +41,14 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
+    AuthService,
     LicenseService,
     ConfirmationService,
-    HttpHeadersInterceptor
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpHeadersInterceptor,
+      multi: true,
+    }
   ],
   bootstrap: [AppComponent]
 })

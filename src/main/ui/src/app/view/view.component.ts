@@ -3,6 +3,7 @@ import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
 import {EmptyLicense, License, LicenseService} from "../license.service";
 import {ConfirmationService} from "../confirmation.service";
 import {Location} from "@angular/common";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-view',
@@ -18,6 +19,7 @@ export class ViewComponent implements OnInit {
               private location: Location,
               private confirmationService: ConfirmationService,
               private licenseService: LicenseService,
+              private authService: AuthService,
               private router: Router) {
   }
 
@@ -32,6 +34,8 @@ export class ViewComponent implements OnInit {
   }
 
   remove = id => {
+    this.authService.assureLoggedIn();
+
     let path = this.location.path();
     this.licenseService.getLicense(id)
       .subscribe(license => {

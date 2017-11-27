@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-import',
@@ -12,10 +13,12 @@ export class ImportComponent implements OnInit {
   errorMessage;
   fileToUpload;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
+    this.authService.assureLoggedIn();
   }
 
   updateFile($event) {
@@ -41,7 +44,7 @@ export class ImportComponent implements OnInit {
 
   upload(content, component) {
     component.http.post('/rest/import/licenses', content).subscribe(
-      result => {
+      () => {
         component.successMessage = "Successfully imported licenses";
       },
       error => {

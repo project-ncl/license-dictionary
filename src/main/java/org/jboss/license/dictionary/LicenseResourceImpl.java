@@ -13,13 +13,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Path;
-import java.util.Collection;
-import java.util.Collections;
+import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
 import static org.jboss.license.dictionary.utils.Mappers.*;
 import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
@@ -43,12 +44,18 @@ public class LicenseResourceImpl implements LicenseResource {
     }
 
     @Override
-    public Collection<License> getLicenses(
+    public Response getLicenses(
             String name,
             String url,
             String nameAlias,
             String urlAlias,
-            String searchTerm) {
+            String searchTerm,
+            Integer maxCount,
+            Integer offset) {
+        if (offset == null) {
+            offset = 0;
+        }
+
         long singleResultIndicatorCount = nonNullCount(name, url, nameAlias, urlAlias);
         if (singleResultIndicatorCount > 1) {
             throw new BadRequestException("Not more than one query parameter " +
@@ -71,17 +78,36 @@ public class LicenseResourceImpl implements LicenseResource {
             } else {
                 entity = valueOrNotFound(licenseStore.getForUrlAlias(urlAlias), "Could not find license for urlAlias %s", urlAlias);
             }
-            return Collections.singletonList(limitedMapper.map(entity, License.class));
+            return paginated(singletonList(limitedMapper.map(entity, License.class)), 1, 0);
         } else {
-            Collection<FullLicenseData> results;
+            List<FullLicenseData> results;
             if (searchTerm != null) {
                 results = licenseStore.findBySearchTerm(searchTerm)
                         .stream().collect(Collectors.toList());
             } else {
                 results = licenseStore.getAll();
             }
-            return limitedMapper.map(results, licenseListType);
+
+            int totalCount = results.size();
+            maxCount += offset;
+
+            if (maxCount != null) {
+                results = results.subList(offset,
+                        results.size() < maxCount
+                                ? results.size()
+                                : maxCount);
+            }
+
+            List<License> resultList = limitedMapper.map(results, licenseListType);
+            return paginated(resultList, totalCount, offset);
         }
+    }
+
+    private static <T> Response paginated(T content, int totalCount, int offset) {
+        return Response.ok().header("totalCount", totalCount)
+                .header("offset", offset)
+                .entity(content)
+                .build();
     }
 
     @Override

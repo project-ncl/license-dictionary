@@ -76,7 +76,7 @@ public class LicenseStore {
         return license;
     }
 
-    public Collection<FullLicenseData> getAll() {
+    public List<FullLicenseData> getAll() {
         ArrayList<FullLicenseData> result = new ArrayList<>(licensesById.values());
         result.sort(
                 Comparator.comparing(FullLicenseData::getName)

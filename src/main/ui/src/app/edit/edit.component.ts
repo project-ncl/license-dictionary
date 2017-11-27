@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
 import {EmptyLicense, License, LicenseService} from "../license.service";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-edit',
@@ -18,7 +19,8 @@ export class EditComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private licenseService: LicenseService) {
+              private licenseService: LicenseService,
+              private authService: AuthService) {
   }
 
   // loadToEdit()
@@ -33,6 +35,8 @@ export class EditComponent implements OnInit {
         this.licenseService.getLicense(this.id).subscribe(license => this.license = license);
       }
     });
+
+    this.authService.assureLoggedIn();
   }
 
   addAlias() {

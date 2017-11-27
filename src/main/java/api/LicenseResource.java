@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.Collection;
+import javax.ws.rs.core.Response;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
@@ -19,17 +19,20 @@ import java.util.Collection;
 @Consumes("application/json")
 @Produces("application/json")
 @Path(LicenseResource.LICENSES)
+// todo merge with implementation
 public interface LicenseResource {
 
     String LICENSES = "/licenses";
 
     @GET
-    Collection<License> getLicenses(
+    Response getLicenses(
             @QueryParam("name") String name,
             @QueryParam("url") String url,
             @QueryParam("nameAlias") String nameAlias,
             @QueryParam("urlAlias") String urlAlias,
-            @QueryParam("searchTerm") String searchTerm);
+            @QueryParam("searchTerm") String searchTerm,
+            @QueryParam("count") Integer resultCount,
+            @QueryParam("offset") Integer offset);
 
     @PUT
     @Path("/{id}")

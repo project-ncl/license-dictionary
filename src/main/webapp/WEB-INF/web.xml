@@ -1,0 +1,24 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+  <security-constraint>
+    <!-- TODO adjust to PNC keycloak -->
+    <web-resource-collection>
+      <web-resource-name>License resource</web-resource-name>
+      <url-pattern>/rest/licenses</url-pattern>
+      <url-pattern>/rest/import</url-pattern>
+      <http-method>POST</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>KEYCLOAK</auth-method>
+  </login-config>
+
+  <security-role>
+    <role-name>user</role-name>
+  </security-role>
+</web-app>

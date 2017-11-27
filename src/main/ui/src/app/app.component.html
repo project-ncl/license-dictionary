@@ -6,7 +6,7 @@
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                 aria-expanded="false" aria-controls="navbar">
         </button>
-        <a class="navbar-brand" href="/">License Dictioanry</a>
+        <a class="navbar-brand" href="/">License Dictionary</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
@@ -19,6 +19,11 @@
           <li>
             <a class="nav-link" routerLink="/import">Import licenses</a>
           </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <!--<li><a href="{{logInLink}}">Login</a></li>-->
+          <li *ngIf="!isAuthenticated()"><a (click)="logIn()">Log in</a></li>
+          <li *ngIf="isAuthenticated()"><a (click)="logOut()">Log out</a></li>
         </ul>
       </div>
     </div>

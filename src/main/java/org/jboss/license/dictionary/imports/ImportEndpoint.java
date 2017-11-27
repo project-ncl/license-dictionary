@@ -1,7 +1,6 @@
 package org.jboss.license.dictionary.imports;
 
 import api.FullLicenseData;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -14,7 +13,6 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -36,13 +34,13 @@ public class ImportEndpoint {
     private LicenseStore store;
 
     @Path("/licenses")
-    @Consumes("text/plain")
+    @Consumes("application/json")
     @POST
-    public void importLicenses(String content) {
+    public void importLicenses(Map<String, RhLicense> rhLicenses) {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            Map<String, RhLicense> rhLicenses = mapper.readValue(content, new TypeReference<Map<String, RhLicense>>() {
-            });
+//        try {
+//            Map<String, RhLicense> rhLicenses = mapper.readValue(content, new TypeReference<Map<String, RhLicense>>() {
+//            });
 
             Multimap<String, FullLicenseData> licensesByName = ArrayListMultimap.create();
 
@@ -68,10 +66,10 @@ public class ImportEndpoint {
                     .collect(Collectors.toList());
 
             store.replaceAllLicensesWith(entities);
-        } catch (IOException e) {
-            log.info("Error parsing licenses file", e);
-            throw new BadRequestException("Unable to parse the licenses file: " + e.getMessage());
-        }
+//        } catch (IOException e) {
+//            log.info("Error parsing licenses file", e);
+//            throw new BadRequestException("Unable to parse the licenses file: " + e.getMessage());
+//        }
     }
 
     private FullLicenseData mergeEntries(Collection<FullLicenseData> entries) {

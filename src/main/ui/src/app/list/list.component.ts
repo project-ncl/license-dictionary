@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {License, LicenseService} from "../license.service";
-import {ConfirmationService} from "../confirmation.service";
+import {License, LicenseList, LicenseService} from "../license.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -12,27 +11,55 @@ import {Router} from "@angular/router";
 export class ListComponent implements OnInit {
 
   licenses: License[] = [];
-
   searchTerm: string;
 
+  defaultCount = 20;
+
+  loadedUntil = 0;
+  allLoaded = false;
+
   constructor(private licenseService: LicenseService,
-              private confirmationService: ConfirmationService,
               private router: Router) {
-    licenseService.getLicenses()
-      .subscribe(licenses => this.licenses = licenses);
   }
 
   ngOnInit() {
+    this.licenseService.getLicenses(this.defaultCount, 0).subscribe(l => this.loadLicenseList(l));
   }
 
   searchForLicenses() {
     console.log("search term: ", this.searchTerm);
-    this.licenseService.findLicenses(this.searchTerm)
-      .subscribe(licenses => this.licenses = licenses);
+    this.licenseService.findLicenses(this.searchTerm, this.defaultCount, 0)
+      .subscribe(l => this.loadLicenseList(l)); //todo
+  }
+
+  fetchMore() {
+    console.log("fetching more");
+    if (this.searchTerm) {
+      console.log("with search term");
+      this.licenseService.findLicenses(this.searchTerm, this.defaultCount, this.loadedUntil)
+        .subscribe(l => this.appendLicenseList(l));
+    } else {
+      console.log("without search term");
+      this.licenseService.getLicenses(this.defaultCount, this.loadedUntil)
+        .subscribe(l => this.appendLicenseList(l));
+    }
   }
 
   view = id => {
-    this.router.navigate(["/view", "id", id])
-  }
+    this.router.navigate(["/view", id]);
+  };
 
+  private loadLicenseList(licenses: LicenseList) {
+    this.licenses = licenses.entries;
+    this.loadedUntil = this.licenses.length;
+    this.allLoaded = this.loadedUntil >= licenses.totalCount;
+    console.log("allLoaded: ", this.allLoaded, "loadedUntil:", this.loadedUntil, "totalCount: ", licenses.totalCount, this.licenses);
+  };
+
+  private appendLicenseList(licenses: LicenseList) {
+    this.licenses = this.licenses.concat(licenses.entries);
+    this.loadedUntil = this.licenses.length + licenses.offset;
+    this.allLoaded = this.loadedUntil >= licenses.totalCount;
+    console.log("appended: ", this.allLoaded, "loadedUntil:", this.loadedUntil, "totalCount: ", licenses.totalCount, this.licenses);
+  };
 }

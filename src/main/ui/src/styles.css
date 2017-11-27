@@ -15,3 +15,7 @@
 .state-APPROVED {
   color: green;
 }
+
+a {
+  cursor: pointer;
+}

@@ -24,6 +24,7 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 
 import static java.util.Arrays.asList;
@@ -69,7 +70,7 @@ public class LicenseResourceTest {
 
     @Before
     public void setUp() {
-        if (resource.getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
+        if (getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
             FullLicenseData license = new FullLicenseData();
             license.setName(MY_LICENSE_NAME);
             license.setUrl(MY_LICENSE_URL);
@@ -83,14 +84,19 @@ public class LicenseResourceTest {
 
     @Test
     public void shouldGetLicenseByName() {
-        License mylicense = resource.getLicenses(MY_LICENSE_NAME, null, null, null, null).iterator().next();
+        License mylicense = getLicenses(MY_LICENSE_NAME, null, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }
 
+    private List<License> getLicenses(String name, String url, String nameAlias, String urlAlias, String searchTerm) {
+        return (List<License>) resource.getLicenses(name, url, nameAlias, urlAlias, searchTerm, null, null)
+                .getEntity();
+    }
+
     @Test
     public void shouldGetLicenseByExactSearchTerm() {
-        Collection<License> licenses = resource.getLicenses(null, null, null, null, "mylicense");
+        Collection<License> licenses = getLicenses(null, null, null, null, "mylicense");
         assertThat(licenses).hasSize(1);
         License mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
@@ -99,7 +105,7 @@ public class LicenseResourceTest {
 
     @Test
     public void shouldGetLicenseBySubstringSearchTerm() {
-        Collection<License> licenses = resource.getLicenses(null, null, null, null, "ylicense");
+        Collection<License> licenses = getLicenses(null, null, null, null, "ylicense");
         assertThat(licenses).hasSize(1);
         License mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();

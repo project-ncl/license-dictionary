@@ -2,17 +2,17 @@
 <form class="form form-inline">
   <input type="text"
          [(ngModel)]="searchTerm"
-         (keyup.enter)="searchForLicenses()"
+         (keyup.enter)="searchForLicenses(0)"
          placeholder="Enter a search term"
          name="name"/>
-  <button type="button" (click)="searchForLicenses()">Find</button>
+  <button type="button" (click)="searchForLicenses(0)">Find</button>
 </form>
 <table class="table table-striped">
   <tr *ngFor="let license of licenses">
     <td class="row-{{license.status}}">
       <div class="row">
         <div class="col-sm-9">
-          <h4><a href="/view/{{license.id}}" class="black-url">{{license.name}}</a></h4>
+          <h4><a (click)="view(license.id)" class="black-url">{{license.name}}</a></h4>
         </div>
         <div class="col-sm-3 state state-{{license.status}}">
           {{license.status}}
@@ -53,3 +53,8 @@
     </td>
   </tr>
 </table>
+<button *ngIf="!allLoaded"
+        (click)="fetchMore()"
+        class="btn btn-default btn-block btn-lg">
+  Fetch more
+</button>

@@ -18,3 +18,7 @@ a.black-url {
 .row-AWAITING_APPROVAL {
   background-color: rgb(250, 248, 230);
 }
+
+.btn-block {
+  margin-top: 20px;
+}
