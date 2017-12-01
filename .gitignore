@@ -44,3 +44,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+*.jar
+keycloak.h2.db
+keycloak.trace.db
+keycloak.lock.db
