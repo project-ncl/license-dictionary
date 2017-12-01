@@ -6,7 +6,10 @@ Which DB is used depends on the chosen [project stage](https://wildfly-swarm.git
 
 For local development, use `development` - it will talk 
 to the keycloak server created via `devtools/startDevKeycloak.sh`
-and to an in-memory h2 database.
+and to an in-memory h2 database:
+```
+mvn clean package -DskipTests && java -jar target/license-dictionary-1.0-SNAPSHOT-swarm.jar -S development
+```
 
 By default the app is exposed at port 8181.
 
@@ -19,3 +22,7 @@ then go to `impl/src/main/ui` and run the following script:
 ```
 ./startUi.sh
 ``` 
+
+## Keycloak
+The development keycloak listens at port 8180, it has at least one user defined,
+admin/123. You can log with this credentials to add or update a license.

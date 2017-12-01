@@ -89,9 +89,9 @@ public class LicenseResourceImpl implements LicenseResource {
             }
 
             int totalCount = results.size();
-            maxCount += offset;
 
             if (maxCount != null) {
+                maxCount += offset;
                 results = results.subList(offset,
                         results.size() < maxCount
                                 ? results.size()
