@@ -34,6 +34,11 @@ swarm:
 ---
 project:
   stage: docker-postgres
+keycloak:
+  url: http://localhost:8180/auth
+  clientId: licenses-backend
+  uiClientId: browser-client
+  realm: pnc
 swarm:
   datasources:
     data-sources:

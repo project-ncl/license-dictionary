@@ -87,6 +87,6 @@ export class EmptyLicense implements License {
   url: string;
   textUrl: string;
   content: string;
-  urlAliases: string[];
-  nameAliases: string[]
+  urlAliases: string[] = [];
+  nameAliases: string[] = [];
 }
