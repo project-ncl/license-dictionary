@@ -68,6 +68,12 @@
       <artifactId>hibernate-validator</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-envers</artifactId>
+      <version>5.0.10.Final</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>keycloak</artifactId>
     </dependency>
@@ -180,26 +186,40 @@
           </plugin>
 
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>1.6</version>
             <executions>
               <execution>
+                <id>install node and npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <phase>generate-resources</phase>
+              </execution>
+              <execution>
+                <id>npm install</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <phase>process-resources</phase>
+              </execution>
+              <execution>
+                <id>build ui</id>
                 <phase>prepare-package</phase>
                 <goals>
-                  <goal>exec</goal>
+                  <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <executable>ng</executable>
-                  <workingDirectory>src/main/ui</workingDirectory>
-                  <arguments>
-                    <argument>build</argument>
-                    <argument>--output-path</argument>
-                    <argument>${project.build.directory}/ui</argument>
-                  </arguments>
+                  <arguments>run-script build</arguments>
                 </configuration>
               </execution>
             </executions>
+            <configuration>
+              <nodeVersion>v8.9.1</nodeVersion>
+              <npmVersion>5.5.1</npmVersion>
+              <workingDirectory>src/main/ui</workingDirectory>
+            </configuration>
           </plugin>
         </plugins>
       </build>

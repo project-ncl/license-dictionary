@@ -1,6 +1,10 @@
 swarm:
   port:
     offset: 101
+---
+project:
+  stage: prod
+swarm:
   datasources:
     data-sources:
       LicensesDS:
