@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 9/11/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 9/11/17
  */
 public class QueryUtils {
+
     public static <T> Optional<T> getSingleResult(TypedQuery<T> query) {
         List<T> resultList = query.getResultList();
 

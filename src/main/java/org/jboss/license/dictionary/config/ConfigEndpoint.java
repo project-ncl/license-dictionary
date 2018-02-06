@@ -26,20 +26,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 11/21/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 11/21/17
  */
 @Path("/config")
 @Consumes("application/json")
 @Produces("application/json")
 public class ConfigEndpoint {
+
     @Inject
     @ConfigurationValue("keycloak.url")
     private String keycloakUrl;
+
     @Inject
     @ConfigurationValue("keycloak.realm")
     private String keycloakRealm;
+
     @Inject
     @ConfigurationValue("keycloak.uiClientId")
     private String keycloakClientId;
