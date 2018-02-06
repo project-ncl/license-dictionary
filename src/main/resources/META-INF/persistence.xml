@@ -29,6 +29,7 @@
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
       <property name="javax.persistence.schema-generation.drop-source" value="metadata"/>
+<!--       <property name="hibernate.id.new_generator_mappings" value="false"></property> -->
     </properties>
   </persistence-unit>
 </persistence>
