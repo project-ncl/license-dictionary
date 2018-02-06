@@ -17,12 +17,9 @@
  */
 package org.jboss.license.dictionary;
 
-import api.FullLicenseData;
-import org.jboss.logging.Logger;
+import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
+import static org.jboss.license.dictionary.utils.Mappers.licenseEntityListType;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -35,13 +32,17 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-import static org.jboss.license.dictionary.utils.Mappers.licenseEntityListType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import org.jboss.logging.Logger;
+
+import api.FullLicenseData;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 8/31/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 8/31/17
  */
 @ApplicationScoped
 public class LicenseStore {
@@ -95,9 +96,7 @@ public class LicenseStore {
 
     public List<FullLicenseData> getAll() {
         ArrayList<FullLicenseData> result = new ArrayList<>(licensesById.values());
-        result.sort(
-                Comparator.comparing(FullLicenseData::getName)
-        );
+        result.sort(Comparator.comparing(FullLicenseData::getName));
         return result;
     }
 
@@ -106,25 +105,15 @@ public class LicenseStore {
         Set<FullLicenseData> resultSet = new TreeSet<>(Comparator.comparing(FullLicenseData::getName));
 
         resultSet.addAll(
-                join(getForName(searchTerm),
-                        getForUrl(searchTerm),
-                        getForNameAlias(searchTerm),
-                        getForUrlAlias(searchTerm))
-        );
+                join(getForName(searchTerm), getForUrl(searchTerm), getForNameAlias(searchTerm), getForUrlAlias(searchTerm)));
 
-        licensesById.values()
-                .stream()
-                .filter(l -> l.toFullString().toLowerCase().contains(searchTerm))
-                .forEach(resultSet::add);
+        licensesById.values().stream().filter(l -> l.toFullString().toLowerCase().contains(searchTerm)).forEach(resultSet::add);
 
         return resultSet;
     }
 
     <T> List<T> join(Optional<T>... optionals) {
-        return Stream.of(optionals)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        return Stream.of(optionals).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     @Transactional
@@ -147,16 +136,12 @@ public class LicenseStore {
 
     @Transactional
     public synchronized void load() {
-        licensesById = dbStore.getAll().stream()
-                .map(entity -> fullMapper.map(entity, FullLicenseData.class))
-                .peek(FullLicenseData::checkIntegrity)
-                .collect(Collectors.toMap(l -> l.getId(), l -> l));
+        licensesById = dbStore.getAll().stream().map(entity -> fullMapper.map(entity, FullLicenseData.class))
+                .peek(FullLicenseData::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
     }
 
     private Optional<FullLicenseData> findSingle(Predicate<FullLicenseData> predicate) {
-        return licensesById.values().stream()
-                .filter(predicate)
-                .findAny();
+        return licensesById.values().stream().filter(predicate).findAny();
     }
 
     private boolean isOneOf(Collection<String> values, String value) {
@@ -164,13 +149,10 @@ public class LicenseStore {
             return false;
         }
         String normalizedValue = value.toLowerCase();
-        return values.stream()
-                .anyMatch(v -> v.toLowerCase().equals(normalizedValue));
+        return values.stream().anyMatch(v -> v.toLowerCase().equals(normalizedValue));
     }
 
     private boolean searchEquals(String value1, String value2) {
-        return value1 != null
-                && value2 != null
-                && value1.toLowerCase().equals(value2.toLowerCase());
+        return value1 != null && value2 != null && value1.toLowerCase().equals(value2.toLowerCase());
     }
 }

@@ -17,13 +17,14 @@
  */
 package org.jboss.license.dictionary;
 
-import org.jboss.logging.Logger;
+import java.util.Collection;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
-import java.util.List;
+
+import org.jboss.logging.Logger;
 
 /**
  * mstodo: Header
