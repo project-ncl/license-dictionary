@@ -1,7 +1,5 @@
 package org.jboss.license.dictionary;
 
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -20,7 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "ProjectVersionLicenseHint")
 @Table(name = "project_version_license_hint", indexes = {
         @Index(name = "idx_project_version_license_hint_project_version_license", columnList = "project_version_license_id") })
 @ToString
@@ -53,6 +51,5 @@ public class ProjectVersionLicenseHintDBEntity {
     @Getter
     @Setter
     private LicenseHintTypeDBEntity licenseHintType;
-    
 
 }

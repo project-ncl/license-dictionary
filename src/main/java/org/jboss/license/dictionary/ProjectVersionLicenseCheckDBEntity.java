@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "ProjectVersionLicenseCheck")
 @Table(name = "project_version_license_check", indexes = {
         @Index(name = "idx_project_version_license_check_license_determination_type", columnList = "project_version_id") })
 @ToString

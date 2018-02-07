@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "ProjectVersionLicense")
 @Table(name = "project_version_license", indexes = {
         @Index(name = "idx_project_version_license_license", columnList = "license_id"),
         @Index(name = "idx_project_version_license_project_version_license_check", columnList = "project_version_license_check_id") })

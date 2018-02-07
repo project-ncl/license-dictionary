@@ -19,14 +19,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "LicenseAlias")
 @Table(name = "license_alias", indexes = { @Index(name = "idx_license_alias_license", columnList = "license_id") })
 @ToString
 @EqualsAndHashCode
 public class LicenseAliasDBEntity {
 
     public static final String SEQUENCE_NAME = "license_alias_id_seq";
-
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)

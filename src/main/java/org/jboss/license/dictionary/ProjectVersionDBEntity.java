@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "ProjectVersion")
 @Table(name = "project_version", indexes = { @Index(name = "idx_project_version_project", columnList = "project_id") })
 @ToString
 @EqualsAndHashCode

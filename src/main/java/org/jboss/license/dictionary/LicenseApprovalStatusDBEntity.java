@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "LicenseApprovalStatus")
 @Table(name = "license_approval_status")
 @ToString
 @EqualsAndHashCode

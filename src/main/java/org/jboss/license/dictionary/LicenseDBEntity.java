@@ -25,7 +25,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "License")
 @Table(name = "license", indexes = { @Index(name = "idx_license_code", columnList = "code"),
         @Index(name = "idx_license_fedora_abbrev", columnList = "fedora_abbrev"),
         @Index(name = "idx_license_spdx_abbrev", columnList = "spdx_abbrev"), }, uniqueConstraints = {
