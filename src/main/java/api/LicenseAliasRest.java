@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.LicenseAliasDBEntity;
+import org.jboss.license.dictionary.model.LicenseAlias;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class LicenseAliasRest {
     public LicenseAliasRest() {
     }
 
-    public LicenseAliasRest(LicenseAliasDBEntity licenseAlias) {
+    public LicenseAliasRest(LicenseAlias licenseAlias) {
         this.id = licenseAlias.getId();
         this.aliasName = licenseAlias.getAliasName();
         this.license = new LicenseRest(licenseAlias.getLicense());

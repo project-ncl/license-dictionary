@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.LicenseHintTypeDBEntity;
+import org.jboss.license.dictionary.model.LicenseHintType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class LicenseHintTypeRest {
     public LicenseHintTypeRest() {
     }
 
-    public LicenseHintTypeRest(LicenseHintTypeDBEntity licenseHintType) {
+    public LicenseHintTypeRest(LicenseHintType licenseHintType) {
         this.id = licenseHintType.getId();
         this.name = licenseHintType.getName();
     }

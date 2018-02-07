@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.ProjectVersionDBEntity;
+import org.jboss.license.dictionary.model.ProjectVersion;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class ProjectVersionRest {
     public ProjectVersionRest() {
     }
 
-    public ProjectVersionRest(ProjectVersionDBEntity projectVersion) {
+    public ProjectVersionRest(ProjectVersion projectVersion) {
         this.id = projectVersion.getId();
         this.scmUrl = projectVersion.getScmUrl();
         this.scmRevision = projectVersion.getScmRevision();

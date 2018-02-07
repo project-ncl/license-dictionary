@@ -2,7 +2,7 @@ package api;
 
 import java.util.Date;
 
-import org.jboss.license.dictionary.ProjectVersionLicenseCheckDBEntity;
+import org.jboss.license.dictionary.model.ProjectVersionLicenseCheck;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,7 @@ public class ProjectVersionLicenseCheckRest {
     public ProjectVersionLicenseCheckRest() {
     }
 
-    public ProjectVersionLicenseCheckRest(ProjectVersionLicenseCheckDBEntity projectVersionLicenseCheck) {
+    public ProjectVersionLicenseCheckRest(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
         this.id = projectVersionLicenseCheck.getId();
         this.determinedByUser = projectVersionLicenseCheck.getDeterminedByUser();
         this.determinationDate = projectVersionLicenseCheck.getDeterminationDate();

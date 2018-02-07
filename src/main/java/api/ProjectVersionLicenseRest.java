@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.ProjectVersionLicenseDBEntity;
+import org.jboss.license.dictionary.model.ProjectVersionLicense;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class ProjectVersionLicenseRest {
     public ProjectVersionLicenseRest() {
     }
 
-    public ProjectVersionLicenseRest(ProjectVersionLicenseDBEntity projectVersionLicense) {
+    public ProjectVersionLicenseRest(ProjectVersionLicense projectVersionLicense) {
         this.id = projectVersionLicense.getId();
         this.scope = projectVersionLicense.getScope();
         this.license = new LicenseRest(projectVersionLicense.getLicense());

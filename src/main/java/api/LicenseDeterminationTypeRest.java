@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.LicenseDeterminationTypeDBEntity;
+import org.jboss.license.dictionary.model.LicenseDeterminationType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class LicenseDeterminationTypeRest {
     public LicenseDeterminationTypeRest() {
     }
 
-    public LicenseDeterminationTypeRest(LicenseDeterminationTypeDBEntity licenseDeterminationType) {
+    public LicenseDeterminationTypeRest(LicenseDeterminationType licenseDeterminationType) {
         this.id = licenseDeterminationType.getId();
         this.name = licenseDeterminationType.getName();
         this.description = licenseDeterminationType.getDescription();

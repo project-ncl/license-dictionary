@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.LicenseDBEntity;
+import org.jboss.license.dictionary.model.License;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +46,7 @@ public class LicenseRest {
     public LicenseRest() {
     }
 
-    public LicenseRest(LicenseDBEntity license) {
+    public LicenseRest(License license) {
         this.id = license.getId();
         this.fedoraAbbreviation = license.getFedoraAbbreviation();
         this.fedoraName = license.getFedoraName();

@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.ProjectDBEntity;
+import org.jboss.license.dictionary.model.Project;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class ProjectRest {
     public ProjectRest() {
     }
 
-    public ProjectRest(ProjectDBEntity project) {
+    public ProjectRest(Project project) {
         this.id = project.getId();
         this.ecosystem = project.getEcosystem();
         this.key = project.getKey();

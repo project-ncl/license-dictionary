@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.LicenseApprovalStatusDBEntity;
+import org.jboss.license.dictionary.model.LicenseApprovalStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class LicenseApprovalStatusRest {
     public LicenseApprovalStatusRest() {
     }
 
-    public LicenseApprovalStatusRest(LicenseApprovalStatusDBEntity licenseApprovalStatus) {
+    public LicenseApprovalStatusRest(LicenseApprovalStatus licenseApprovalStatus) {
         this.id = licenseApprovalStatus.getId();
         this.name = licenseApprovalStatus.getName();
     }

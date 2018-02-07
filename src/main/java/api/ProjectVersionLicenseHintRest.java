@@ -1,6 +1,6 @@
 package api;
 
-import org.jboss.license.dictionary.ProjectVersionLicenseHintDBEntity;
+import org.jboss.license.dictionary.model.ProjectVersionLicenseHint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class ProjectVersionLicenseHintRest {
     public ProjectVersionLicenseHintRest() {
     }
 
-    public ProjectVersionLicenseHintRest(ProjectVersionLicenseHintDBEntity projectVersionLicenseHint) {
+    public ProjectVersionLicenseHintRest(ProjectVersionLicenseHint projectVersionLicenseHint) {
         this.id = projectVersionLicenseHint.getId();
         this.value = projectVersionLicenseHint.getValue();
         this.projectVersionLicense = new ProjectVersionLicenseRest(projectVersionLicenseHint.getProjectVersionLicense());
