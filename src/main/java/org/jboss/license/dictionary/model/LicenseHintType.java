@@ -22,8 +22,9 @@ import lombok.ToString;
 
 @Entity(name = "LicenseHintType")
 @Table(name = "license_hint_type")
-@ToString
-@EqualsAndHashCode
+
+@ToString(exclude = { "projectVersionLicenseHints" })
+@EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class LicenseHintType {
 
     public static final String SEQUENCE_NAME = "license_hint_type_id_seq";
@@ -32,7 +33,7 @@ public class LicenseHintType {
     @GeneratedValue(generator = SEQUENCE_NAME)
     @GenericGenerator(name = SEQUENCE_NAME, strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "10") })
+            @Parameter(name = "increment_size", value = "1") })
     @Getter
     private Integer id;
 

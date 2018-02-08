@@ -30,8 +30,9 @@ import lombok.ToString;
 @Entity(name = "ProjectVersionLicenseCheck")
 @Table(name = "project_version_license_check", indexes = {
         @Index(name = "idx_project_version_license_check_license_determination_type", columnList = "project_version_id") })
-@ToString
-@EqualsAndHashCode
+
+@ToString(exclude = { "projectVersionLicenses" })
+@EqualsAndHashCode(exclude = { "projectVersionLicenses" })
 public class ProjectVersionLicenseCheck {
 
     public static final String SEQUENCE_NAME = "project_version_license_check_id_seq";
@@ -40,7 +41,7 @@ public class ProjectVersionLicenseCheck {
     @GeneratedValue(generator = SEQUENCE_NAME)
     @GenericGenerator(name = SEQUENCE_NAME, strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "100") })
+            @Parameter(name = "increment_size", value = "1") })
     @Getter
     private Integer id;
 
