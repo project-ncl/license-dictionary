@@ -60,14 +60,14 @@ public class ProjectVersion {
     private Project project;
 
     @OneToMany(mappedBy = "projectVersion")
-    private Set<ProjectVersion> projectVersions;
+    private Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks;
 
     public ProjectVersion() {
-        this.projectVersions = new HashSet<ProjectVersion>();
+        this.projectVersionLicenseChecks = new HashSet<ProjectVersionLicenseCheck>();
     }
 
-    public void addProjectVersion(ProjectVersion projectVersion) {
-        this.projectVersions.add(projectVersion);
+    public void addProjectVersion(ProjectVersionLicenseCheck projectVersion) {
+        this.projectVersionLicenseChecks.add(projectVersion);
     }
 
 }
