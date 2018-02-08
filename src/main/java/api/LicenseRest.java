@@ -1,6 +1,12 @@
 package api;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.jboss.license.dictionary.model.License;
+import org.jboss.license.dictionary.model.LicenseAlias;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +49,10 @@ public class LicenseRest {
     @Setter
     private LicenseApprovalStatusRest licenseApprovalStatus;
 
+    @Getter
+    @Setter
+    private Set<LicenseAliasRest> aliases;
+
     public LicenseRest() {
     }
 
@@ -56,6 +66,25 @@ public class LicenseRest {
         this.textUrl = license.getTextUrl();
         this.code = license.getCode();
         this.licenseApprovalStatus = new LicenseApprovalStatusRest(license.getLicenseApprovalStatus());
+        this.aliases = new HashSet<LicenseAliasRest>();
+
+        addAliases(license.getAliases());
+    }
+
+    public static void checkIntegrity(LicenseRest licenseRest) {
+        if (licenseRest.getFedoraName() == null && licenseRest.getSpdxName() == null) {
+            throw new IllegalStateException("License data is incomplete " + licenseRest.toString());
+        }
+    }
+
+    public List<String> getAliasNames() {
+        return this.aliases.stream().map(alias -> alias.getAliasName()).collect(Collectors.toList());
+    }
+
+    private void addAliases(Set<LicenseAlias> licenseAliases) {
+        licenseAliases.stream().forEach(licenseAlias -> {
+            aliases.add(new LicenseAliasRest(licenseAlias));
+        });
     }
 
     @Override

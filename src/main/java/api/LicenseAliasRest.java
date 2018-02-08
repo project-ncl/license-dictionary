@@ -17,7 +17,7 @@ public class LicenseAliasRest {
 
     @Getter
     @Setter
-    private LicenseRest license;
+    private Integer licenseId;
 
     public LicenseAliasRest() {
     }
@@ -25,7 +25,7 @@ public class LicenseAliasRest {
     public LicenseAliasRest(LicenseAlias licenseAlias) {
         this.id = licenseAlias.getId();
         this.aliasName = licenseAlias.getAliasName();
-        this.license = new LicenseRest(licenseAlias.getLicense());
+        this.licenseId = licenseAlias.getLicense().getId();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LicenseAliasRest {
             return false;
         if (aliasName != null ? !aliasName.equals(licenseAliasRest.aliasName) : licenseAliasRest.aliasName != null)
             return false;
-        if (license != null ? !license.equals(licenseAliasRest.license) : licenseAliasRest.license != null)
+        if (licenseId != null ? !licenseId.equals(licenseAliasRest.licenseId) : licenseAliasRest.licenseId != null)
             return false;
         return true;
     }
@@ -50,14 +50,14 @@ public class LicenseAliasRest {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (aliasName != null ? aliasName.hashCode() : 0);
-        result = 31 * result + (license != null ? license.hashCode() : 0);
+        result = 31 * result + (licenseId != null ? licenseId.hashCode() : 0);
 
         return result;
     }
 
     @Override
     public String toString() {
-        return "LicenseAliasRest{" + "id=" + id + ", aliasName='" + aliasName + '\'' + ", license='" + license + '\'' + '}';
+        return "LicenseAliasRest{" + "id=" + id + ", aliasName='" + aliasName + '\'' + ", licenseId='" + licenseId + '\'' + '}';
     }
 
 }
