@@ -19,7 +19,7 @@ package org.jboss.license.dictionary;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-import static org.jboss.license.dictionary.utils.Mappers.licenseListType;
+import static org.jboss.license.dictionary.utils.Mappers.licenseRestListType;
 import static org.jboss.license.dictionary.utils.Mappers.limitedMapper;
 import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
@@ -41,9 +41,8 @@ import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 
-import api.FullLicenseData;
-import api.License;
 import api.LicenseResource;
+import api.LicenseRest;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
@@ -64,39 +63,41 @@ public class LicenseResourceImpl implements LicenseResource {
     }
 
     @Override
-    public Response getLicenses(String name, String url, String nameAlias, String urlAlias, String searchTerm, Integer maxCount,
-            Integer offset) {
+    public Response getLicenses(String fedoraName, String spdxName, String code, String nameAlias, String searchTerm,
+            Integer resultCount, Integer offset) {
+
         if (offset == null) {
             offset = 0;
         }
 
-        long singleResultIndicatorCount = nonNullCount(name, url, nameAlias, urlAlias);
+        long singleResultIndicatorCount = nonNullCount(fedoraName, spdxName, code, nameAlias);
         if (singleResultIndicatorCount > 1) {
             throw new BadRequestException(
-                    "Not more than one query parameter " + "{name, url, nameAlias, urlAlias} should be provided");
+                    "Not more than one query parameter " + "{fedoraName, spdxName, code, nameAlias} should be provided");
         }
 
         if (singleResultIndicatorCount > 0) {
             if (searchTerm != null) {
-                throw new BadRequestException(
-                        "searchTerm cannot be mixed " + "with neither of {name, url, nameAlias, urlAlias} query parameters");
+                throw new BadRequestException("searchTerm cannot be mixed "
+                        + "with neither of {fedoraName, spdxName, code, nameAlias} query parameters");
             }
 
-            FullLicenseData entity;
-            if (name != null) {
-                entity = valueOrNotFound(licenseStore.getForName(name), "No license was found for name %s", name);
-            } else if (url != null) {
-                entity = valueOrNotFound(licenseStore.getForUrl(url), "No license was found for url %s", url);
+            LicenseRest entity;
+            if (fedoraName != null) {
+                entity = valueOrNotFound(licenseStore.getForFedoraName(fedoraName), "No license was found for Fedora name %s",
+                        fedoraName);
+            } else if (spdxName != null) {
+                entity = valueOrNotFound(licenseStore.getForSpdxName(spdxName), "No license was found for SPDX name %s",
+                        spdxName);
             } else if (nameAlias != null) {
                 entity = valueOrNotFound(licenseStore.getForNameAlias(nameAlias), "Could not find license for nameAlias %s",
                         nameAlias);
             } else {
-                entity = valueOrNotFound(licenseStore.getForUrlAlias(urlAlias), "Could not find license for urlAlias %s",
-                        urlAlias);
+                entity = valueOrNotFound(licenseStore.getForCode(code), "Could not find license for code %s", code);
             }
-            return paginated(singletonList(limitedMapper.map(entity, License.class)), 1, 0);
+            return paginated(singletonList(limitedMapper.map(entity, LicenseRest.class)), 1, 0);
         } else {
-            List<FullLicenseData> results;
+            List<LicenseRest> results;
             if (searchTerm != null) {
                 results = licenseStore.findBySearchTerm(searchTerm).stream().collect(Collectors.toList());
             } else {
@@ -105,12 +106,12 @@ public class LicenseResourceImpl implements LicenseResource {
 
             int totalCount = results.size();
 
-            if (maxCount != null) {
-                maxCount += offset;
-                results = results.subList(offset, results.size() < maxCount ? results.size() : maxCount);
+            if (resultCount != null) {
+                resultCount += offset;
+                results = results.subList(offset, results.size() < resultCount ? results.size() : resultCount);
             }
 
-            List<License> resultList = limitedMapper.map(results, licenseListType);
+            List<LicenseRest> resultList = limitedMapper.map(results, licenseRestListType);
             return paginated(resultList, totalCount, offset);
         }
     }
@@ -121,14 +122,13 @@ public class LicenseResourceImpl implements LicenseResource {
 
     @Override
     @Transactional
-    public License updateLicense(Integer licenseId, FullLicenseData license) {
-        Optional<FullLicenseData> maybeLicense = licenseStore.getById(licenseId);
+    public LicenseRest updateLicense(Integer licenseId, LicenseRest license) {
+        Optional<LicenseRest> maybeLicense = licenseStore.getById(licenseId);
 
-        FullLicenseData licenseData = maybeLicense
-                .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
+        LicenseRest licenseData = maybeLicense.orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
         fullMapper.map(license, licenseData);
 
-        return limitedMapper.map(licenseData, License.class);
+        return limitedMapper.map(licenseData, LicenseRest.class);
     }
 
     @Override
@@ -140,36 +140,31 @@ public class LicenseResourceImpl implements LicenseResource {
     }
 
     @Override
-    public License getLicense(Integer licenseId) {
-        FullLicenseData entity = licenseStore.getById(licenseId)
+    public LicenseRest getLicense(Integer licenseId) {
+        LicenseRest entity = licenseStore.getById(licenseId)
                 .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
-        return fullMapper.map(entity, License.class);
+        return fullMapper.map(entity, LicenseRest.class);
     }
 
     @Override
     @Transactional
-    public License addLicense(FullLicenseData license) {
+    public LicenseRest addLicense(LicenseRest license) {
         validate(license);
         license.getTextUrl();// mstodo fetch content and set to entity
         return licenseStore.save(license);
     }
 
     // mstodo: this does not work!
-    private void validate(FullLicenseData license) {
+    private void validate(LicenseRest license) {
         ErrorDto errors = new ErrorDto();
-        licenseStore.getForName(license.getName())
-                .ifPresent(l -> errors.addError("License with the same name found. Conflicting license id: %d", l.getId()));
-        licenseStore.getForUrl(license.getUrl())
-                .ifPresent(l -> errors.addError("License with the same url found. Conflicting license id: %d", l.getId()));
-
-        license.getNameAliases().forEach(alias -> licenseStore.getForNameAlias(alias).ifPresent(
-                l -> errors.addError("License with the same name alias found. Conflicting license id: %d", l.getId()))
-
-        );
-        license.getUrlAliases().forEach(alias -> licenseStore.getForUrlAlias(alias)
-                .ifPresent(l -> errors.addError("License with the same url alias found. Conflicting license id: %d", l.getId()))
-
-        );
+        licenseStore.getForFedoraName(license.getFedoraName()).ifPresent(
+                l -> errors.addError("License with the same Fedora name found. Conflicting license id: %d", l.getId()));
+        licenseStore.getForSpdxName(license.getSpdxName()).ifPresent(
+                l -> errors.addError("License with the same SPDX name found. Conflicting license id: %d", l.getId()));
+        licenseStore.getForCode(license.getCode())
+                .ifPresent(l -> errors.addError("License with the same code found. Conflicting license id: %d", l.getId()));
+        license.getAliasNames().forEach(alias -> licenseStore.getForNameAlias(alias).ifPresent(
+                l -> errors.addError("License with the same name alias found. Conflicting license id: %d", l.getId())));
     }
 
     private long nonNullCount(Object... args) {

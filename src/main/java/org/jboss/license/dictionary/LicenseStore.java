@@ -18,7 +18,7 @@
 package org.jboss.license.dictionary;
 
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-import static org.jboss.license.dictionary.utils.Mappers.licenseEntityListType;
+import static org.jboss.license.dictionary.utils.Mappers.licenseListType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,9 +36,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.jboss.license.dictionary.model.License;
 import org.jboss.logging.Logger;
 
-import api.FullLicenseData;
+import api.LicenseRest;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
@@ -51,7 +52,7 @@ public class LicenseStore {
     @Inject
     private LicenseDbStore dbStore;
 
-    private Map<Integer, FullLicenseData> licensesById;
+    private Map<Integer, LicenseRest> licensesById;
 
     @Transactional
     public synchronized void init() {
@@ -65,49 +66,57 @@ public class LicenseStore {
         }
     }
 
-    public Optional<FullLicenseData> getById(Integer licenseId) {
+    public Optional<LicenseRest> getById(Integer licenseId) {
         return Optional.ofNullable(licensesById.get(licenseId));
     }
 
-    public Optional<FullLicenseData> getForName(String name) {
-        return findSingle(l -> searchEquals(name, l.getName()));
+    public Optional<LicenseRest> getForFedoraName(String name) {
+        return findSingle(l -> searchEquals(name, l.getFedoraName()));
     }
 
-    public Optional<FullLicenseData> getForUrl(String url) {
-        return findSingle(l -> searchEquals(url, l.getUrl()));
+    public Optional<LicenseRest> getForSpdxName(String name) {
+        return findSingle(l -> searchEquals(name, l.getSpdxName()));
     }
 
-    public Optional<FullLicenseData> getForNameAlias(String name) {
-        return findSingle(l -> isOneOf(l.getNameAliases(), name));
+    // public Optional<LicenseRest> getForUrl(String url) {
+    // return findSingle(l -> searchEquals(url, l.getUrl()));
+    // }
+    //
+    // public Optional<LicenseRest> getForTextUrl(String url) {
+    // return findSingle(l -> searchEquals(url, l.getTextUrl()));
+    // }
+
+    public Optional<LicenseRest> getForNameAlias(String alias) {
+        return findSingle(l -> isOneOf(l.getAliasNames(), alias));
     }
 
-    public Optional<FullLicenseData> getForUrlAlias(String url) {
-        return findSingle(l -> isOneOf(l.getUrlAliases(), url));
+    public Optional<LicenseRest> getForCode(String code) {
+        return findSingle(l -> searchEquals(code, l.getCode()));
     }
 
-    public FullLicenseData save(FullLicenseData license) {
-        LicenseEntity entity = fullMapper.map(license, LicenseEntity.class);
+    public LicenseRest save(LicenseRest licenseRest) {
+        License entity = fullMapper.map(licenseRest, License.class);
         entity = dbStore.save(entity);
 
-        license = fullMapper.map(entity, FullLicenseData.class);
-        licensesById.put(entity.getId(), license);
-        return license;
+        licenseRest = fullMapper.map(entity, LicenseRest.class);
+        licensesById.put(entity.getId(), licenseRest);
+        return licenseRest;
     }
 
-    public List<FullLicenseData> getAll() {
-        ArrayList<FullLicenseData> result = new ArrayList<>(licensesById.values());
-        result.sort(Comparator.comparing(FullLicenseData::getName));
+    public List<LicenseRest> getAll() {
+        ArrayList<LicenseRest> result = new ArrayList<>(licensesById.values());
+        result.sort(Comparator.comparing(LicenseRest::getCode));
         return result;
     }
 
-    public Set<FullLicenseData> findBySearchTerm(String denormalizedSearchTerm) {
+    public Set<LicenseRest> findBySearchTerm(String denormalizedSearchTerm) {
         final String searchTerm = denormalizedSearchTerm.toLowerCase();
-        Set<FullLicenseData> resultSet = new TreeSet<>(Comparator.comparing(FullLicenseData::getName));
+        Set<LicenseRest> resultSet = new TreeSet<>(Comparator.comparing(LicenseRest::getCode));
 
-        resultSet.addAll(
-                join(getForName(searchTerm), getForUrl(searchTerm), getForNameAlias(searchTerm), getForUrlAlias(searchTerm)));
+        resultSet.addAll(join(getForFedoraName(searchTerm), getForSpdxName(searchTerm), getForNameAlias(searchTerm),
+                getForCode(searchTerm)));
 
-        licensesById.values().stream().filter(l -> l.toFullString().toLowerCase().contains(searchTerm)).forEach(resultSet::add);
+        licensesById.values().stream().filter(l -> l.toString().toLowerCase().contains(searchTerm)).forEach(resultSet::add);
 
         return resultSet;
     }
@@ -124,9 +133,9 @@ public class LicenseStore {
     }
 
     @Transactional
-    public void replaceAllLicensesWith(Collection<FullLicenseData> licenses) {
+    public void replaceAllLicensesWith(Collection<LicenseRest> licenses) {
         log.infof("started replacing licenses with import data. Licenses to import: %d", licenses.size());
-        List<LicenseEntity> entityList = fullMapper.map(licenses, licenseEntityListType);
+        List<License> entityList = fullMapper.map(licenses, licenseListType);
         log.infof("will replace existing entities with %d new entities", entityList.size());
         dbStore.replaceAllLicensesWith(entityList);
         log.info("started loading imported entities");
@@ -136,11 +145,11 @@ public class LicenseStore {
 
     @Transactional
     public synchronized void load() {
-        licensesById = dbStore.getAll().stream().map(entity -> fullMapper.map(entity, FullLicenseData.class))
-                .peek(FullLicenseData::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
+        licensesById = dbStore.getAll().stream().map(entity -> fullMapper.map(entity, LicenseRest.class))
+                .peek(LicenseRest::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
     }
 
-    private Optional<FullLicenseData> findSingle(Predicate<FullLicenseData> predicate) {
+    private Optional<LicenseRest> findSingle(Predicate<LicenseRest> predicate) {
         return licensesById.values().stream().filter(predicate).findAny();
     }
 

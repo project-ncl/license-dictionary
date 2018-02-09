@@ -17,12 +17,19 @@
  */
 package org.jboss.license.dictionary.license;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import api.FullLicenseData;
-import api.License;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.license.dictionary.LicenseEntity;
+import org.jboss.license.dictionary.LicenseEntity_old;
 import org.jboss.license.dictionary.LicenseResourceImpl;
 import org.jboss.license.dictionary.imports.RhLicense;
 import org.jboss.license.dictionary.utils.BadRequestException;
@@ -38,19 +45,12 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.arquillian.CreateSwarm;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.TreeSet;
-
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
+import api.LicenseAliasRest;
+import api.LicenseRest;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 11/3/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 11/3/17
  */
 @RunWith(Arquillian.class)
 public class LicenseResourceTest {
@@ -62,19 +62,14 @@ public class LicenseResourceTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
-                .addPackage(LicenseEntity.class.getPackage())
-                .addPackage(ErrorDto.class.getPackage())
-                .addPackage(RhLicense.class.getPackage())
-                .addPackage(License.class.getPackage())
-                .addPackage(BadRequestException.class.getPackage())
-                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
-                .addAsResource("project-test.yml")
+        WebArchive webArchive = ShrinkWrap.create(WebArchive.class).addPackage(LicenseEntity_old.class.getPackage())
+                .addPackage(ErrorDto.class.getPackage()).addPackage(RhLicense.class.getPackage())
+                .addPackage(LicenseRest.class.getPackage()).addPackage(BadRequestException.class.getPackage())
+                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml").addAsResource("project-test.yml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
         PomEquippedResolveStage stage = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeAndTestDependencies();
         File[] libs = stage.resolve().withTransitivity().asFile();
-
 
         return webArchive.addAsLibraries(libs);
     }
@@ -84,16 +79,14 @@ public class LicenseResourceTest {
         return new Swarm().withProfile("test");
     }
 
-
     @Before
     public void setUp() {
         if (getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
-            FullLicenseData license = new FullLicenseData();
-            license.setName(MY_LICENSE_NAME);
+            LicenseRest license = new LicenseRest();
+            license.setFedoraName(MY_LICENSE_NAME);
             license.setUrl(MY_LICENSE_URL);
-            license.setContent("foffoofososfoasfoaosf");
-            license.getNameAliases().add("mylicense 1.0");
-            license.getNameAliases().add("mylicense 1");
+            license.getAliasNames().add("mylicense 1.0");
+            license.getAliasNames().add("mylicense 1");
 
             resource.addLicense(license);
         }
@@ -101,46 +94,51 @@ public class LicenseResourceTest {
 
     @Test
     public void shouldGetLicenseByName() {
-        License mylicense = getLicenses(MY_LICENSE_NAME, null, null, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(MY_LICENSE_NAME, null, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }
 
-    private List<License> getLicenses(String name, String url, String nameAlias, String urlAlias, String searchTerm) {
-        return (List<License>) resource.getLicenses(name, url, nameAlias, urlAlias, searchTerm, null, null)
+    private List<LicenseRest> getLicenses(String fedoraName, String spdxName, String code, String nameAlias,
+            String searchTerm) {
+        return (List<LicenseRest>) resource.getLicenses(fedoraName, spdxName, code, nameAlias, searchTerm, null, null)
                 .getEntity();
     }
 
     @Test
     public void shouldGetLicenseByExactSearchTerm() {
-        Collection<License> licenses = getLicenses(null, null, null, null, "mylicense");
+        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, "mylicense");
         assertThat(licenses).hasSize(1);
-        License mylicense = licenses.iterator().next();
+        LicenseRest mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }
 
     @Test
     public void shouldGetLicenseBySubstringSearchTerm() {
-        Collection<License> licenses = getLicenses(null, null, null, null, "ylicense");
+        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, "ylicense");
         assertThat(licenses).hasSize(1);
-        License mylicense = licenses.iterator().next();
+        LicenseRest mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
         assertThat(mylicense.getUrl()).isEqualTo(MY_LICENSE_URL);
     }
 
     @Test
     public void shouldGetLicenseById() {
-        FullLicenseData license = new FullLicenseData();
-        license.setName("licenseReadById");
+        LicenseRest license = new LicenseRest();
+        license.setFedoraName("licenseReadById");
         license.setUrl("by-id.example.com");
-        license.setNameAliases(new TreeSet<>(asList("alias1", "alias2")));
+        LicenseAliasRest lar1 = new LicenseAliasRest();
+        lar1.setAliasName("alias1");
+        LicenseAliasRest lar2 = new LicenseAliasRest();
+        lar2.setAliasName("alias2");
+        license.setAliases(new TreeSet<>(asList(lar1, lar2)));
         Integer id = resource.addLicense(license).getId();
 
-        License resultLicense = resource.getLicense(id);
-        assertThat(resultLicense.getName()).isEqualTo(license.getName());
+        LicenseRest resultLicense = resource.getLicense(id);
+        assertThat(resultLicense.getFedoraName()).isEqualTo(license.getFedoraName());
         assertThat(resultLicense.getUrl()).isEqualTo(license.getUrl());
-        assertThat(resultLicense.getNameAliases()).hasSize(2);
-        assertThat(resultLicense.getNameAliases()).containsExactlyInAnyOrder("alias1", "alias2");
+        assertThat(resultLicense.getAliasNames()).hasSize(2);
+        assertThat(resultLicense.getAliasNames()).containsExactlyInAnyOrder("alias1", "alias2");
     }
 }

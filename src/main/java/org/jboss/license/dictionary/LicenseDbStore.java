@@ -24,14 +24,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.jboss.license.dictionary.model.License;
 import org.jboss.logging.Logger;
 
 /**
  * mstodo: Header
  *
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 11/17/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 11/17/17
  */
 @ApplicationScoped
 public class LicenseDbStore {
@@ -41,18 +41,20 @@ public class LicenseDbStore {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public LicenseEntity save(LicenseEntity license) {
+    public License save(License license) {
+        log.debug("Saving license: " + license);
         entityManager.persist(license);
         return license;
     }
 
-    public List<LicenseEntity> getAll() {
-        return entityManager.createQuery("SELECT e FROM LicenseEntity e", LicenseEntity.class)
-                .getResultList();
+    public List<License> getAll() {
+        log.debug("Get all licenses ...");
+        return entityManager.createQuery("SELECT e FROM License e", License.class).getResultList();
     }
 
     public boolean delete(Integer licenseId) {
-        LicenseEntity entity = entityManager.find(LicenseEntity.class, licenseId);
+        log.debug("Deleting license: " + licenseId);
+        License entity = entityManager.find(License.class, licenseId);
         if (entity != null) {
             entityManager.remove(entity);
             return true;
@@ -60,7 +62,7 @@ public class LicenseDbStore {
         return false;
     }
 
-    public void replaceAllLicensesWith(Collection<LicenseEntity> entities) {
+    public void replaceAllLicensesWith(Collection<License> entities) {
         getAll().forEach(entityManager::remove);
         entities.forEach(entityManager::persist);
     }

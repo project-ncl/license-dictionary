@@ -85,6 +85,50 @@ export interface LicenseList {
   offset: number
 }
 
+/*
+export interface LicenseApprovalStatus {
+  id: number,
+  name: string
+}
+
+export class EmptyLicenseApprovalStatus implements LicenseApprovalStatus {
+  id: number;
+  name: string;
+}
+
+export interface LicenseAlias {
+  id: number,
+  aliasName: string,
+  licenseId: number
+}
+
+export interface License {
+  id: number,
+  fedoraAbbreviation: string,
+  fedoraName: string,
+  spdxAbbreviation: string,
+  spdxName: string,
+  url: string,
+  textUrl: string,
+  code: string,
+  licenseApprovalStatus: LicenseApprovalStatus,
+  aliases: LicenseAlias[]
+}
+
+export class EmptyLicense implements License {
+  id: number;
+  fedoraAbbreviation: string;
+  fedoraName: string;
+  spdxAbbreviation: string;
+  spdxName: string;
+  url: string;
+  textUrl: string;
+  code: string;
+  licenseApprovalStatus: EmptyLicenseApprovalStatus;
+  aliases: LicenseAlias[] = []
+}
+*/
+
 export interface License {
   id: number,
   name: string,
@@ -108,3 +152,4 @@ export class EmptyLicense implements License {
   urlAliases: string[] = [];
   nameAliases: string[] = [];
 }
+
