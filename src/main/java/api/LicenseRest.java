@@ -1,5 +1,6 @@
 package api;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +79,8 @@ public class LicenseRest {
     }
 
     public List<String> getAliasNames() {
-        return this.aliases.stream().map(alias -> alias.getAliasName()).collect(Collectors.toList());
+        return this.aliases.stream().sorted(Comparator.comparing(LicenseAliasRest::getAliasName))
+                .map(alias -> alias.getAliasName()).collect(Collectors.toList());
     }
 
     private void addAliases(Set<LicenseAlias> licenseAliases) {
