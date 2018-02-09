@@ -28,9 +28,8 @@ import java.util.Map;
 /**
  * mstodo: Header
  *
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 11/21/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 11/21/17
  */
 @Path("/export")
 public class ExportEndpoint {
@@ -42,13 +41,10 @@ public class ExportEndpoint {
     @Path("/licenses")
     public Map<String, RhLicense> exportLicenses() {
         Map<String, RhLicense> resultMap = new HashMap<>();
-
-        store.getAll().forEach(license ->
-                license.getNameAliases().forEach(
-                        alias ->
-                                resultMap.put(alias, license.toRhLicense())
-                )
-        );
+        /*
+         * store.getAll().forEach(license -> license.getNameAliases().forEach( alias -> resultMap.put(alias,
+         * license.toRhLicense()) ) );
+         */
         return resultMap;
     }
 }
