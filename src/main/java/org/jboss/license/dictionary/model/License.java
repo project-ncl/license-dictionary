@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -84,7 +85,7 @@ public class License {
     @Setter
     private String code;
 
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "license_approval_status_id", nullable = false, foreignKey = @ForeignKey(name = "fk_license_license_approval_status"))
     @Getter
     @Setter
