@@ -34,6 +34,7 @@ public class LicenseAlias {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -47,5 +48,46 @@ public class LicenseAlias {
     @Getter
     @Setter
     private License license;
+
+    public static class Builder {
+
+        private Integer id;
+        private String aliasName;
+        private License license;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder aliasName(String aliasName) {
+            this.aliasName = aliasName;
+            return this;
+        }
+
+        public Builder license(License license) {
+            this.license = license;
+            return this;
+        }
+
+        public LicenseAlias build() {
+            LicenseAlias licenseAlias = new LicenseAlias();
+            licenseAlias.setId(id);
+            licenseAlias.setAliasName(aliasName);
+            licenseAlias.setLicense(license);
+
+            // Set bi-directional mappings
+            license.addAlias(licenseAlias);
+
+            return licenseAlias;
+        }
+    }
 
 }

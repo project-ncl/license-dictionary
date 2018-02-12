@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -43,6 +44,7 @@ public class ProjectVersionLicenseCheck {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -75,7 +77,9 @@ public class ProjectVersionLicenseCheck {
     @Setter
     private LicenseDeterminationType licenseDeterminationType;
 
-    @OneToMany(mappedBy = "projectVersionLicenseCheck")
+    @OneToMany(mappedBy = "projectVersionLicenseCheck", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    @Setter
     private Set<ProjectVersionLicense> projectVersionLicenses;
 
     public ProjectVersionLicenseCheck() {
@@ -90,6 +94,81 @@ public class ProjectVersionLicenseCheck {
 
     public void addProjectVersionLicense(ProjectVersionLicense projectVersionLicense) {
         this.projectVersionLicenses.add(projectVersionLicense);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String determinedByUser;
+        private Date determinationDate;
+        private String notes;
+        private ProjectVersion projectVersion;
+        private LicenseDeterminationType licenseDeterminationType;
+        private Set<ProjectVersionLicense> projectVersionLicenses;
+
+        private Builder() {
+            this.determinationDate = Date.from(Instant.now());
+            this.projectVersionLicenses = new HashSet<ProjectVersionLicense>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder determinedByUser(String determinedByUser) {
+            this.determinedByUser = determinedByUser;
+            return this;
+        }
+
+        public Builder determinationDate(Date determinationDate) {
+            this.determinationDate = determinationDate;
+            return this;
+        }
+
+        public Builder notes(String notes) {
+            this.notes = notes;
+            return this;
+        }
+
+        public Builder projectVersion(ProjectVersion projectVersion) {
+            this.projectVersion = projectVersion;
+            return this;
+        }
+
+        public Builder licenseDeterminationType(LicenseDeterminationType licenseDeterminationType) {
+            this.licenseDeterminationType = licenseDeterminationType;
+            return this;
+        }
+
+        public Builder projectVersionLicenses(Set<ProjectVersionLicense> projectVersionLicenses) {
+            this.projectVersionLicenses = projectVersionLicenses;
+            return this;
+        }
+
+        public ProjectVersionLicenseCheck build() {
+            ProjectVersionLicenseCheck projectVersionLicenseCheck = new ProjectVersionLicenseCheck();
+            projectVersionLicenseCheck.setId(id);
+            projectVersionLicenseCheck.setDeterminedByUser(determinedByUser);
+            projectVersionLicenseCheck.setDeterminationDate(determinationDate);
+            projectVersionLicenseCheck.setNotes(notes);
+            projectVersionLicenseCheck.setProjectVersion(projectVersion);
+            projectVersionLicenseCheck.setLicenseDeterminationType(licenseDeterminationType);
+            projectVersionLicenseCheck.setProjectVersionLicenses(projectVersionLicenses);
+
+            // Set bi-directional mappings
+            projectVersion.addProjectVersionLicenseCheck(projectVersionLicenseCheck);
+            licenseDeterminationType.addProjectVersionLicenseCheck(projectVersionLicenseCheck);
+            projectVersionLicenses.stream().forEach(projectVersionLicense -> {
+                projectVersionLicense.setProjectVersionLicenseCheck(projectVersionLicenseCheck);
+            });
+
+            return projectVersionLicenseCheck;
+        }
     }
 
 }

@@ -35,6 +35,7 @@ public class LicenseHintType {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -45,13 +46,58 @@ public class LicenseHintType {
     private String name;
 
     @OneToMany(mappedBy = "licenseHintType")
+    @Getter
+    @Setter
     private Set<ProjectVersionLicenseHint> projectVersionLicenseHints;
 
     public LicenseHintType() {
-        this.projectVersionLicenseHints = new HashSet<>();
+        this.projectVersionLicenseHints = new HashSet<ProjectVersionLicenseHint>();
     }
 
     public void addProjectVersionLicenseHint(ProjectVersionLicenseHint projectVersionLicenseHint) {
         this.projectVersionLicenseHints.add(projectVersionLicenseHint);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String name;
+        private Set<ProjectVersionLicenseHint> projectVersionLicenseHints;
+
+        private Builder() {
+            this.projectVersionLicenseHints = new HashSet<ProjectVersionLicenseHint>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder projectVersionLicenseHints(Set<ProjectVersionLicenseHint> projectVersionLicenseHints) {
+            this.projectVersionLicenseHints = projectVersionLicenseHints;
+            return this;
+        }
+
+        public LicenseHintType build() {
+            LicenseHintType licenseHintType = new LicenseHintType();
+            licenseHintType.setId(id);
+            licenseHintType.setName(name);
+            licenseHintType.setProjectVersionLicenseHints(projectVersionLicenseHints);
+
+            // Set bi-directional mappings
+            projectVersionLicenseHints.stream().forEach(projectVersionLicenseHint -> {
+                projectVersionLicenseHint.setLicenseHintType(licenseHintType);
+            });
+            return licenseHintType;
+        }
     }
 }

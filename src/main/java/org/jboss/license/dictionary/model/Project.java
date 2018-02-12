@@ -36,6 +36,7 @@ public class Project {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -52,6 +53,8 @@ public class Project {
     private String key;
 
     @OneToMany(mappedBy = "project")
+    @Getter
+    @Setter
     private Set<ProjectVersion> projectVersions;
 
     public Project() {
@@ -60,6 +63,56 @@ public class Project {
 
     public void addProjectVersion(ProjectVersion projectVersion) {
         this.projectVersions.add(projectVersion);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String ecosystem;
+        private String key;
+        private Set<ProjectVersion> projectVersions;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder ecosystem(String ecosystem) {
+            this.ecosystem = ecosystem;
+            return this;
+        }
+
+        public Builder key(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public Builder projectVersions(Set<ProjectVersion> projectVersions) {
+            this.projectVersions = projectVersions;
+            return this;
+        }
+
+        public Project build() {
+            Project project = new Project();
+            project.setId(id);
+            project.setEcosystem(ecosystem);
+            project.setKey(key);
+            project.setProjectVersions(projectVersions);
+
+            // Set bi-directional mappings
+            projectVersions.stream().forEach(projectVersion -> {
+                projectVersion.setProject(project);
+            });
+
+            return project;
+        }
     }
 
 }

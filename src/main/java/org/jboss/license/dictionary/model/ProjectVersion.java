@@ -39,6 +39,7 @@ public class ProjectVersion {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -61,14 +62,75 @@ public class ProjectVersion {
     private Project project;
 
     @OneToMany(mappedBy = "projectVersion")
+    @Getter
+    @Setter
     private Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks;
 
     public ProjectVersion() {
         this.projectVersionLicenseChecks = new HashSet<ProjectVersionLicenseCheck>();
     }
 
-    public void addProjectVersion(ProjectVersionLicenseCheck projectVersion) {
-        this.projectVersionLicenseChecks.add(projectVersion);
+    public void addProjectVersionLicenseCheck(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
+        this.projectVersionLicenseChecks.add(projectVersionLicenseCheck);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String scmUrl;
+        private String scmRevision;
+        private Project project;
+        private Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks;
+
+        private Builder() {
+            this.projectVersionLicenseChecks = new HashSet<ProjectVersionLicenseCheck>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder scmUrl(String scmUrl) {
+            this.scmUrl = scmUrl;
+            return this;
+        }
+
+        public Builder scmRevision(String scmRevision) {
+            this.scmRevision = scmRevision;
+            return this;
+        }
+
+        public Builder project(Project project) {
+            this.project = project;
+            return this;
+        }
+
+        public Builder projectVersionLicenseChecks(Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks) {
+            this.projectVersionLicenseChecks = projectVersionLicenseChecks;
+            return this;
+        }
+
+        public ProjectVersion build() {
+            ProjectVersion projectVersion = new ProjectVersion();
+            projectVersion.setId(id);
+            projectVersion.setScmUrl(scmUrl);
+            projectVersion.setScmRevision(scmRevision);
+            projectVersion.setProject(project);
+            projectVersion.setProjectVersionLicenseChecks(projectVersionLicenseChecks);
+
+            // Set bi-directional mappings
+            project.addProjectVersion(projectVersion);
+            projectVersionLicenseChecks.stream().forEach(projectVersionLicenseCheck -> {
+                projectVersionLicenseCheck.setProjectVersion(projectVersion);
+            });
+
+            return projectVersion;
+        }
     }
 
 }

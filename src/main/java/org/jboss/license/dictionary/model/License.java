@@ -3,6 +3,7 @@ package org.jboss.license.dictionary.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,10 +45,11 @@ public class License {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
-    @Size(max = 20)
-    @Column(name = "fedora_abbrev", length = 20)
+    @Size(max = 30)
+    @Column(name = "fedora_abbrev", length = 30)
     @Getter
     @Setter
     private String fedoraAbbreviation;
@@ -57,8 +59,8 @@ public class License {
     @Setter
     private String fedoraName;
 
-    @Size(max = 20)
-    @Column(name = "spdx_abbrev", length = 20)
+    @Size(max = 30)
+    @Column(name = "spdx_abbrev", length = 30)
     @Getter
     @Setter
     private String spdxAbbreviation;
@@ -85,18 +87,18 @@ public class License {
     @Setter
     private String code;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "license_approval_status_id", nullable = false, foreignKey = @ForeignKey(name = "fk_license_license_approval_status"))
     @Getter
     @Setter
     private LicenseApprovalStatus licenseApprovalStatus;
 
-    @OneToMany(mappedBy = "license")
+    @OneToMany(mappedBy = "license", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     @Setter
     private Set<LicenseAlias> aliases;
 
-    @OneToMany(mappedBy = "license")
+    @OneToMany(mappedBy = "license", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     @Setter
     private Set<ProjectVersionLicense> projectVersionLicenses;
@@ -112,6 +114,111 @@ public class License {
 
     public void addProjectVersionLicense(ProjectVersionLicense projectVersionLicense) {
         this.projectVersionLicenses.add(projectVersionLicense);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String fedoraAbbreviation;
+        private String fedoraName;
+        private String spdxAbbreviation;
+        private String spdxName;
+        private String url;
+        private String textUrl;
+        private String code;
+        private LicenseApprovalStatus licenseApprovalStatus;
+        private Set<LicenseAlias> aliases;
+        private Set<ProjectVersionLicense> projectVersionLicenses;
+
+        private Builder() {
+            this.aliases = new HashSet<LicenseAlias>();
+            this.projectVersionLicenses = new HashSet<ProjectVersionLicense>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder fedoraAbbreviation(String fedoraAbbreviation) {
+            this.fedoraAbbreviation = fedoraAbbreviation;
+            return this;
+        }
+
+        public Builder fedoraName(String fedoraName) {
+            this.fedoraName = fedoraName;
+            return this;
+        }
+
+        public Builder spdxAbbreviation(String spdxAbbreviation) {
+            this.spdxAbbreviation = spdxAbbreviation;
+            return this;
+        }
+
+        public Builder spdxName(String spdxName) {
+            this.spdxName = spdxName;
+            return this;
+        }
+
+        public Builder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder textUrl(String textUrl) {
+            this.textUrl = textUrl;
+            return this;
+        }
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder licenseApprovalStatus(LicenseApprovalStatus licenseApprovalStatus) {
+            this.licenseApprovalStatus = licenseApprovalStatus;
+            return this;
+        }
+
+        public Builder aliases(Set<LicenseAlias> aliases) {
+            this.aliases = aliases;
+            return this;
+        }
+
+        public Builder projectVersionLicenses(Set<ProjectVersionLicense> projectVersionLicenses) {
+            this.projectVersionLicenses = projectVersionLicenses;
+            return this;
+        }
+
+        public License build() {
+            License license = new License();
+            license.setId(id);
+            license.setFedoraName(fedoraName);
+            license.setFedoraAbbreviation(fedoraAbbreviation);
+            license.setSpdxName(spdxName);
+            license.setSpdxAbbreviation(spdxAbbreviation);
+            license.setUrl(url);
+            license.setTextUrl(textUrl);
+            license.setCode(code);
+            license.setLicenseApprovalStatus(licenseApprovalStatus);
+            license.setAliases(aliases);
+            license.setProjectVersionLicenses(projectVersionLicenses);
+
+            // Set bi-directional mappings
+            licenseApprovalStatus.addLicense(license);
+            aliases.stream().forEach(alias -> {
+                alias.setLicense(license);
+            });
+            projectVersionLicenses.stream().forEach(projectVersionLicense -> {
+                projectVersionLicense.setLicense(license);
+            });
+
+            return license;
+        }
     }
 
 }

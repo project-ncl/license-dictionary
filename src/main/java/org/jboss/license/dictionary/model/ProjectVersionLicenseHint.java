@@ -34,6 +34,7 @@ public class ProjectVersionLicenseHint {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @Column(name = "value")
@@ -52,5 +53,54 @@ public class ProjectVersionLicenseHint {
     @Getter
     @Setter
     private LicenseHintType licenseHintType;
+
+    public static class Builder {
+
+        private Integer id;
+        private String value;
+        private ProjectVersionLicense projectVersionLicense;
+        private LicenseHintType licenseHintType;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder value(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder projectVersionLicense(ProjectVersionLicense projectVersionLicense) {
+            this.projectVersionLicense = projectVersionLicense;
+            return this;
+        }
+
+        public Builder licenseHintType(LicenseHintType licenseHintType) {
+            this.licenseHintType = licenseHintType;
+            return this;
+        }
+
+        public ProjectVersionLicenseHint build() {
+            ProjectVersionLicenseHint projectVersionLicenseHint = new ProjectVersionLicenseHint();
+            projectVersionLicenseHint.setId(id);
+            projectVersionLicenseHint.setValue(value);
+            projectVersionLicenseHint.setProjectVersionLicense(projectVersionLicense);
+            projectVersionLicenseHint.setLicenseHintType(licenseHintType);
+
+            // Set bi-directional mappings
+            projectVersionLicense.addProjectVersionLicenseHint(projectVersionLicenseHint);
+            licenseHintType.addProjectVersionLicenseHint(projectVersionLicenseHint);
+
+            return projectVersionLicenseHint;
+        }
+    }
 
 }

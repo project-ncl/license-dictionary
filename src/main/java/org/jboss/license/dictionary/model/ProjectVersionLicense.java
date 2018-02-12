@@ -3,6 +3,7 @@ package org.jboss.license.dictionary.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -39,6 +40,7 @@ public class ProjectVersionLicense {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @Column(name = "scope")
@@ -58,7 +60,9 @@ public class ProjectVersionLicense {
     @Setter
     private ProjectVersionLicenseCheck projectVersionLicenseCheck;
 
-    @OneToMany(mappedBy = "projectVersionLicense")
+    @OneToMany(mappedBy = "projectVersionLicense", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    @Setter
     private Set<ProjectVersionLicenseHint> projectVersionLicenseHints;
 
     public ProjectVersionLicense() {
@@ -67,6 +71,65 @@ public class ProjectVersionLicense {
 
     public void addProjectVersionLicenseHint(ProjectVersionLicenseHint projectVersionLicenseHint) {
         this.projectVersionLicenseHints.add(projectVersionLicenseHint);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String scope;
+        private License license;
+        private ProjectVersionLicenseCheck projectVersionLicenseCheck;
+        private Set<ProjectVersionLicenseHint> projectVersionLicenseHints;
+
+        private Builder() {
+            this.projectVersionLicenseHints = new HashSet<ProjectVersionLicenseHint>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder scope(String scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        public Builder license(License license) {
+            this.license = license;
+            return this;
+        }
+
+        public Builder projectVersionLicenseCheck(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
+            this.projectVersionLicenseCheck = projectVersionLicenseCheck;
+            return this;
+        }
+
+        public Builder projectVersionLicenseHints(Set<ProjectVersionLicenseHint> projectVersionLicenseHints) {
+            this.projectVersionLicenseHints = projectVersionLicenseHints;
+            return this;
+        }
+
+        public ProjectVersionLicense build() {
+            ProjectVersionLicense projectVersionLicense = new ProjectVersionLicense();
+            projectVersionLicense.setId(id);
+            projectVersionLicense.setScope(scope);
+            projectVersionLicense.setLicense(license);
+            projectVersionLicense.setProjectVersionLicenseCheck(projectVersionLicenseCheck);
+            projectVersionLicense.setProjectVersionLicenseHints(projectVersionLicenseHints);
+
+            // Set bi-directional mappings
+            license.addProjectVersionLicense(projectVersionLicense);
+            projectVersionLicenseCheck.addProjectVersionLicense(projectVersionLicense);
+            projectVersionLicenseHints.stream().forEach(projectVersionLicenseHint -> {
+                projectVersionLicenseHint.setProjectVersionLicense(projectVersionLicense);
+            });
+            return projectVersionLicense;
+        }
     }
 
 }

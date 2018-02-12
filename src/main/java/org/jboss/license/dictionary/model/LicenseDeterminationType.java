@@ -35,6 +35,7 @@ public class LicenseDeterminationType {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -60,6 +61,57 @@ public class LicenseDeterminationType {
 
     public void addProjectVersionLicenseCheck(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
         this.projectVersionLicenseChecks.add(projectVersionLicenseCheck);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String name;
+        private String description;
+        private Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks;
+
+        private Builder() {
+            this.projectVersionLicenseChecks = new HashSet<ProjectVersionLicenseCheck>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder projectVersionLicenseChecks(Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks) {
+            this.projectVersionLicenseChecks = projectVersionLicenseChecks;
+            return this;
+        }
+
+        public LicenseDeterminationType build() {
+            LicenseDeterminationType licenseDeterminationType = new LicenseDeterminationType();
+            licenseDeterminationType.setId(id);
+            licenseDeterminationType.setName(name);
+            licenseDeterminationType.setDescription(description);
+            licenseDeterminationType.setProjectVersionLicenseChecks(projectVersionLicenseChecks);
+
+            // Set bi-directional mappings
+            projectVersionLicenseChecks.stream().forEach(projectVersionLicenseCheck -> {
+                projectVersionLicenseCheck.setLicenseDeterminationType(licenseDeterminationType);
+            });
+
+            return licenseDeterminationType;
+        }
     }
 
 }
