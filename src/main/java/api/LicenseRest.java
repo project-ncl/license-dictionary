@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jboss.license.dictionary.model.License;
 import org.jboss.license.dictionary.model.LicenseAlias;
 
 import lombok.Getter;
@@ -55,21 +54,7 @@ public class LicenseRest {
     private Set<LicenseAliasRest> aliases;
 
     public LicenseRest() {
-    }
-
-    public LicenseRest(License license) {
-        this.id = license.getId();
-        this.fedoraAbbreviation = license.getFedoraAbbreviation();
-        this.fedoraName = license.getFedoraName();
-        this.spdxAbbreviation = license.getSpdxAbbreviation();
-        this.spdxName = license.getSpdxName();
-        this.url = license.getUrl();
-        this.textUrl = license.getTextUrl();
-        this.code = license.getCode();
-        this.licenseApprovalStatus = new LicenseApprovalStatusRest(license.getLicenseApprovalStatus());
         this.aliases = new HashSet<LicenseAliasRest>();
-
-        addAliases(license.getAliases());
     }
 
     public static void checkIntegrity(LicenseRest licenseRest) {
@@ -83,10 +68,15 @@ public class LicenseRest {
                 .map(alias -> alias.getAliasName()).collect(Collectors.toList());
     }
 
-    private void addAliases(Set<LicenseAlias> licenseAliases) {
+    public void addAliases(Set<LicenseAlias> licenseAliases) {
         licenseAliases.stream().forEach(licenseAlias -> {
-            aliases.add(new LicenseAliasRest(licenseAlias));
+            aliases.add(LicenseAliasRest.Builder.newBuilder().id(licenseAlias.getId()).aliasName(licenseAlias.getAliasName())
+                    .licenseId(licenseAlias.getLicense().getId()).build());
         });
+    }
+
+    public void addAlias(Integer id, String licenseAlias, Integer licenseId) {
+        aliases.add(LicenseAliasRest.Builder.newBuilder().id(id).aliasName(licenseAlias).licenseId(licenseId).build());
     }
 
     @Override
@@ -144,6 +134,98 @@ public class LicenseRest {
                 + ", fedoraName='" + fedoraName + '\'' + ", spdxAbbreviation='" + spdxAbbreviation + '\'' + ", spdxName='"
                 + spdxName + '\'' + ", url='" + url + '\'' + ", textUrl='" + textUrl + '\'' + ", licenseApprovalStatus='"
                 + licenseApprovalStatus + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String fedoraAbbreviation;
+        private String fedoraName;
+        private String spdxAbbreviation;
+        private String spdxName;
+        private String url;
+        private String textUrl;
+        private String code;
+        private LicenseApprovalStatusRest licenseApprovalStatus;
+        private Set<LicenseAliasRest> aliases;
+
+        private Builder() {
+            this.aliases = new HashSet<LicenseAliasRest>();
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder fedoraAbbreviation(String fedoraAbbreviation) {
+            this.fedoraAbbreviation = fedoraAbbreviation;
+            return this;
+        }
+
+        public Builder fedoraName(String fedoraName) {
+            this.fedoraName = fedoraName;
+            return this;
+        }
+
+        public Builder spdxAbbreviation(String spdxAbbreviation) {
+            this.spdxAbbreviation = spdxAbbreviation;
+            return this;
+        }
+
+        public Builder spdxName(String spdxName) {
+            this.spdxName = spdxName;
+            return this;
+        }
+
+        public Builder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder textUrl(String textUrl) {
+            this.textUrl = textUrl;
+            return this;
+        }
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder licenseApprovalStatus(LicenseApprovalStatusRest licenseApprovalStatus) {
+            this.licenseApprovalStatus = licenseApprovalStatus;
+            return this;
+        }
+
+        public Builder aliases(Set<LicenseAliasRest> aliases) {
+            this.aliases = aliases;
+            return this;
+        }
+
+        public LicenseRest build() {
+            LicenseRest licenseRest = new LicenseRest();
+            licenseRest.setId(id);
+            licenseRest.setFedoraName(fedoraName);
+            licenseRest.setFedoraAbbreviation(fedoraAbbreviation);
+            licenseRest.setSpdxName(spdxName);
+            licenseRest.setSpdxAbbreviation(spdxAbbreviation);
+            licenseRest.setUrl(url);
+            licenseRest.setTextUrl(textUrl);
+            licenseRest.setCode(code);
+            licenseRest.setLicenseApprovalStatus(licenseApprovalStatus);
+            licenseRest.setAliases(aliases);
+
+            aliases.stream().forEach(alias -> {
+                alias.setLicenseId(id);
+            });
+
+            return licenseRest;
+        }
     }
 
 }

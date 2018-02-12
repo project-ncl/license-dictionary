@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.Project;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,12 +18,6 @@ public class ProjectRest {
     private String key;
 
     public ProjectRest() {
-    }
-
-    public ProjectRest(Project project) {
-        this.id = project.getId();
-        this.ecosystem = project.getEcosystem();
-        this.key = project.getKey();
     }
 
     @Override
@@ -58,6 +50,43 @@ public class ProjectRest {
     @Override
     public String toString() {
         return "LicenseHintTypeRest{" + "id=" + id + ", ecosystem='" + ecosystem + '\'' + ", key='" + key + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String ecosystem;
+        private String key;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder ecosystem(String ecosystem) {
+            this.ecosystem = ecosystem;
+            return this;
+        }
+
+        public Builder key(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public ProjectRest build() {
+            ProjectRest projectRest = new ProjectRest();
+            projectRest.setId(id);
+            projectRest.setEcosystem(ecosystem);
+            projectRest.setKey(key);
+            return projectRest;
+        }
     }
 
 }

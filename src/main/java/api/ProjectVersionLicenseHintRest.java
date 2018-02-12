@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.ProjectVersionLicenseHint;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,13 +22,6 @@ public class ProjectVersionLicenseHintRest {
     private LicenseHintTypeRest licenseHintType;
 
     public ProjectVersionLicenseHintRest() {
-    }
-
-    public ProjectVersionLicenseHintRest(ProjectVersionLicenseHint projectVersionLicenseHint) {
-        this.id = projectVersionLicenseHint.getId();
-        this.value = projectVersionLicenseHint.getValue();
-        this.projectVersionLicense = new ProjectVersionLicenseRest(projectVersionLicenseHint.getProjectVersionLicense());
-        this.licenseHintType = new LicenseHintTypeRest(projectVersionLicenseHint.getLicenseHintType());
     }
 
     @Override
@@ -69,6 +60,51 @@ public class ProjectVersionLicenseHintRest {
     public String toString() {
         return "ProjectVersionLicenseHintRest{" + "id=" + id + ", value='" + value + '\'' + ", projectVersionLicense='"
                 + projectVersionLicense + '\'' + ", licenseHintType='" + licenseHintType + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String value;
+        private ProjectVersionLicenseRest projectVersionLicense;
+        private LicenseHintTypeRest licenseHintType;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder value(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder projectVersionLicense(ProjectVersionLicenseRest projectVersionLicense) {
+            this.projectVersionLicense = projectVersionLicense;
+            return this;
+        }
+
+        public Builder licenseHintType(LicenseHintTypeRest licenseHintType) {
+            this.licenseHintType = licenseHintType;
+            return this;
+        }
+
+        public ProjectVersionLicenseHintRest build() {
+            ProjectVersionLicenseHintRest projectVersionLicenseHintRest = new ProjectVersionLicenseHintRest();
+            projectVersionLicenseHintRest.setId(id);
+            projectVersionLicenseHintRest.setValue(value);
+            projectVersionLicenseHintRest.setProjectVersionLicense(projectVersionLicense);
+            projectVersionLicenseHintRest.setLicenseHintType(licenseHintType);
+
+            return projectVersionLicenseHintRest;
+        }
     }
 
 }

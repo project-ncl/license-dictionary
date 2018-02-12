@@ -1,11 +1,26 @@
 package api;
 
-import org.jboss.license.dictionary.model.LicenseApprovalStatus;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public class LicenseApprovalStatusRest {
+
+    public static final LicenseApprovalStatusRest APPROVED = LicenseApprovalStatusRest.Builder.newBuilder().id(1)
+            .name("APPROVED").build();
+    public static final LicenseApprovalStatusRest NOT_APPROVED = LicenseApprovalStatusRest.Builder.newBuilder().id(2)
+            .name("NOT_APPROVED").build();
+    public static final LicenseApprovalStatusRest UNKNOWN = LicenseApprovalStatusRest.Builder.newBuilder().id(3).name("UNKNOWN")
+            .build();
+
+    public static final Map<String, LicenseApprovalStatusRest> approvalMap = Collections.unmodifiableMap(
+            Stream.of(new AbstractMap.SimpleEntry<>("yes", APPROVED), new AbstractMap.SimpleEntry<>("no", NOT_APPROVED))
+                    .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
     @Getter
     @Setter
@@ -16,11 +31,6 @@ public class LicenseApprovalStatusRest {
     private String name;
 
     public LicenseApprovalStatusRest() {
-    }
-
-    public LicenseApprovalStatusRest(LicenseApprovalStatus licenseApprovalStatus) {
-        this.id = licenseApprovalStatus.getId();
-        this.name = licenseApprovalStatus.getName();
     }
 
     @Override
@@ -51,4 +61,45 @@ public class LicenseApprovalStatusRest {
     public String toString() {
         return "LicenseApprovalStatusRest{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
+
+    public static LicenseApprovalStatusRest fromJsonString(String approved) {
+        if (approved == null) {
+            return UNKNOWN;
+        }
+
+        LicenseApprovalStatusRest licenseApprovalStatusRest = approvalMap.get(approved);
+        System.out.println("Got result of " + licenseApprovalStatusRest + " for the status " + approved);
+        return (licenseApprovalStatusRest == null ? UNKNOWN : licenseApprovalStatusRest);
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String name;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public LicenseApprovalStatusRest build() {
+            LicenseApprovalStatusRest licenseApprovalStatusRest = new LicenseApprovalStatusRest();
+            licenseApprovalStatusRest.setId(id);
+            licenseApprovalStatusRest.setName(name);
+            return licenseApprovalStatusRest;
+        }
+    }
+
 }

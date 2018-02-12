@@ -2,8 +2,6 @@ package api;
 
 import java.util.Date;
 
-import org.jboss.license.dictionary.model.ProjectVersionLicenseCheck;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,16 +32,6 @@ public class ProjectVersionLicenseCheckRest {
     private LicenseDeterminationTypeRest licenseDeterminationType;
 
     public ProjectVersionLicenseCheckRest() {
-    }
-
-    public ProjectVersionLicenseCheckRest(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
-        this.id = projectVersionLicenseCheck.getId();
-        this.determinedByUser = projectVersionLicenseCheck.getDeterminedByUser();
-        this.determinationDate = projectVersionLicenseCheck.getDeterminationDate();
-        this.notes = projectVersionLicenseCheck.getNotes();
-        this.projectVersion = new ProjectVersionRest(projectVersionLicenseCheck.getProjectVersion());
-        this.licenseDeterminationType = new LicenseDeterminationTypeRest(
-                projectVersionLicenseCheck.getLicenseDeterminationType());
     }
 
     @Override
@@ -92,6 +80,65 @@ public class ProjectVersionLicenseCheckRest {
         return "ProjectVersionLicenseCheckRest{" + "id=" + id + ", determinedByUser='" + determinedByUser + '\''
                 + ", determinationDate='" + determinationDate + '\'' + ", notes='" + notes + '\'' + ", projectVersion='"
                 + projectVersion + '\'' + ", licenseDeterminationType='" + licenseDeterminationType + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String determinedByUser;
+        private Date determinationDate;
+        private String notes;
+        private ProjectVersionRest projectVersion;
+        private LicenseDeterminationTypeRest licenseDeterminationType;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder determinedByUser(String determinedByUser) {
+            this.determinedByUser = determinedByUser;
+            return this;
+        }
+
+        public Builder determinationDate(Date determinationDate) {
+            this.determinationDate = determinationDate;
+            return this;
+        }
+
+        public Builder notes(String notes) {
+            this.notes = notes;
+            return this;
+        }
+
+        public Builder projectVersion(ProjectVersionRest projectVersion) {
+            this.projectVersion = projectVersion;
+            return this;
+        }
+
+        public Builder licenseDeterminationType(LicenseDeterminationTypeRest licenseDeterminationType) {
+            this.licenseDeterminationType = licenseDeterminationType;
+            return this;
+        }
+
+        public ProjectVersionLicenseCheckRest build() {
+            ProjectVersionLicenseCheckRest projectVersionLicenseCheckRest = new ProjectVersionLicenseCheckRest();
+            projectVersionLicenseCheckRest.setId(id);
+            projectVersionLicenseCheckRest.setDeterminedByUser(determinedByUser);
+            projectVersionLicenseCheckRest.setDeterminationDate(determinationDate);
+            projectVersionLicenseCheckRest.setNotes(notes);
+            projectVersionLicenseCheckRest.setProjectVersion(projectVersion);
+            projectVersionLicenseCheckRest.setLicenseDeterminationType(licenseDeterminationType);
+
+            return projectVersionLicenseCheckRest;
+        }
     }
 
 }

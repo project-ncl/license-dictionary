@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.ProjectVersionLicense;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,14 +22,6 @@ public class ProjectVersionLicenseRest {
     private ProjectVersionLicenseCheckRest projectVersionLicenseCheck;
 
     public ProjectVersionLicenseRest() {
-    }
-
-    public ProjectVersionLicenseRest(ProjectVersionLicense projectVersionLicense) {
-        this.id = projectVersionLicense.getId();
-        this.scope = projectVersionLicense.getScope();
-        this.license = new LicenseRest(projectVersionLicense.getLicense());
-        this.projectVersionLicenseCheck = new ProjectVersionLicenseCheckRest(
-                projectVersionLicense.getProjectVersionLicenseCheck());
     }
 
     @Override
@@ -70,5 +60,49 @@ public class ProjectVersionLicenseRest {
     public String toString() {
         return "ProjectVersionLicenseRest{" + "id=" + id + ", scope='" + scope + '\'' + ", license='" + license + '\''
                 + ", projectVersionLicenseCheck='" + projectVersionLicenseCheck + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String scope;
+        private LicenseRest license;
+        private ProjectVersionLicenseCheckRest projectVersionLicenseCheck;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder scope(String scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        public Builder license(LicenseRest license) {
+            this.license = license;
+            return this;
+        }
+
+        public Builder projectVersionLicenseCheck(ProjectVersionLicenseCheckRest projectVersionLicenseCheck) {
+            this.projectVersionLicenseCheck = projectVersionLicenseCheck;
+            return this;
+        }
+
+        public ProjectVersionLicenseRest build() {
+            ProjectVersionLicenseRest projectVersionRest = new ProjectVersionLicenseRest();
+            projectVersionRest.setId(id);
+            projectVersionRest.setScope(scope);
+            projectVersionRest.setLicense(license);
+            projectVersionRest.setProjectVersionLicenseCheck(projectVersionLicenseCheck);
+            return projectVersionRest;
+        }
     }
 }

@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.ProjectVersion;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,13 +22,6 @@ public class ProjectVersionRest {
     private ProjectRest project;
 
     public ProjectVersionRest() {
-    }
-
-    public ProjectVersionRest(ProjectVersion projectVersion) {
-        this.id = projectVersion.getId();
-        this.scmUrl = projectVersion.getScmUrl();
-        this.scmRevision = projectVersion.getScmRevision();
-        this.project = new ProjectRest(projectVersion.getProject());
     }
 
     @Override
@@ -68,6 +59,50 @@ public class ProjectVersionRest {
     public String toString() {
         return "ProjectVersionRest{" + "id=" + id + ", scmUrl='" + scmUrl + '\'' + ", scmRevision='" + scmRevision + '\''
                 + ", project='" + project + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String scmUrl;
+        private String scmRevision;
+        private ProjectRest project;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder scmUrl(String scmUrl) {
+            this.scmUrl = scmUrl;
+            return this;
+        }
+
+        public Builder scmRevision(String scmRevision) {
+            this.scmRevision = scmRevision;
+            return this;
+        }
+
+        public Builder project(ProjectRest project) {
+            this.project = project;
+            return this;
+        }
+
+        public ProjectVersionRest build() {
+            ProjectVersionRest projectVersionRest = new ProjectVersionRest();
+            projectVersionRest.setId(id);
+            projectVersionRest.setScmUrl(scmUrl);
+            projectVersionRest.setScmRevision(scmRevision);
+            projectVersionRest.setProject(project);
+            return projectVersionRest;
+        }
     }
 
 }

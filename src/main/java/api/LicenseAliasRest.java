@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.LicenseAlias;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,12 +18,6 @@ public class LicenseAliasRest {
     private Integer licenseId;
 
     public LicenseAliasRest() {
-    }
-
-    public LicenseAliasRest(LicenseAlias licenseAlias) {
-        this.id = licenseAlias.getId();
-        this.aliasName = licenseAlias.getAliasName();
-        this.licenseId = licenseAlias.getLicense().getId();
     }
 
     @Override
@@ -58,6 +50,43 @@ public class LicenseAliasRest {
     @Override
     public String toString() {
         return "LicenseAliasRest{" + "id=" + id + ", aliasName='" + aliasName + '\'' + ", licenseId='" + licenseId + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String aliasName;
+        private Integer licenseId;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder aliasName(String aliasName) {
+            this.aliasName = aliasName;
+            return this;
+        }
+
+        public Builder licenseId(Integer licenseId) {
+            this.licenseId = licenseId;
+            return this;
+        }
+
+        public LicenseAliasRest build() {
+            LicenseAliasRest licenseAliasRest = new LicenseAliasRest();
+            licenseAliasRest.setId(id);
+            licenseAliasRest.setAliasName(aliasName);
+            licenseAliasRest.setLicenseId(licenseId);
+            return licenseAliasRest;
+        }
     }
 
 }

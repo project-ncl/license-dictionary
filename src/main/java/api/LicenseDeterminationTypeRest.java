@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.LicenseDeterminationType;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,12 +18,6 @@ public class LicenseDeterminationTypeRest {
     private String description;
 
     public LicenseDeterminationTypeRest() {
-    }
-
-    public LicenseDeterminationTypeRest(LicenseDeterminationType licenseDeterminationType) {
-        this.id = licenseDeterminationType.getId();
-        this.name = licenseDeterminationType.getName();
-        this.description = licenseDeterminationType.getDescription();
     }
 
     @Override
@@ -60,6 +52,43 @@ public class LicenseDeterminationTypeRest {
     public String toString() {
         return "LicenseApprovalStatusRest{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\''
                 + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String name;
+        private String description;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public LicenseDeterminationTypeRest build() {
+            LicenseDeterminationTypeRest licenseDeterminationTypeRest = new LicenseDeterminationTypeRest();
+            licenseDeterminationTypeRest.setId(id);
+            licenseDeterminationTypeRest.setName(name);
+            licenseDeterminationTypeRest.setDescription(description);
+            return licenseDeterminationTypeRest;
+        }
     }
 
 }

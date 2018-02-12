@@ -1,7 +1,5 @@
 package api;
 
-import org.jboss.license.dictionary.model.LicenseHintType;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,11 +14,6 @@ public class LicenseHintTypeRest {
     private String name;
 
     public LicenseHintTypeRest() {
-    }
-
-    public LicenseHintTypeRest(LicenseHintType licenseHintType) {
-        this.id = licenseHintType.getId();
-        this.name = licenseHintType.getName();
     }
 
     @Override
@@ -50,6 +43,36 @@ public class LicenseHintTypeRest {
     @Override
     public String toString() {
         return "LicenseHintTypeRest{" + "id=" + id + ", name='" + name + '\'' + '}';
+    }
+
+    public static class Builder {
+
+        private Integer id;
+        private String name;
+
+        private Builder() {
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public LicenseHintTypeRest build() {
+            LicenseHintTypeRest licenseHintTypeRest = new LicenseHintTypeRest();
+            licenseHintTypeRest.setId(id);
+            licenseHintTypeRest.setName(name);
+            return licenseHintTypeRest;
+        }
     }
 
 }
