@@ -97,12 +97,12 @@ public class ProjectVersionLicenseRest {
         }
 
         public ProjectVersionLicenseRest build() {
-            ProjectVersionLicenseRest projectVersionRest = new ProjectVersionLicenseRest();
-            projectVersionRest.setId(id);
-            projectVersionRest.setScope(scope);
-            projectVersionRest.setLicense(license);
-            projectVersionRest.setProjectVersionLicenseCheck(projectVersionLicenseCheck);
-            return projectVersionRest;
+            ProjectVersionLicenseRest projectVersionLicenseRest = new ProjectVersionLicenseRest();
+            projectVersionLicenseRest.setId(id);
+            projectVersionLicenseRest.setScope(scope);
+            projectVersionLicenseRest.setLicense(license);
+            projectVersionLicenseRest.setProjectVersionLicenseCheck(projectVersionLicenseCheck);
+            return projectVersionLicenseRest;
         }
     }
 }
