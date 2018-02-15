@@ -18,22 +18,46 @@
 
 -->
 <div class="container">
-  <div *ngIf="successMessage" class="alert alert-success">
-    {{successMessage}}
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{errorMessage}}
-  </div>
+	<div *ngIf="successMessage" class="alert alert-success">
+		{{successMessage}}</div>
+	<div *ngIf="errorMessage" class="alert alert-danger">
+		{{errorMessage}}</div>
 
-  <h2>Warning! Upload will wipe out all the defined licenses.</h2>
-  <form class="form form-inline">
-    <label for="uploadInput">Select file to upload: </label>
-    <input type="file"
-           id="uploadInput"
-           name="uploadInput"
-           [(ngModel)]="upload"
-           (change)="updateFile($event)"
-    />
-    <button type="button" (click)="importLicenses()">Import</button>
-  </form>
+	<h2>Warning! Upload will wipe out all the defined licenses and
+		aliases.</h2>
+	<div class="table-responsive">
+		<table class="table">
+			<tbody>
+				<tr>
+					<td style="border-top-width: 0px;"><label for="uploadInput">Select
+							a license json file to upload: </label> <input class="import-file"
+						type="file" id="uploadLicenseInput" name="uploadLicenseInput"
+						placeholder="Please select a license json file..."
+						(change)="updateFile($event)" /></td>
+					<td style="border-top-width: 0px;"><button
+							[ngClass]='{disabled: (fileToUpload == null)}'
+							class="btn btn-info" type="button" (click)="importLicenses()">
+							<span class="glyphicon glyphicon-upload"></span>&nbsp;Import
+							License file
+						</button></td>
+				</tr>
+				<tr>
+					<td style="border-top-width: 0px;"><label for="uploadInput">Select
+							a license-alias json file to upload: </label> <input class="import-file"
+						type="file" id="uploadLicenseAliasInput"
+						name="uploadLicenseAliasInput"
+						placeholder="Please select a license-alias json file..."
+						(change)="updateAliasFile($event)" /></td>
+					<td style="border-top-width: 0px;"><button
+							[ngClass]='{disabled: (aliasFileToUpload == null)}'
+							class="btn btn-info" type="button"
+							(click)="importLicensAliases()">
+							<span class="glyphicon glyphicon-upload"></span>&nbsp;Import
+							Aliases file
+						</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
+
