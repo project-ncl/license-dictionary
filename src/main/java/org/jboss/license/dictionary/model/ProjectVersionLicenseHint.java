@@ -26,7 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class ProjectVersionLicenseHint {
 
-    public static final String SEQUENCE_NAME = "project_version_license_hint_id_seq";
+    private static final String SEQUENCE_NAME = "project_version_license_hint_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -34,7 +34,6 @@ public class ProjectVersionLicenseHint {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
-    @Setter
     private Integer id;
 
     @Column(name = "value")
@@ -90,7 +89,7 @@ public class ProjectVersionLicenseHint {
 
         public ProjectVersionLicenseHint build() {
             ProjectVersionLicenseHint projectVersionLicenseHint = new ProjectVersionLicenseHint();
-            projectVersionLicenseHint.setId(id);
+            projectVersionLicenseHint.id = this.id;
             projectVersionLicenseHint.setValue(value);
             projectVersionLicenseHint.setProjectVersionLicense(projectVersionLicense);
             projectVersionLicenseHint.setLicenseHintType(licenseHintType);

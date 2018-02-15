@@ -3,7 +3,6 @@ package org.jboss.license.dictionary.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "licenses" })
 public class LicenseApprovalStatus {
 
-    public static final String SEQUENCE_NAME = "license_approval_status_id_seq";
+    private static final String SEQUENCE_NAME = "license_approval_status_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -46,7 +45,7 @@ public class LicenseApprovalStatus {
     @Setter
     private String name;
 
-    @OneToMany(mappedBy = "licenseApprovalStatus", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "licenseApprovalStatus", orphanRemoval = false)
     @Getter
     @Setter
     private Set<License> licenses;
@@ -90,7 +89,7 @@ public class LicenseApprovalStatus {
 
         public LicenseApprovalStatus build() {
             LicenseApprovalStatus licenseApprovalStatus = new LicenseApprovalStatus();
-            licenseApprovalStatus.setId(id);
+            licenseApprovalStatus.id = this.id;
             licenseApprovalStatus.setName(name);
             licenseApprovalStatus.setLicenses(licenses);
 

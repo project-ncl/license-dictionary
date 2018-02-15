@@ -68,7 +68,6 @@ public class LicenseApprovalStatusRest {
         }
 
         LicenseApprovalStatusRest licenseApprovalStatusRest = approvalMap.get(approved);
-        System.out.println("Got result of " + licenseApprovalStatusRest + " for the status " + approved);
         return (licenseApprovalStatusRest == null ? UNKNOWN : licenseApprovalStatusRest);
     }
 

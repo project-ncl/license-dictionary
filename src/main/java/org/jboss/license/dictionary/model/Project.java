@@ -28,7 +28,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "projectVersions" })
 public class Project {
 
-    public static final String SEQUENCE_NAME = "project_id_seq";
+    private static final String SEQUENCE_NAME = "project_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -36,7 +36,6 @@ public class Project {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
-    @Setter
     private Integer id;
 
     @NotNull
@@ -63,6 +62,7 @@ public class Project {
 
     public void addProjectVersion(ProjectVersion projectVersion) {
         this.projectVersions.add(projectVersion);
+        projectVersion.setProject(this);
     }
 
     public static class Builder {
@@ -101,7 +101,7 @@ public class Project {
 
         public Project build() {
             Project project = new Project();
-            project.setId(id);
+            project.id = this.id;
             project.setEcosystem(ecosystem);
             project.setKey(key);
             project.setProjectVersions(projectVersions);

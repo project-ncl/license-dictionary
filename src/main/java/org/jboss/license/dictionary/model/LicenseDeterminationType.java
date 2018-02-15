@@ -27,7 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "projectVersionLicenseChecks" })
 public class LicenseDeterminationType {
 
-    public static final String SEQUENCE_NAME = "license_determination_type_id_seq";
+    private static final String SEQUENCE_NAME = "license_determination_type_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -35,7 +35,6 @@ public class LicenseDeterminationType {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
-    @Setter
     private Integer id;
 
     @NotNull
@@ -61,6 +60,7 @@ public class LicenseDeterminationType {
 
     public void addProjectVersionLicenseCheck(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
         this.projectVersionLicenseChecks.add(projectVersionLicenseCheck);
+        projectVersionLicenseCheck.setLicenseDeterminationType(this);
     }
 
     public static class Builder {
@@ -100,7 +100,7 @@ public class LicenseDeterminationType {
 
         public LicenseDeterminationType build() {
             LicenseDeterminationType licenseDeterminationType = new LicenseDeterminationType();
-            licenseDeterminationType.setId(id);
+            licenseDeterminationType.id = this.id;
             licenseDeterminationType.setName(name);
             licenseDeterminationType.setDescription(description);
             licenseDeterminationType.setProjectVersionLicenseChecks(projectVersionLicenseChecks);

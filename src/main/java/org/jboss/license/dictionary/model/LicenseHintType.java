@@ -27,7 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class LicenseHintType {
 
-    public static final String SEQUENCE_NAME = "license_hint_type_id_seq";
+    private static final String SEQUENCE_NAME = "license_hint_type_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -35,7 +35,6 @@ public class LicenseHintType {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
-    @Setter
     private Integer id;
 
     @NotNull
@@ -56,6 +55,7 @@ public class LicenseHintType {
 
     public void addProjectVersionLicenseHint(ProjectVersionLicenseHint projectVersionLicenseHint) {
         this.projectVersionLicenseHints.add(projectVersionLicenseHint);
+        projectVersionLicenseHint.setLicenseHintType(this);
     }
 
     public static class Builder {
@@ -89,7 +89,7 @@ public class LicenseHintType {
 
         public LicenseHintType build() {
             LicenseHintType licenseHintType = new LicenseHintType();
-            licenseHintType.setId(id);
+            licenseHintType.id = this.id;
             licenseHintType.setName(name);
             licenseHintType.setProjectVersionLicenseHints(projectVersionLicenseHints);
 

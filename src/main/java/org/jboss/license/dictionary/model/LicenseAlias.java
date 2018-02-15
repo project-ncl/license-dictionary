@@ -26,7 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class LicenseAlias {
 
-    public static final String SEQUENCE_NAME = "license_alias_id_seq";
+    private static final String SEQUENCE_NAME = "license_alias_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -34,7 +34,6 @@ public class LicenseAlias {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
-    @Setter
     private Integer id;
 
     @NotNull
@@ -79,7 +78,7 @@ public class LicenseAlias {
 
         public LicenseAlias build() {
             LicenseAlias licenseAlias = new LicenseAlias();
-            licenseAlias.setId(id);
+            licenseAlias.id = this.id;
             licenseAlias.setAliasName(aliasName);
             licenseAlias.setLicense(license);
 

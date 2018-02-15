@@ -37,7 +37,8 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "aliases", "projectVersionLicenses" })
 public class License {
 
-    public static final String SEQUENCE_NAME = "license_id_seq";
+    private static final String SEQUENCE_NAME = "license_id_seq";
+    public static final int ABBREV_MAX_LENGHT = 50;
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -48,8 +49,8 @@ public class License {
     @Setter
     private Integer id;
 
-    @Size(max = 30)
-    @Column(name = "fedora_abbrev", length = 30)
+    @Size(max = ABBREV_MAX_LENGHT)
+    @Column(name = "fedora_abbrev", length = ABBREV_MAX_LENGHT)
     @Getter
     @Setter
     private String fedoraAbbreviation;
@@ -59,8 +60,8 @@ public class License {
     @Setter
     private String fedoraName;
 
-    @Size(max = 30)
-    @Column(name = "spdx_abbrev", length = 30)
+    @Size(max = ABBREV_MAX_LENGHT)
+    @Column(name = "spdx_abbrev", length = ABBREV_MAX_LENGHT)
     @Getter
     @Setter
     private String spdxAbbreviation;
@@ -81,13 +82,13 @@ public class License {
     private String textUrl;
 
     @NotNull
-    @Size(max = 20)
-    @Column(name = "code", length = 20)
+    @Size(max = ABBREV_MAX_LENGHT)
+    @Column(name = "code", length = ABBREV_MAX_LENGHT)
     @Getter
     @Setter
     private String code;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
     @JoinColumn(name = "license_approval_status_id", nullable = false, foreignKey = @ForeignKey(name = "fk_license_license_approval_status"))
     @Getter
     @Setter
@@ -110,10 +111,12 @@ public class License {
 
     public void addAlias(LicenseAlias licenseAlias) {
         this.aliases.add(licenseAlias);
+        licenseAlias.setLicense(this);
     }
 
     public void addProjectVersionLicense(ProjectVersionLicense projectVersionLicense) {
         this.projectVersionLicenses.add(projectVersionLicense);
+        projectVersionLicense.setLicense(this);
     }
 
     public static class Builder {
@@ -196,7 +199,7 @@ public class License {
 
         public License build() {
             License license = new License();
-            license.setId(id);
+            license.id = this.id;
             license.setFedoraName(fedoraName);
             license.setFedoraAbbreviation(fedoraAbbreviation);
             license.setSpdxName(spdxName);
