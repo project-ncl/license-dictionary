@@ -29,9 +29,9 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.license.dictionary.LicenseEntity_old;
-import org.jboss.license.dictionary.LicenseResourceImpl;
+import org.jboss.license.dictionary.endpoint.LicenseEndpoint;
 import org.jboss.license.dictionary.imports.RhLicense;
+import org.jboss.license.dictionary.model.License;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -58,11 +58,11 @@ public class LicenseResourceTest {
     public static final String MY_LICENSE_URL = "http://example.com/license/text.txt";
     public static final String MY_LICENSE_NAME = "mylicense";
     @Inject
-    private LicenseResourceImpl resource;
+    private LicenseEndpoint resource;
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive webArchive = ShrinkWrap.create(WebArchive.class).addPackage(LicenseEntity_old.class.getPackage())
+        WebArchive webArchive = ShrinkWrap.create(WebArchive.class).addPackage(License.class.getPackage())
                 .addPackage(ErrorDto.class.getPackage()).addPackage(RhLicense.class.getPackage())
                 .addPackage(LicenseRest.class.getPackage()).addPackage(BadRequestException.class.getPackage())
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml").addAsResource("project-test.yml")

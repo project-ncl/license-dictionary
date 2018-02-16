@@ -25,6 +25,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.jboss.license.dictionary.model.License;
+import org.jboss.license.dictionary.model.LicenseAlias;
+import org.jboss.license.dictionary.model.LicenseApprovalStatus;
 import org.jboss.logging.Logger;
 
 /**
@@ -47,14 +49,19 @@ public class LicenseDbStore {
         return license;
     }
 
-    public List<License> getAll() {
-        log.debug("Get all licenses ...");
+    public License getLicense(Integer id) {
+        log.debugf("Get license by id:  %d", id);
+        return entityManager.find(License.class, id);
+    }
+
+    public List<License> getAllLicense() {
+        log.debug("Get all license ...");
         return entityManager.createQuery("SELECT e FROM License e", License.class).getResultList();
     }
 
-    public boolean delete(Integer licenseId) {
-        log.debug("Deleting license: " + licenseId);
-        License entity = entityManager.find(License.class, licenseId);
+    public boolean deleteLicense(Integer id) {
+        log.debug("Deleting license: " + id);
+        License entity = entityManager.find(License.class, id);
         if (entity != null) {
             entityManager.remove(entity);
             return true;
@@ -62,8 +69,30 @@ public class LicenseDbStore {
         return false;
     }
 
-    public void replaceAllLicensesWith(Collection<License> entities) {
-        getAll().forEach(entityManager::remove);
-        entities.forEach(entityManager::persist);
+    public LicenseApprovalStatus getLicenseApprovalStatus(Integer id) {
+        log.debugf("Get licenseApprovalStatus by id:  %d", id);
+        return entityManager.find(LicenseApprovalStatus.class, id);
+    }
+
+    public List<LicenseApprovalStatus> getAllLicenseApprovalStatus() {
+        log.debugf("Get get all license approval status ...");
+        return entityManager.createQuery("SELECT e FROM LicenseApprovalStatus e", LicenseApprovalStatus.class).getResultList();
+    }
+
+    public LicenseAlias saveLicenseAlias(LicenseAlias licenseAlias) {
+        log.debug("Saving licenseAlias: " + licenseAlias);
+        entityManager.persist(licenseAlias);
+        return licenseAlias;
+    }
+
+    public void replaceAllLicensesWith(Collection<License> licenses) {
+        getAllLicense().forEach(entityManager::remove);
+        licenses.forEach(entity -> {
+            try {
+                entityManager.persist(entity);
+            } catch (Exception exc) {
+                log.error(exc);
+            }
+        });
     }
 }

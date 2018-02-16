@@ -37,8 +37,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.jboss.license.dictionary.model.License;
+import org.jboss.license.dictionary.model.LicenseAlias;
+import org.jboss.license.dictionary.model.LicenseApprovalStatus;
 import org.jboss.logging.Logger;
 
+import api.LicenseAliasRest;
 import api.LicenseRest;
 
 /**
@@ -127,7 +130,7 @@ public class LicenseStore {
 
     @Transactional
     public boolean delete(Integer licenseId) {
-        boolean result = dbStore.delete(licenseId);
+        boolean result = dbStore.deleteLicense(licenseId);
         licensesById.remove(licenseId);
         return result;
     }
@@ -135,7 +138,14 @@ public class LicenseStore {
     @Transactional
     public void replaceAllLicensesWith(Collection<LicenseRest> licenses) {
         log.infof("started replacing licenses with import data. Licenses to import: %d", licenses.size());
+
         List<License> entityList = fullMapper.map(licenses, licenseListType);
+        entityList.stream().forEach(lic -> {
+            LicenseApprovalStatus las = dbStore.getLicenseApprovalStatus(lic.getLicenseApprovalStatus().getId());
+            lic.setLicenseApprovalStatus(las);
+            las.addLicense(lic);
+        });
+
         log.infof("will replace existing entities with %d new entities", entityList.size());
         dbStore.replaceAllLicensesWith(entityList);
         log.info("started loading imported entities");
@@ -144,8 +154,36 @@ public class LicenseStore {
     }
 
     @Transactional
+    public void replaceAllLicenseAliasesWith(Map<String, Collection<LicenseAliasRest>> licensesAliasByName) {
+        log.info("started replacing licens aliases with import data.");
+
+        licensesAliasByName.keySet().stream().forEach(key -> {
+            Collection<LicenseAliasRest> licensesAliases = licensesAliasByName.get(key);
+            Integer licenseId = licensesAliases.iterator().next().getLicenseId();
+            License license = dbStore.getLicense(licenseId);
+            if (license != null) {
+                license.getAliases().clear();
+
+                licensesAliases.stream().forEach(alias -> {
+                    LicenseAlias licenseAlias = LicenseAlias.Builder.newBuilder().aliasName(alias.getAliasName())
+                            .license(license).build();
+                    license.addAlias(licenseAlias);
+                    dbStore.saveLicenseAlias(licenseAlias);
+                });
+                // dbStore.save(license);
+            } else {
+                log.infof("No license found for id: %d", licenseId);
+            }
+        });
+
+        log.info("started loading imported entities");
+        load();
+        log.info("finished loading imported entities");
+    }
+
+    @Transactional
     public synchronized void load() {
-        licensesById = dbStore.getAll().stream().map(entity -> fullMapper.map(entity, LicenseRest.class))
+        licensesById = dbStore.getAllLicense().stream().map(entity -> fullMapper.map(entity, LicenseRest.class))
                 .peek(LicenseRest::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
     }
 

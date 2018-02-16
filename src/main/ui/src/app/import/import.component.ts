@@ -20,6 +20,8 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../auth.service";
 
+import {RestConfigService} from "../rest-config.service";
+
 @Component({
   selector: 'app-import',
   templateUrl: './import.component.html',
@@ -81,7 +83,7 @@ export class ImportComponent implements OnInit {
   }
   
   upload(content, component) {
-    component.http.post('/rest/import/licenses', content).subscribe(
+    component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_API, content).subscribe(
       () => {
         component.successMessage = "Successfully imported licenses";
       },
@@ -92,7 +94,7 @@ export class ImportComponent implements OnInit {
     )
   }
   uploadAliases(content, component) {
-    component.http.post('/rest/import/licenses-alias', content).subscribe(
+    component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API, content).subscribe(
       () => {
         component.successMessage = "Successfully imported license aliases";
       },

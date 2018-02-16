@@ -15,23 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.license.dictionary.config;
-
-import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
+package org.jboss.license.dictionary.endpoint;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.config.KeycloakConfig;
+import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
  *         Date: 11/21/17
  */
-@Path("/config")
-@Consumes("application/json")
-@Produces("application/json")
+@Path(RestApplication.REST_VERS_1 + RestApplication.CONFIG_ENDPOINT)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class ConfigEndpoint {
 
     @Inject

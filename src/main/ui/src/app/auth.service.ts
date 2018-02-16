@@ -22,6 +22,8 @@ import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/fromPromise';
 
+import {RestConfigService} from "./rest-config.service";
+
 @Injectable()
 export class AuthService implements OnInit {
   private keycloak;
@@ -29,7 +31,7 @@ export class AuthService implements OnInit {
 
   constructor(private router: Router) {
     console.log("creating auth service");
-    this.keycloak = Keycloak("/rest/config/keycloak-config");
+    this.keycloak = Keycloak(RestConfigService.CONFIG_ENDPOINT + `/keycloak-config`);
     console.log("created keycloak");
     let promise = new Promise<Boolean>((resolve, reject) => {
       this.keycloak.init()

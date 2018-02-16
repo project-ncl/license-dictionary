@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.license.dictionary;
+package org.jboss.license.dictionary.endpoint;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
@@ -30,41 +30,48 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.license.dictionary.LicenseStore;
+import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 
-import api.LicenseResource;
 import api.LicenseRest;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
- *         Date: 8/30/17
+ * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
+ *         Date: 16/02/18
  */
-@Path(LicenseResource.LICENSES)
-@ApplicationScoped
-public class LicenseResourceImpl implements LicenseResource {
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_ENDPOINT)
+public class LicenseEndpoint {
 
-    private static final Logger log = Logger.getLogger(LicenseResourceImpl.class);
+    private static final Logger log = Logger.getLogger(LicenseEndpoint.class);
 
     @Inject
     private LicenseStore licenseStore;
 
-    @PostConstruct
-    public void init() {
-        licenseStore.init();
-    }
-
-    @Override
-    public Response getLicenses(String fedoraName, String spdxName, String code, String nameAlias, String searchTerm,
-            Integer resultCount, Integer offset) {
+    @GET
+    public Response getLicenses(@QueryParam("fedoraName") String fedoraName, @QueryParam("spdxName") String spdxName,
+            @QueryParam("code") String code, @QueryParam("nameAlias") String nameAlias,
+            @QueryParam("searchTerm") String searchTerm, @QueryParam("count") Integer resultCount,
+            @QueryParam("offset") Integer offset) {
 
         if (offset == null) {
             offset = 0;
@@ -116,13 +123,10 @@ public class LicenseResourceImpl implements LicenseResource {
         }
     }
 
-    private static <T> Response paginated(T content, int totalCount, int offset) {
-        return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
-    }
-
-    @Override
+    @PUT
+    @Path("/{id}")
     @Transactional
-    public LicenseRest updateLicense(Integer licenseId, LicenseRest license) {
+    public LicenseRest updateLicense(@PathParam("id") Integer licenseId, LicenseRest license) {
         Optional<LicenseRest> maybeLicense = licenseStore.getById(licenseId);
 
         LicenseRest licenseData = maybeLicense.orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
@@ -131,27 +135,38 @@ public class LicenseResourceImpl implements LicenseResource {
         return limitedMapper.map(licenseData, LicenseRest.class);
     }
 
-    @Override
-    public void deleteLicense(Integer licenseId) {
+    @DELETE
+    @Path("/{id}")
+    public void deleteLicense(@PathParam("id") Integer licenseId) {
         log.info("deleting license: " + licenseId);
         if (!licenseStore.delete(licenseId)) {
             throw new NotFoundException("No license found for id " + licenseId);
         }
     }
 
-    @Override
-    public LicenseRest getLicense(Integer licenseId) {
-        LicenseRest entity = licenseStore.getById(licenseId)
-                .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
-        return fullMapper.map(entity, LicenseRest.class);
-    }
-
-    @Override
+    @POST
     @Transactional
     public LicenseRest addLicense(LicenseRest license) {
         validate(license);
         license.getTextUrl();// mstodo fetch content and set to entity
         return licenseStore.save(license);
+    }
+
+    @GET
+    @Path("/{id}")
+    public LicenseRest getLicense(@PathParam("id") Integer licenseId) {
+        LicenseRest entity = licenseStore.getById(licenseId)
+                .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
+        return fullMapper.map(entity, LicenseRest.class);
+    }
+
+    @PostConstruct
+    public void init() {
+        licenseStore.init();
+    }
+
+    private static <T> Response paginated(T content, int totalCount, int offset) {
+        return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
     }
 
     // mstodo: this does not work!
@@ -170,5 +185,4 @@ public class LicenseResourceImpl implements LicenseResource {
     private long nonNullCount(Object... args) {
         return Stream.of(args).filter(Objects::nonNull).count();
     }
-
 }
