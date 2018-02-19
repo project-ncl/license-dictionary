@@ -18,7 +18,7 @@
 
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {EmptyLicense, License, LicenseService} from "../license.service";
+import {EmptyLicense, License, LicenseApprovalStatus, LicenseApprovalStatusList, EmptyLicenseApprovalStatus, LicenseService} from "../license.service";
 import {AuthService} from "../auth.service";
 
 @Component({
@@ -28,10 +28,13 @@ import {AuthService} from "../auth.service";
   encapsulation: ViewEncapsulation.None
 })
 export class EditComponent implements OnInit {
+
   license: License;
-  newAlias: string;
-  newUrlAlias: string;
+  selectedLicensesStatus: number;
   id: number;
+  
+  licensesStatusList: LicenseApprovalStatus[] = [];
+  
 
   errorMessage: string;
 
@@ -46,39 +49,21 @@ export class EditComponent implements OnInit {
   ngOnInit() {
     this.route.url.subscribe((segments: UrlSegment[]) => {
       this.license = new EmptyLicense();
+      
       let idAsObject = segments[1];
       if (idAsObject) {
         console.log("an id was passed", idAsObject);
         this.id = Number(idAsObject);
         this.licenseService.getLicense(this.id).subscribe(license => this.license = license);
       }
+      
+      this.licenseService.getLicensesApprovalStatus().subscribe(statusList => this.licensesStatusList = statusList.entries);
+      this.selectedLicensesStatus = -1;
     });
 
     this.authService.assureLoggedIn();
   }
-
-  addAlias() {
-    if (this.newAlias) {
-      this.license.nameAliases.push(this.newAlias);
-      this.newAlias = '';
-    }
-  }
-
-  removeAlias(alias: string) {
-    this.license.nameAliases = this.license.nameAliases.filter(a => a != alias)
-  }
-
-  addUrlAlias() {
-    if (this.newUrlAlias) {
-      this.license.urlAliases.push(this.newUrlAlias);
-      this.newUrlAlias = '';
-    }
-  }
-
-  removeUrlAlias(urlAlias: string) {
-    this.license.urlAliases = this.license.urlAliases.filter(a => a != urlAlias)
-  }
-
+  
   saveLicense() {
     if (this.id) {
       this.licenseService.updateLicense(this.id, this.license).subscribe(
@@ -90,6 +75,12 @@ export class EditComponent implements OnInit {
         }
       );
     } else {
+      for (var j = 0; j < this.licensesStatusList.length; j++){
+        if (this.licensesStatusList[j].id == this.selectedLicensesStatus) {
+          this.license.licenseApprovalStatus = this.licensesStatusList[j];
+        }
+      }
+
       this.licenseService.addLicense(this.license).subscribe(
         license =>
           this.router.navigate(["/"]),
@@ -97,4 +88,18 @@ export class EditComponent implements OnInit {
       );
     }
   }
+  
+  isStatusSelected() {
+    return (this.selectedLicensesStatus != -1);
+  }
+   
+  reset = function(form) {
+    if (form) {
+      form.$setPristine(true);
+      form.$setUntouched(true);
+    }
+    this.license = new EmptyLicense();
+    this.selectedLicensesStatus = -1;
+  };
+  
 }
