@@ -34,41 +34,49 @@ import {HttpHeadersInterceptor} from "./http-config.service";
 import {ImportComponent} from './import/import.component';
 import {ViewComponent} from './view/view.component';
 
+import { ExistingLicenseCodeValidatorDirective } from './custom-validators/existing-licensecode-validator';
+import { ExistingLicenseFedoraNameValidatorDirective } from './custom-validators/existing-licensefedoraname-validator';
+import { ExistingLicenseSpdxNameValidatorDirective } from './custom-validators/existing-licensesdpxname-validator';
+
+
 const appRoutes: Routes = [
-  {path: '', component: ListComponent},
-  {path: 'edit', component: EditComponent},
-  {path: 'edit/:id', component: EditComponent},
-  {path: 'view/:id', component: ViewComponent},
-  {path: 'confirm', component: ConfirmationComponent},
-  {path: 'import', component: ImportComponent}
+    { path: '', component: ListComponent },
+    { path: 'edit', component: EditComponent },
+    { path: 'edit/:id', component: EditComponent },
+    { path: 'view/:id', component: ViewComponent },
+    { path: 'confirm', component: ConfirmationComponent },
+    { path: 'import', component: ImportComponent }
 ];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ListComponent,
-    EditComponent,
-    ConfirmationComponent,
-    ImportComponent,
-    ViewComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    RouterModule.forRoot(appRoutes)
-  ],
-  providers: [
-    AuthService,
-    LicenseService,
-    ConfirmationService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpHeadersInterceptor,
-      multi: true,
-    }
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        ListComponent,
+        EditComponent,
+        ConfirmationComponent,
+        ImportComponent,
+        ViewComponent,
+        ExistingLicenseCodeValidatorDirective,
+        ExistingLicenseFedoraNameValidatorDirective,
+        ExistingLicenseSpdxNameValidatorDirective
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        RouterModule.forRoot(appRoutes)
+    ],
+    providers: [
+        AuthService,
+        LicenseService,
+        ConfirmationService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpHeadersInterceptor,
+            multi: true,
+        }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

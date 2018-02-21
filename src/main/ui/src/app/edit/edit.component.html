@@ -29,43 +29,49 @@
 		<div class="col-md-10 col-lg-10">
 			<form (submit)="saveLicense()" class="form-horizontal"
 				name="formLicense" #licenseForm="ngForm">
+
 				<div class="panel panel-default">
 					<div class="panel-body">
 
 						<div class="form-group">
-							<label for="code" class="col-sm-2 control-label">Code *</label>
+							<label for="code" class="col-sm-2 control-label">* Code</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="code" required
-									minlength="1" maxlength="50" [(ngModel)]="license.code"
-									name="code" #code="ngModel">
+									licenseCodeExists maxlength="50"
+									[(ngModel)]="license.code" name="code" #code="ngModel">
 								<div *ngIf="code.errors && (code.dirty || code.touched)"
 									class="alert alert-danger">
 									<div [hidden]="!code.errors.required">Required field</div>
 									<div [hidden]="!code.errors.maxlength">Code cannot be
 										more than 50 characters long</div>
+									<div [hidden]="!code.errors.licenseCodeExists">Code
+										already exist</div>
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="code" class="col-sm-2 control-label">Fedora
-								name: </label>
+								name</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="fedoraName"
-									maxlength="255" [(ngModel)]="license.fedoraName"
-									name="fedoraName" #fedoraName="ngModel">
+									licenseFedoraNameExists maxlength="255"
+									[(ngModel)]="license.fedoraName" name="fedoraName"
+									#fedoraName="ngModel">
 								<div
 									*ngIf="fedoraName.errors && (fedoraName.dirty || fedoraName.touched)"
 									class="alert alert-danger">
 									<div [hidden]="!fedoraName.errors.maxlength">Fedora name
 										cannot be more than 255 characters long</div>
+									<div [hidden]="!fedoraName.errors.licenseFedoraNameExists">Fedora
+										name already exist</div>
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="code" class="col-sm-2 control-label">Fedora
-								abbreviation: </label>
+								abbreviation</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="fedoraAbbreviation"
 									maxlength="50" [(ngModel)]="license.fedoraAbbreviation"
@@ -81,23 +87,26 @@
 
 						<div class="form-group">
 							<label for="code" class="col-sm-2 control-label">Spdx
-								name: </label>
+								name</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="spdxName"
-									maxlength="255" [(ngModel)]="license.spdxName" name="spdxName"
+									licenseSpdxNameExists maxlength="255"
+									[(ngModel)]="license.spdxName" name="spdxName"
 									#spdxName="ngModel">
 								<div
 									*ngIf="spdxName.errors && (spdxName.dirty || spdxName.touched)"
 									class="alert alert-danger">
 									<div [hidden]="!spdxName.errors.maxlength">Spdx name
 										cannot be more than 255 characters long</div>
+									<div [hidden]="!spdxName.errors.licenseSpdxNameExists">Spdx
+										name already exist</div>
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="code" class="col-sm-2 control-label">Spdx
-								abbreviation: </label>
+								abbreviation</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="spdxAbbreviation"
 									maxlength="50" [(ngModel)]="license.spdxAbbreviation"
@@ -112,7 +121,7 @@
 						</div>
 
 						<div class="form-group">
-							<label for="code" class="col-sm-2 control-label">Url: </label>
+							<label for="code" class="col-sm-2 control-label">Url</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="url"
 									pattern="https?://.+" [(ngModel)]="license.url" name="url"
@@ -126,8 +135,7 @@
 						</div>
 
 						<div class="form-group">
-							<label for="code" class="col-sm-2 control-label">Text
-								url: </label>
+							<label for="code" class="col-sm-2 control-label">Text url</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control" id="textUrl"
 									pattern="https?://.+" [(ngModel)]="license.textUrl"
@@ -135,38 +143,47 @@
 								<div
 									*ngIf="textUrl.errors && (textUrl.dirty || textUrl.touched)"
 									class="alert alert-danger">
-									<div [hidden]="!textUrl.errors.pattern">Text url must be
-										valid (https?://.+ regexp)</div>
+									<div [hidden]="!selStatus.errors.pattern">Text url must
+										be valid (https?://.+ regexp)</div>
 								</div>
 							</div>
 						</div>
-
 						<div class="form-group">
-							<label class="col-sm-2 control-label">Aliases: </label>
-							<div class="table-responsive">
-								<table class="table">
-									<tr *ngFor="let alias of license.nameAliases">
-										<td>{{alias}}</td>
-										<td><a (click)="removeAlias(alias)"><i
-												class="glyphicon glyphicon-remove"></i>Remove</a></td>
-									</tr>
-								</table>
-								<input type="text" [(ngModel)]="newAliasString"
-									placeholder="New alias" name="newAliasString" /> <a
-									(click)="addAlias()"><i class="glyphicon glyphicon-plus"></i>Add
-									alias</a>
+							<label for="status" class="col-sm-2 control-label">* Approval
+								status</label>
+							<div class="col-sm-10">
+
+								<select class="form-control"
+									[(ngModel)]="selectedLicensesStatus"
+									[ngModelOptions]="{standalone: true}" name="selectedStatus">
+									<option [value]="-1" disabled selected>--&gt; Select
+										License Approval Status &lt;--</option>
+									<option *ngFor="let status of licensesStatusList"
+										[value]="status.id" [ngValue]="status.id">{{status.name}}</option>
+								</select>
+								<div
+									*ngIf="!isStatusSelected() && selectedStatus && (selectedStatus.dirty || selectedStatus.touched)"
+									class="alert alert-danger">
+									<div [hidden]="!isStatusSelected()">Required field</div>
+								</div>
 							</div>
+
 						</div>
 					</div>
 				</div>
 				<div class="form-group text-right">
 					<div class="col-sm-offset-2 col-sm-10">
 						<input type="submit" class="btn btn-primary"
-						    [disabled]="!licenseForm.form.valid"
-							value="Create License"> <input type="reset"
+							[disabled]="!licenseForm.form.valid || !isStatusSelected()"
+							value="Create License"> 
+						<input type="reset"
 							class="btn btn-default" value="Clear"
 							(click)="reset(formLicense)">
-					</div>
+						<input type="button"
+							class="btn btn-default" value="Back"
+							routerLink="/"> 
+				    </div>
+
 				</div>
 			</form>
 		</div>
