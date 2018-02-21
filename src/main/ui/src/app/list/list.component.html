@@ -17,15 +17,30 @@
     limitations under the License.
 
 -->
-<h1>License list</h1>
 <div class="row">
-	<div class="col-md-3">
-		<div class="input-group input-group-lg add-on">
+	<div class="col-md-12">
+		<div class="page-header">
+			<div class="btn-group pull-right" role="group"
+				aria-label="Action Toolbar">
+				<button type="button" class="btn btn-default btn-lg"
+				    routerLink="/edit">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Create
+					License
+				</button>
+			</div>
+			<h1 class="header-title">License list</h1>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<div class="input-group input-group-md add-on">
 			<input type="text" class="form-control search-query"
 				[(ngModel)]="searchTerm" (keyup.enter)="searchForLicenses(0)"
 				placeholder="Enter a search term" name="name" />
 			<div class="input-group-btn">
-				<button class="btn btn-default" type="button" (click)="searchForLicenses(0)">
+				<button class="btn btn-default" type="button"
+					(click)="searchForLicenses(0)">
 					<i class="glyphicon glyphicon-search"></i>
 				</button>
 			</div>
@@ -34,14 +49,15 @@
 	<div class="col-md-6">
 		<h4 class="text-center">&nbsp;</h4>
 	</div>
-	<div class="col-md-3">
-		<select class="form-control input-lg pull-right"
+	<div class="col-md-2">
+		<select class="form-control input-md pull-right"
 			[(ngModel)]="itemsPerPage" (ngModelChange)="setPagination()">
-			<option *ngFor="let pgSize of pageSizes" [value]="pgSize">show {{pgSize}} per page</option>
+			<option *ngFor="let pgSize of pageSizes" [value]="pgSize">show
+				{{pgSize}} per page</option>
 		</select>
 	</div>
 </div>
-<hr>
+<br>
 <div class="table-responsive">
 	<table class="datatable table table-striped table-hover table-bordered">
 		<thead>
@@ -92,9 +108,8 @@
 								[ngClass]="{active: n == currentPage}" (click)="setPage(n)">
 								<a href="javascript:;">{{n+1}}</a>
 							</li>
-							<li [ngClass]="{disabled: allLoaded == true}">
-								<a href="javascript:;" (click)="nextPage()">Next »</a>
-							</li>
+							<li [ngClass]="{disabled: allLoaded == true}"><a
+								href="javascript:;" (click)="nextPage()">Next »</a></li>
 						</ul>
 					</div>
 				</td>
