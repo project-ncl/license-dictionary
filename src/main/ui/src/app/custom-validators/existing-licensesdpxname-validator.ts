@@ -14,12 +14,31 @@ import {RestConfigService} from "../rest-config.service";
 export function existingLicenseSpdxNameValidator(licenseService: LicenseService): AsyncValidatorFn {
     return (control: AbstractControl): Promise<ValidationErrors | null> | Observable < ValidationErrors | null > => {
 
-        if (control.value == null || control.value.trim() == '') {
+        // Do not run the validation if the control is pristine 
+        // (e.g. when editing no initial validation is needed if
+        // there are no changes done yet on the form)
+        if (control.pristine) {
+            return of({});
+        }
+
+        let currentValue = control.value;
+
+        // If value is empty, no validation is required  
+        if (currentValue == null || currentValue.trim() == '') {
+            return of({});
+        }
+
+        // Get the original value (before the editing); if it's the same
+        // no validation is required (or same value would be reported as already existing)
+        //console.log('control.parent.controls: ', control.parent.controls);
+        //console.log('control.parent.get(licenseCodeSafeCopy): ', control.parent.get('licenseCodeSafeCopy'));
+        let originalInput = control.parent.get('licenseSpdxNameSafeCopy');
+        if (originalInput && currentValue === originalInput.value.trim()) {
             return of({});
         }
 
         return Observable.timer(RestConfigService.DEBOUNCE_TIME_MS).switchMap(() => {
-            return licenseService.findLicensesBySpdxName(control.value.trim(), 1, 0).map(
+            return licenseService.findLicensesBySpdxName(currentValue.trim(), 1, 0).map(
                 licenses => {
                     return (licenses.totalCount > 0) ? { "licenseSpdxNameExists": true } : null;
                 }
@@ -29,7 +48,7 @@ export function existingLicenseSpdxNameValidator(licenseService: LicenseService)
                 // will mark as not valid any non existent code
                 if (e instanceof HttpErrorResponse &&
                     e.status == RestConfigService.HTTP_STATUS_CODE_NOT_FOUND) {
-                    
+
                     return of({});
                 }
                 throw e;

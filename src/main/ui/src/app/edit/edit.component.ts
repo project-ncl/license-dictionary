@@ -33,6 +33,11 @@ export class EditComponent implements OnInit {
     selectedLicensesStatus: number;
     id: number;
     licensesStatusList: LicenseApprovalStatus[] = [];
+    licenseCode: string;
+
+    licenseCodeSafeCopy: string;
+    licenseFedoraNameSafeCopy: string;
+    licenseSpdxNameSafeCopy: string;
 
     errorMessage: string;
 
@@ -48,20 +53,37 @@ export class EditComponent implements OnInit {
     ngOnInit() {
         this.route.url.subscribe((segments: UrlSegment[]) => {
 
-            this.license = new EmptyLicense();
-            this.licenseService.getLicensesApprovalStatus().subscribe(statusList => this.licensesStatusList = statusList.entries);
-            this.selectedLicensesStatus = -1;
+            this.licenseService.getLicensesApprovalStatus().subscribe(
+                statusList => this.licensesStatusList = statusList.entries
+            );
 
-            let idAsObject = segments[1];
-
-            if (idAsObject) {
-                console.log("an id was passed", idAsObject);
-                this.id = Number(idAsObject);
-                this.licenseService.getLicense(this.id).subscribe(license => this.license = license);
+            if (segments[1]) {
+                this.id = Number(segments[1]);
+                console.log("a license id was passed for editing: ", this.id);
+                this.licenseService.getLicense(this.id).subscribe(
+                    license => this.initializeLicense(license)
+                );
+            }
+            else {
+                this.license = new EmptyLicense();
+                this.licenseCode = this.license.code;
+                this.licenseCodeSafeCopy = this.license.code;
+                this.licenseFedoraNameSafeCopy = this.license.fedoraName;
+                this.licenseSpdxNameSafeCopy = this.license.spdxName;
+                this.selectedLicensesStatus = -1;
             }
         });
 
         this.authService.assureLoggedIn();
+    }
+
+    initializeLicense(license: License) {
+        this.license = license;
+        this.selectedLicensesStatus = this.license.licenseApprovalStatus.id;
+        this.licenseCode = license.code;
+        this.licenseCodeSafeCopy = license.code;
+        this.licenseFedoraNameSafeCopy = license.fedoraName;
+        this.licenseSpdxNameSafeCopy = license.spdxName;
     }
 
     saveLicense() {
