@@ -33,7 +33,6 @@ export class EditComponent implements OnInit {
     selectedLicensesStatus: number;
     id: number;
     licensesStatusList: LicenseApprovalStatus[] = [];
-    licenseCode: string;
 
     licenseCodeSafeCopy: string;
     licenseFedoraNameSafeCopy: string;
@@ -66,7 +65,6 @@ export class EditComponent implements OnInit {
             }
             else {
                 this.license = new EmptyLicense();
-                this.licenseCode = this.license.code;
                 this.licenseCodeSafeCopy = this.license.code;
                 this.licenseFedoraNameSafeCopy = this.license.fedoraName;
                 this.licenseSpdxNameSafeCopy = this.license.spdxName;
@@ -80,7 +78,6 @@ export class EditComponent implements OnInit {
     initializeLicense(license: License) {
         this.license = license;
         this.selectedLicensesStatus = this.license.licenseApprovalStatus.id;
-        this.licenseCode = license.code;
         this.licenseCodeSafeCopy = license.code;
         this.licenseFedoraNameSafeCopy = license.fedoraName;
         this.licenseSpdxNameSafeCopy = license.spdxName;
