@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.license.dictionary.model.LicenseApprovalStatus;
 import org.jboss.logging.Logger;
 
 import api.LicenseApprovalStatusRest;
@@ -33,4 +34,11 @@ public class LicenseStatusStore {
                 .ofNullable(fullMapper.map(dbStore.getLicenseApprovalStatus(licenseStatusId), LicenseApprovalStatusRest.class));
     }
 
+    public LicenseApprovalStatusRest save(LicenseApprovalStatusRest licenseApprovalStatusRest) {
+        LicenseApprovalStatus entity = fullMapper.map(licenseApprovalStatusRest, LicenseApprovalStatus.class);
+        entity = dbStore.saveLicenseApprovalStatus(entity);
+
+        licenseApprovalStatusRest = fullMapper.map(entity, LicenseApprovalStatusRest.class);
+        return licenseApprovalStatusRest;
+    }
 }
