@@ -25,14 +25,19 @@ import lombok.ToString;
 
 @Entity(name = "ProjectVersionLicense")
 @Table(name = "project_version_license", indexes = {
-        @Index(name = "idx_project_version_license_license", columnList = "license_id"),
-        @Index(name = "idx_project_version_license_project_version_license_check", columnList = "project_version_license_check_id") })
+        @Index(name = ProjectVersionLicense.IDX_NAME_PROJECT_VERSION_LICENSE_LICENSE, columnList = "license_id"),
+        @Index(name = ProjectVersionLicense.IDX_NAME_PROJECT_VERSION_LICENSE_PROJECT_VERSION_LICENSE_CHECK, columnList = "proj_vers_license_check_id") })
 
 @ToString(exclude = { "projectVersionLicenseHints" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class ProjectVersionLicense {
 
-    private static final String SEQUENCE_NAME = "project_version_license_id_seq";
+    public static final String SEQUENCE_NAME = "project_version_license_id_seq";
+    public static final String IDX_NAME_PROJECT_VERSION_LICENSE_LICENSE = "idx_projverlic_lic";
+    public static final String IDX_NAME_PROJECT_VERSION_LICENSE_PROJECT_VERSION_LICENSE_CHECK = "idx_projverlic_projverlicchk";
+
+    public static final String FK_NAME_PROJECT_VERSION_LICENSE_LICENSE = "fk_projverlic_lic";
+    public static final String FK_NAME_PROJECT_VERSION_LICENSE_PROJECT_VERSION_LICENSE_CHECK = "fk_projverlic_projverlicchk";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -48,13 +53,13 @@ public class ProjectVersionLicense {
     private String scope;
 
     @ManyToOne
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_license_license"))
+    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_LICENSE_LICENSE))
     @Getter
     @Setter
     private License license;
 
     @ManyToOne
-    @JoinColumn(name = "project_version_license_check_id", nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_license_project_version_license_check"))
+    @JoinColumn(name = "proj_vers_license_check_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_LICENSE_PROJECT_VERSION_LICENSE_CHECK))
     @Getter
     @Setter
     private ProjectVersionLicenseCheck projectVersionLicenseCheck;

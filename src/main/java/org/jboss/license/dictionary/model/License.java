@@ -28,16 +28,24 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "License")
-@Table(name = "license", indexes = { @Index(name = "idx_license_code", columnList = "code"),
-        @Index(name = "idx_license_fedora_abbrev", columnList = "fedora_abbrev"),
-        @Index(name = "idx_license_spdx_abbrev", columnList = "spdx_abbrev"), }, uniqueConstraints = {
-                @UniqueConstraint(name = "uc_license_code", columnNames = { "code" }) })
+@Table(name = "license", indexes = { @Index(name = License.IDX_NAME_LICENSE_CODE, columnList = "code"),
+        @Index(name = License.IDX_NAME_LICENSE_FEDORA_ABBREVIATION, columnList = "fedora_abbrev"),
+        @Index(name = License.IDX_NAME_LICENSE_SPDX_ABBREVIATION, columnList = "spdx_abbrev"),
+        @Index(name = License.IDX_NAME_LICENSE_LICENSE_APPROVAL_STATUS, columnList = "license_approval_status_id"), }, uniqueConstraints = {
+                @UniqueConstraint(name = License.UC_NAME_LICENSE_CODE, columnNames = { "code" }) })
 
 @ToString(exclude = { "aliases", "projectVersionLicenses" })
 @EqualsAndHashCode(exclude = { "aliases", "projectVersionLicenses" })
 public class License {
 
-    private static final String SEQUENCE_NAME = "license_id_seq";
+    public static final String SEQUENCE_NAME = "license_id_seq";
+    public static final String IDX_NAME_LICENSE_CODE = "idx_license_code";
+    public static final String IDX_NAME_LICENSE_FEDORA_ABBREVIATION = "idx_license_fedoraabbr";
+    public static final String IDX_NAME_LICENSE_SPDX_ABBREVIATION = "idx_license_spdxabbr";
+    public static final String IDX_NAME_LICENSE_LICENSE_APPROVAL_STATUS = "idx_license_licenseapprstatus";
+    public static final String FK_NAME_LICENSE_LICENSE_APPROVAL_STATUS = "fk_license_licenseapprstatus";
+    public static final String UC_NAME_LICENSE_CODE = "uc_license_code";
+
     public static final int ABBREV_MAX_LENGHT = 50;
 
     @Id
@@ -89,7 +97,7 @@ public class License {
     private String code;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
-    @JoinColumn(name = "license_approval_status_id", nullable = false, foreignKey = @ForeignKey(name = "fk_license_license_approval_status"))
+    @JoinColumn(name = "license_approval_status_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_LICENSE_LICENSE_APPROVAL_STATUS))
     @Getter
     @Setter
     private LicenseApprovalStatus licenseApprovalStatus;

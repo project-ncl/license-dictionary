@@ -22,13 +22,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "Project")
-@Table(name = "project", indexes = { @Index(name = "idx_project", columnList = "ecosystem,key") })
+@Table(name = "project", indexes = { @Index(name = Project.IDX_NAME_PROJECT_ECOSYSTEM_KEY, columnList = "ecosystem,key") })
 
 @ToString(exclude = { "projectVersions" })
 @EqualsAndHashCode(exclude = { "projectVersions" })
 public class Project {
 
-    private static final String SEQUENCE_NAME = "project_id_seq";
+    public static final String SEQUENCE_NAME = "project_id_seq";
+    public static final String IDX_NAME_PROJECT_ECOSYSTEM_KEY = "idx_project_ecosyskey";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)

@@ -27,7 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "licenses" })
 public class LicenseApprovalStatus {
 
-    private static final String SEQUENCE_NAME = "license_approval_status_id_seq";
+    public static final String SEQUENCE_NAME = "license_apprstatus_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)

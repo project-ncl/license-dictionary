@@ -1,6 +1,7 @@
 package org.jboss.license.dictionary.model;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,14 +30,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "ProjectVersionLicenseCheck")
-@Table(name = "project_version_license_check", indexes = {
-        @Index(name = "idx_project_version_license_check_license_determination_type", columnList = "project_version_id") })
+@Table(name = "project_version_license_chk", indexes = {
+        @Index(name = ProjectVersionLicenseCheck.IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION, columnList = "project_version_id"),
+        @Index(name = ProjectVersionLicenseCheck.IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE, columnList = "license_det_type_id") })
 
 @ToString(exclude = { "projectVersionLicenses" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenses" })
 public class ProjectVersionLicenseCheck {
 
-    private static final String SEQUENCE_NAME = "project_version_license_check_id_seq";
+    public static final String SEQUENCE_NAME = "projverlicchk_id_seq";
+    public static final String IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION = "idx_projverlicchk_projver";
+    public static final String IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE = "idx_projverlicchk_licdettype";
+    public static final String FK_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION = "fk_projverlicchk_projver";
+    public static final String FK_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE = "fk_projverlicchk_licdettype";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -54,10 +60,11 @@ public class ProjectVersionLicenseCheck {
     private String determinedByUser;
 
     @NotNull
-    @Column(name = "determination_date", columnDefinition = "timestamp with time zone")
+    //@Column(name = "determination_date", columnDefinition = "timestamp with time zone")
+    @Column(name = "determination_date")
     @Getter
     @Setter
-    private Date determinationDate;
+    private LocalDateTime determinationDate;
 
     @Column(name = "notes")
     @Getter
@@ -65,13 +72,13 @@ public class ProjectVersionLicenseCheck {
     private String notes;
 
     @ManyToOne
-    @JoinColumn(name = "project_version_id", nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_license_check_project_version"))
+    @JoinColumn(name = "project_version_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION))
     @Getter
     @Setter
     private ProjectVersion projectVersion;
 
     @ManyToOne
-    @JoinColumn(name = "license_determination_type_id", nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_license_check_license_determination_type"))
+    @JoinColumn(name = "license_det_type_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE))
     @Getter
     @Setter
     private LicenseDeterminationType licenseDeterminationType;
@@ -82,13 +89,13 @@ public class ProjectVersionLicenseCheck {
     private Set<ProjectVersionLicense> projectVersionLicenses;
 
     public ProjectVersionLicenseCheck() {
-        this.determinationDate = Date.from(Instant.now());
+        this.determinationDate = LocalDateTime.now();
         this.projectVersionLicenses = new HashSet<ProjectVersionLicense>();
     }
 
     @PrePersist
     private void initDeterminationTime() {
-        this.determinationDate = Date.from(Instant.now());
+        this.determinationDate = LocalDateTime.now();
     }
 
     public void addProjectVersionLicense(ProjectVersionLicense projectVersionLicense) {
@@ -100,14 +107,14 @@ public class ProjectVersionLicenseCheck {
 
         private Integer id;
         private String determinedByUser;
-        private Date determinationDate;
+        private LocalDateTime determinationDate;
         private String notes;
         private ProjectVersion projectVersion;
         private LicenseDeterminationType licenseDeterminationType;
         private Set<ProjectVersionLicense> projectVersionLicenses;
 
         private Builder() {
-            this.determinationDate = Date.from(Instant.now());
+            this.determinationDate = LocalDateTime.now();
             this.projectVersionLicenses = new HashSet<ProjectVersionLicense>();
         }
 
@@ -125,7 +132,7 @@ public class ProjectVersionLicenseCheck {
             return this;
         }
 
-        public Builder determinationDate(Date determinationDate) {
+        public Builder determinationDate(LocalDateTime determinationDate) {
             this.determinationDate = determinationDate;
             return this;
         }

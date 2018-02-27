@@ -20,13 +20,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "LicenseAlias")
-@Table(name = "license_alias", indexes = { @Index(name = "idx_license_alias_license", columnList = "license_id") })
+@Table(name = "license_alias", indexes = {
+        @Index(name = LicenseAlias.IDX_NAME_LICENSE_ALIAS_LICENSE, columnList = "license_id") })
 
 @ToString
 @EqualsAndHashCode
 public class LicenseAlias {
 
-    private static final String SEQUENCE_NAME = "license_alias_id_seq";
+    public static final String SEQUENCE_NAME = "license_alias_id_seq";
+    public static final String IDX_NAME_LICENSE_ALIAS_LICENSE = "idx_licensealias_license";
+    public static final String FK_NAME_LICENSE_ALIAS_LICENSE = "fk_licensealias_license";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -43,7 +46,7 @@ public class LicenseAlias {
     private String aliasName;
 
     @ManyToOne
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_license_alias_license"))
+    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = FK_NAME_LICENSE_ALIAS_LICENSE))
     @Getter
     @Setter
     private License license;

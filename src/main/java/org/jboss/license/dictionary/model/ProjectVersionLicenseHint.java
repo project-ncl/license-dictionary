@@ -20,13 +20,18 @@ import lombok.ToString;
 
 @Entity(name = "ProjectVersionLicenseHint")
 @Table(name = "project_version_license_hint", indexes = {
-        @Index(name = "idx_project_version_license_hint_project_version_license", columnList = "project_version_license_id") })
+        @Index(name = ProjectVersionLicenseHint.IDX_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE, columnList = "project_version_license_id"),
+        @Index(name = ProjectVersionLicenseHint.IDX_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE, columnList = "license_hint_type_id") })
 
 @ToString
 @EqualsAndHashCode
 public class ProjectVersionLicenseHint {
 
-    private static final String SEQUENCE_NAME = "project_version_license_hint_id_seq";
+    public static final String SEQUENCE_NAME = "project_version_license_hint_id_seq";
+    public static final String IDX_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE = "idx_projverlichint_projverlic";
+    public static final String IDX_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE = "idx_projverlichint_lichinttype";
+    public static final String FK_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE = "fk_projverlichint_projverlic";
+    public static final String FK_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE = "fk_projverlichint_lichinttype";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -42,13 +47,13 @@ public class ProjectVersionLicenseHint {
     private String value;
 
     @ManyToOne
-    @JoinColumn(name = "project_version_license_id", nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_license_hint_project_version_license"))
+    @JoinColumn(name = "project_version_license_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE))
     @Getter
     @Setter
     private ProjectVersionLicense projectVersionLicense;
 
     @ManyToOne
-    @JoinColumn(name = "license_hint_type_id", nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_license_hint_license_hint_type"))
+    @JoinColumn(name = "license_hint_type_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE))
     @Getter
     @Setter
     private LicenseHintType licenseHintType;

@@ -27,7 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class LicenseHintType {
 
-    private static final String SEQUENCE_NAME = "license_hint_type_id_seq";
+    public static final String SEQUENCE_NAME = "license_hinttype_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)

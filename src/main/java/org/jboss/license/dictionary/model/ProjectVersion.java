@@ -25,13 +25,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "ProjectVersion")
-@Table(name = "project_version", indexes = { @Index(name = "idx_project_version_project", columnList = "project_id") })
+@Table(name = "project_version", indexes = {
+        @Index(name = ProjectVersion.IDX_NAME_PROJECT_VERSION_PROJECT, columnList = "project_id") })
 
 @ToString(exclude = { "projectVersionLicenseChecks" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseChecks" })
 public class ProjectVersion {
 
-    private static final String SEQUENCE_NAME = "project_version_id_seq";
+    public static final String SEQUENCE_NAME = "project_version_id_seq";
+    public static final String IDX_NAME_PROJECT_VERSION_PROJECT = "idx_projver_proj";
+    public static final String FK_NAME_PROJECT_VERSION_PROJECT = "fk_projver_proj";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -55,7 +58,7 @@ public class ProjectVersion {
     private String scmRevision;
 
     @ManyToOne
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_project_version_project"))
+    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_PROJECT))
     @Getter
     @Setter
     private Project project;
