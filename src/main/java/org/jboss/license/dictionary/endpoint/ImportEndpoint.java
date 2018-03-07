@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -51,7 +50,7 @@ public class ImportEndpoint {
             // Pre-validating input so that the json import file can be fixed
             boolean valid = license.isValid();
             if (valid) {
-                LicenseRest licenseData = license.toLicenseRest(alias);
+                LicenseRest licenseData = license.toLicenseRest();
                 if (alias.startsWith("#")) {
                     log.debugf("skipping a commented license", licenseData);
                 } else {
@@ -62,10 +61,10 @@ public class ImportEndpoint {
 
         isSingleName(licensesByName.asMap());
 
-        Collection<LicenseRest> entities = licensesByName.asMap().values().stream().map(this::pickFirstEntry)
-                .peek(LicenseRest::checkIntegrity).collect(Collectors.toList());
+        // Collection<LicenseRest> entities = licensesByName.asMap().values().stream().map(this::pickFirstEntry)
+        // .peek(LicenseRest::checkIntegrity).collect(Collectors.toList());
 
-        store.replaceAllLicensesWith(entities);
+        store.replaceAllLicensesWith(licensesByName.asMap());
     }
 
     @Path(RestApplication.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API)
@@ -116,10 +115,6 @@ public class ImportEndpoint {
                 throw new BadRequestException("Duplicated names found ");
             }
         });
-    }
-
-    private LicenseRest pickFirstEntry(Collection<LicenseRest> entries) {
-        return entries.iterator().next();
     }
 
 }

@@ -18,11 +18,11 @@
 package org.jboss.license.dictionary;
 
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-import static org.jboss.license.dictionary.utils.Mappers.licenseListType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -67,6 +67,12 @@ public class LicenseStore {
             load();
             log.info("Finished License Store initialization");
         }
+    }
+
+    @Transactional
+    public synchronized void forceReload() {
+        licensesById = null;
+        init();
     }
 
     public Optional<LicenseRest> getById(Integer licenseId) {
@@ -145,18 +151,21 @@ public class LicenseStore {
     }
 
     @Transactional
-    public void replaceAllLicensesWith(Collection<LicenseRest> licenses) {
-        log.infof("started replacing licenses with import data. Licenses to import: %d", licenses.size());
+    public void replaceAllLicensesWith(Map<String, Collection<LicenseRest>> licensesByName) {
+        log.infof("started replacing licenses with import data. Licenses to import: %d", licensesByName.values().size());
 
-        List<License> entityList = fullMapper.map(licenses, licenseListType);
-        entityList.stream().forEach(lic -> {
+        Map<String, License> licenseEntityByAlias = new HashMap<String, License>();
+        licensesByName.keySet().stream().forEach(alias -> {
+            License lic = fullMapper.map(licensesByName.get(alias).iterator().next(), License.class);
             LicenseApprovalStatus las = dbStore.getLicenseApprovalStatus(lic.getLicenseApprovalStatus().getId());
             lic.setLicenseApprovalStatus(las);
             las.addLicense(lic);
+
+            licenseEntityByAlias.put(alias, lic);
         });
 
-        log.infof("will replace existing entities with %d new entities", entityList.size());
-        dbStore.replaceAllLicensesWith(entityList);
+        log.infof("will replace existing entities with %d new entities", licenseEntityByAlias.values().size());
+        dbStore.replaceAllLicensesWith(licenseEntityByAlias);
         log.info("started loading imported entities");
         load();
         log.info("finished loading imported entities");
@@ -211,4 +220,5 @@ public class LicenseStore {
     private boolean searchEquals(String value1, String value2) {
         return value1 != null && value2 != null && value1.toLowerCase().equals(value2.toLowerCase());
     }
+
 }

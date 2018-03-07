@@ -17,8 +17,8 @@
  */
 package org.jboss.license.dictionary;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -91,11 +91,15 @@ public class LicenseDbStore {
         return licenseAlias;
     }
 
-    public void replaceAllLicensesWith(Collection<License> licenses) {
+    public void replaceAllLicensesWith(Map<String, License> licenseEntityByAlias) {
         getAllLicense().forEach(entityManager::remove);
-        licenses.forEach(entity -> {
+        licenseEntityByAlias.keySet().stream().forEach(aliasName -> {
+
+            License license = licenseEntityByAlias.get(aliasName);
             try {
-                entityManager.persist(entity);
+                license = save(license);
+                license.addAlias(LicenseAlias.Builder.newBuilder().aliasName(aliasName).license(license).build());
+                license = update(license);
             } catch (Exception exc) {
                 log.error(exc);
             }
