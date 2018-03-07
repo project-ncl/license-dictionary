@@ -18,6 +18,7 @@
 package org.jboss.license.dictionary.license;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
 import java.net.URI;
@@ -203,6 +204,21 @@ public class LicenseResourceTest {
         assertThat(resultLicense.getUrl()).isEqualTo(license.getUrl());
         assertThat(resultLicense.getAliasNames()).hasSize(2);
         assertThat(resultLicense.getAliasNames()).containsExactlyInAnyOrder("alias1", "alias2");
+    }
+
+    @Test
+    public void shouldNotDuplicateLicenseName() {
+        LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusResource
+                .getSpecific(LicenseApprovalStatusRest.APPROVED.getId()).getEntity();
+        LicenseRest license = LicenseRest.Builder.newBuilder().fedoraName(MY_LICENSE_NAME).url("by-id.example.com")
+                .code("licenseReadById").licenseApprovalStatus(APPROVED).build();
+
+        try {
+            licenseResource.createNew(license, getUriInfo());
+            fail("License should not be created with the same Fedora name");
+        } catch (Exception e) {
+            assertThat(e.getMessage()).contains("License with the same Fedora name found. Conflicting license");
+        }
     }
 
     private UriInfo getUriInfo() {

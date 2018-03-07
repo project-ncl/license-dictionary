@@ -23,6 +23,7 @@ import static org.jboss.license.dictionary.utils.Mappers.licenseRestListType;
 import static org.jboss.license.dictionary.utils.Mappers.limitedMapper;
 import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,9 +51,10 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.utils.BadRequestException;
-import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
+import org.modelmapper.ValidationException;
+import org.modelmapper.spi.ErrorMessage;
 
 import api.LicenseRest;
 
@@ -152,8 +154,7 @@ public class LicenseEndpoint extends AbstractEndpoint {
     @Transactional
     public Response createNew(LicenseRest license, @Context UriInfo uriInfo) {
         log.info("creating license: " + license);
-        // validate(license);
-        // license.getTextUrl();// mstodo fetch content and set to entity
+        validate(license);
         license = licenseStore.save(license);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
@@ -174,17 +175,21 @@ public class LicenseEndpoint extends AbstractEndpoint {
         licenseStore.init();
     }
 
-    // mstodo: this does not work!
     private void validate(LicenseRest license) {
-        ErrorDto errors = new ErrorDto();
-        licenseStore.getForFedoraName(license.getFedoraName()).ifPresent(
-                l -> errors.addError("License with the same Fedora name found. Conflicting license id: %d", l.getId()));
-        licenseStore.getForSpdxName(license.getSpdxName()).ifPresent(
-                l -> errors.addError("License with the same SPDX name found. Conflicting license id: %d", l.getId()));
-        licenseStore.getForCode(license.getCode())
-                .ifPresent(l -> errors.addError("License with the same code found. Conflicting license id: %d", l.getId()));
-        license.getAliasNames().forEach(alias -> licenseStore.getForNameAlias(alias).ifPresent(
-                l -> errors.addError("License with the same name alias found. Conflicting license id: %d", l.getId())));
+        List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
+
+        licenseStore.getForFedoraName(license.getFedoraName()).ifPresent(l -> errors
+                .add(new ErrorMessage("License with the same Fedora name found. Conflicting license id: " + l.getId())));
+        licenseStore.getForSpdxName(license.getSpdxName()).ifPresent(l -> errors
+                .add(new ErrorMessage("License with the same SPDX name found. Conflicting license id: " + l.getId())));
+        licenseStore.getForCode(license.getCode()).ifPresent(
+                l -> errors.add(new ErrorMessage("License with the same code found. Conflicting license id: " + l.getId())));
+        license.getAliasNames().forEach(alias -> licenseStore.getForNameAlias(alias).ifPresent(l -> errors
+                .add(new ErrorMessage("License with the same name alias found. Conflicting license id: " + l.getId()))));
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
     }
 
     private long nonNullCount(Object... args) {
