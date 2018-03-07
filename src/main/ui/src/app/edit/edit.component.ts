@@ -84,6 +84,13 @@ export class EditComponent implements OnInit {
     }
 
     saveLicense() {
+
+        for (var j = 0; j < this.licensesStatusList.length; j++) {
+            if (this.licensesStatusList[j].id == this.selectedLicensesStatus) {
+                this.license.licenseApprovalStatus = this.licensesStatusList[j];
+            }
+        }
+
         if (this.id) {
             this.licenseService.updateLicense(this.id, this.license).subscribe(
                 license =>
@@ -94,16 +101,13 @@ export class EditComponent implements OnInit {
                 }
             );
         } else {
-            for (var j = 0; j < this.licensesStatusList.length; j++) {
-                if (this.licensesStatusList[j].id == this.selectedLicensesStatus) {
-                    this.license.licenseApprovalStatus = this.licensesStatusList[j];
-                }
-            }
-
             this.licenseService.addLicense(this.license).subscribe(
                 license =>
                     this.router.navigate(["/"]),
-                error => this.errorMessage = error
+                error => {
+                    console.log("error", error);
+                    this.errorMessage = error
+                }
             );
         }
     }

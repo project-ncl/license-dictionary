@@ -24,7 +24,7 @@ export function existingLicenseSpdxNameValidator(licenseService: LicenseService)
         let currentValue = control.value;
 
         // If value is empty, no validation is required  
-        if (currentValue == null || currentValue.trim() == '') {
+        if (!currentValue || currentValue.trim() == '') {
             return of({});
         }
 
@@ -33,7 +33,7 @@ export function existingLicenseSpdxNameValidator(licenseService: LicenseService)
         //console.log('control.parent.controls: ', control.parent.controls);
         //console.log('control.parent.get(licenseCodeSafeCopy): ', control.parent.get('licenseCodeSafeCopy'));
         let originalInput = control.parent.get('licenseSpdxNameSafeCopy');
-        if (originalInput && currentValue === originalInput.value.trim()) {
+        if (originalInput && originalInput.value && currentValue === originalInput.value.trim()) {
             return of({});
         }
 

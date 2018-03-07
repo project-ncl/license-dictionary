@@ -106,6 +106,15 @@ public class LicenseStore {
         return licenseRest;
     }
 
+    public LicenseRest update(LicenseRest licenseRest) {
+        License entity = fullMapper.map(licenseRest, License.class);
+        entity = dbStore.update(entity);
+
+        licenseRest = fullMapper.map(entity, LicenseRest.class);
+        licensesById.put(entity.getId(), licenseRest);
+        return licenseRest;
+    }
+
     public List<LicenseRest> getAll() {
         ArrayList<LicenseRest> result = new ArrayList<>(licensesById.values());
         result.sort(Comparator.comparing(LicenseRest::getCode));
