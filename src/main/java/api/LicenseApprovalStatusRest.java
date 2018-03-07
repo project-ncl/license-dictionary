@@ -18,9 +18,15 @@ public class LicenseApprovalStatusRest {
     public static final LicenseApprovalStatusRest UNKNOWN = LicenseApprovalStatusRest.Builder.newBuilder().id(3).name("UNKNOWN")
             .build();
 
-    public static final Map<String, LicenseApprovalStatusRest> approvalMap = Collections.unmodifiableMap(
-            Stream.of(new AbstractMap.SimpleEntry<>("yes", APPROVED), new AbstractMap.SimpleEntry<>("no", NOT_APPROVED))
-                    .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
+    public static final Map<String, LicenseApprovalStatusRest> approvalMapFromJson = Collections.unmodifiableMap(Stream
+            .of(new AbstractMap.SimpleEntry<>("yes", APPROVED), new AbstractMap.SimpleEntry<>("no", NOT_APPROVED),
+                    new AbstractMap.SimpleEntry<>("unknown", UNKNOWN))
+            .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
+
+    public static final Map<LicenseApprovalStatusRest, String> approvalMapFromEntity = Collections.unmodifiableMap(Stream
+            .of(new AbstractMap.SimpleEntry<>(APPROVED, "yes"), new AbstractMap.SimpleEntry<>(NOT_APPROVED, "no"),
+                    new AbstractMap.SimpleEntry<>(UNKNOWN, "unknown"))
+            .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
     @Getter
     @Setter
@@ -62,13 +68,22 @@ public class LicenseApprovalStatusRest {
         return "LicenseApprovalStatusRest{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 
-    public static LicenseApprovalStatusRest fromJsonString(String approved) {
+    public static LicenseApprovalStatusRest restEntityFromJsonString(String approved) {
         if (approved == null) {
             return UNKNOWN;
         }
 
-        LicenseApprovalStatusRest licenseApprovalStatusRest = approvalMap.get(approved);
+        LicenseApprovalStatusRest licenseApprovalStatusRest = approvalMapFromJson.get(approved);
         return (licenseApprovalStatusRest == null ? UNKNOWN : licenseApprovalStatusRest);
+    }
+
+    public static String jsonFromRestEntity(LicenseApprovalStatusRest licenseApprovalStatusRest) {
+        if (licenseApprovalStatusRest == null) {
+            return approvalMapFromEntity.get(UNKNOWN);
+        }
+
+        String approval = approvalMapFromEntity.get(licenseApprovalStatusRest);
+        return (approval == null ? approvalMapFromEntity.get(UNKNOWN) : approval);
     }
 
     public static class Builder {

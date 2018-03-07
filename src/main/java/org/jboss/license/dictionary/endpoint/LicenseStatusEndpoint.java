@@ -10,12 +10,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.LicenseStatusStore;
 import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.utils.NotFoundException;
+import org.jboss.logging.Logger;
 
 import api.LicenseApprovalStatusRest;
 
@@ -26,13 +30,15 @@ import api.LicenseApprovalStatusRest;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_STATUS_ENDPOINT)
-public class LicenseStatusEndpoint {
+public class LicenseStatusEndpoint extends AbstractEndpoint {
+
+    private static final Logger log = Logger.getLogger(LicenseStatusEndpoint.class);
 
     @Inject
     private LicenseStatusStore licenseStatusStore;
 
     @GET
-    public Response getAllLicenseApprovalStatusRest() {
+    public Response getAll() {
         List<LicenseApprovalStatusRest> results = licenseStatusStore.getAll();
 
         return paginated(results, results.size(), 0);
@@ -40,19 +46,23 @@ public class LicenseStatusEndpoint {
 
     @GET
     @Path("/{id}")
-    public LicenseApprovalStatusRest getLicenseApprovalStatusRest(@PathParam("id") Integer licenseStatusId) {
-        return licenseStatusStore.getById(licenseStatusId)
-                .orElseThrow(() -> new NotFoundException("No license status found for id " + licenseStatusId));
-    }
+    public Response getSpecific(@PathParam("id") Integer id) {
 
-    private static <T> Response paginated(T content, int totalCount, int offset) {
-        return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
+        LicenseApprovalStatusRest entity = licenseStatusStore.getById(id)
+                .orElseThrow(() -> new NotFoundException("No license status found for id " + id));
+
+        return Response.ok().entity(entity).build();
     }
 
     @POST
     @Transactional
-    public LicenseApprovalStatusRest addLicenseApprovalStatusRest(LicenseApprovalStatusRest licenseApprovalStatusRest) {
-        return licenseStatusStore.save(licenseApprovalStatusRest);
+    public Response createNew(LicenseApprovalStatusRest licenseApprovalStatusRest, @Context UriInfo uriInfo) {
+
+        log.info("creating license approval status: " + licenseApprovalStatusRest);
+        licenseApprovalStatusRest = licenseStatusStore.save(licenseApprovalStatusRest);
+
+        UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
+        return Response.created(uriBuilder.build(licenseApprovalStatusRest.getId())).entity(licenseApprovalStatusRest).build();
     }
 
 }

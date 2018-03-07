@@ -41,8 +41,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
@@ -60,7 +63,7 @@ import api.LicenseRest;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_ENDPOINT)
-public class LicenseEndpoint {
+public class LicenseEndpoint extends AbstractEndpoint {
 
     private static final Logger log = Logger.getLogger(LicenseEndpoint.class);
 
@@ -126,47 +129,49 @@ public class LicenseEndpoint {
     @PUT
     @Path("/{id}")
     @Transactional
-    public LicenseRest updateLicense(@PathParam("id") Integer licenseId, LicenseRest license) {
-        Optional<LicenseRest> maybeLicense = licenseStore.getById(licenseId);
-
-        LicenseRest licenseData = maybeLicense.orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
+    public Response update(@PathParam("id") Integer id, LicenseRest license) {
+        Optional<LicenseRest> maybeLicense = licenseStore.getById(id);
+        LicenseRest licenseData = maybeLicense.orElseThrow(() -> new NotFoundException("No license found for id " + id));
         fullMapper.map(license, licenseData);
 
-        return limitedMapper.map(licenseData, LicenseRest.class);
+        licenseData = licenseStore.update(licenseData);
+        return Response.ok().entity(licenseData).build();
     }
 
     @DELETE
     @Path("/{id}")
-    public void deleteLicense(@PathParam("id") Integer licenseId) {
-        log.info("deleting license: " + licenseId);
-        if (!licenseStore.delete(licenseId)) {
-            throw new NotFoundException("No license found for id " + licenseId);
+    public Response delete(@PathParam("id") Integer id) {
+        log.info("deleting license: " + id);
+        if (!licenseStore.delete(id)) {
+            throw new NotFoundException("No license found for id " + id);
         }
+        return Response.ok().build();
     }
 
     @POST
     @Transactional
-    public LicenseRest addLicense(LicenseRest license) {
-        validate(license);
-        license.getTextUrl();// mstodo fetch content and set to entity
-        return licenseStore.save(license);
+    public Response createNew(LicenseRest license, @Context UriInfo uriInfo) {
+        log.info("creating license: " + license);
+        // validate(license);
+        // license.getTextUrl();// mstodo fetch content and set to entity
+        license = licenseStore.save(license);
+
+        UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
+        return Response.created(uriBuilder.build(license.getId())).entity(license).build();
     }
 
     @GET
     @Path("/{id}")
-    public LicenseRest getLicense(@PathParam("id") Integer licenseId) {
-        LicenseRest entity = licenseStore.getById(licenseId)
-                .orElseThrow(() -> new NotFoundException("No license found for id " + licenseId));
-        return fullMapper.map(entity, LicenseRest.class);
+    public Response getSpecific(@PathParam("id") Integer id) {
+
+        LicenseRest entity = licenseStore.getById(id).orElseThrow(() -> new NotFoundException("No license found for id " + id));
+
+        return Response.ok().entity(fullMapper.map(entity, LicenseRest.class)).build();
     }
 
     @PostConstruct
     public void init() {
         licenseStore.init();
-    }
-
-    private static <T> Response paginated(T content, int totalCount, int offset) {
-        return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
     }
 
     // mstodo: this does not work!
