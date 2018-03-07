@@ -17,15 +17,19 @@
  */
 package org.jboss.license.dictionary.license;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -132,20 +136,20 @@ public class LicenseResourceTest {
         LicenseApprovalStatusRest UNKNOWN = LicenseApprovalStatusRest.Builder.newBuilder()
                 .name(LicenseApprovalStatusRest.UNKNOWN.getName()).build();
 
-        APPROVED = licenseStatusResource.addLicenseApprovalStatusRest(APPROVED);
-        NOT_APPROVED = licenseStatusResource.addLicenseApprovalStatusRest(NOT_APPROVED);
-        UNKNOWN = licenseStatusResource.addLicenseApprovalStatusRest(UNKNOWN);
+        APPROVED = (LicenseApprovalStatusRest) licenseStatusResource.createNew(APPROVED, getUriInfo()).getEntity();
+        NOT_APPROVED = (LicenseApprovalStatusRest) licenseStatusResource.createNew(NOT_APPROVED, getUriInfo()).getEntity();
+        UNKNOWN = (LicenseApprovalStatusRest) licenseStatusResource.createNew(UNKNOWN, getUriInfo()).getEntity();
 
         if (getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
             LicenseRest license = LicenseRest.Builder.newBuilder().code(MY_LICENSE_NAME).fedoraName(MY_LICENSE_NAME)
                     .url(MY_LICENSE_URL).licenseApprovalStatus(APPROVED).build();
 
-            license = licenseResource.addLicense(license);
+            license = (LicenseRest) licenseResource.createNew(license, getUriInfo()).getEntity();
 
             license.addAlias(null, "mylicense 1.0", license.getId());
             license.addAlias(null, "mylicense 1", license.getId());
 
-            license = licenseResource.updateLicense(license.getId(), license);
+            license = (LicenseRest) licenseResource.update(license.getId(), license).getEntity();
         }
     }
 
@@ -182,23 +186,126 @@ public class LicenseResourceTest {
 
     @Test
     public void shouldGetLicenseById() {
-        LicenseApprovalStatusRest APPROVED = licenseStatusResource
-                .getLicenseApprovalStatusRest(LicenseApprovalStatusRest.APPROVED.getId());
+        LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusResource
+                .getSpecific(LicenseApprovalStatusRest.APPROVED.getId()).getEntity();
         LicenseRest license = LicenseRest.Builder.newBuilder().fedoraName("licenseReadById").url("by-id.example.com")
                 .code("licenseReadById").licenseApprovalStatus(APPROVED).build();
-        
-        license = licenseResource.addLicense(license);
-        
+
+        license = (LicenseRest) licenseResource.createNew(license, getUriInfo()).getEntity();
+
         license.addAlias(null, "alias1", license.getId());
         license.addAlias(null, "alias2", license.getId());
-        
-        license = licenseResource.updateLicense(license.getId(), license);
-        
 
-        LicenseRest resultLicense = licenseResource.getLicense(license.getId());
+        license = (LicenseRest) licenseResource.update(license.getId(), license).getEntity();
+
+        LicenseRest resultLicense = (LicenseRest) licenseResource.getSpecific(license.getId()).getEntity();
         assertThat(resultLicense.getFedoraName()).isEqualTo(license.getFedoraName());
         assertThat(resultLicense.getUrl()).isEqualTo(license.getUrl());
         assertThat(resultLicense.getAliasNames()).hasSize(2);
         assertThat(resultLicense.getAliasNames()).containsExactlyInAnyOrder("alias1", "alias2");
+    }
+
+    private UriInfo getUriInfo() {
+        return new UriInfo() {
+
+            @Override
+            public URI resolve(URI arg0) {
+                return null;
+            }
+
+            @Override
+            public URI relativize(URI arg0) {
+                return null;
+            }
+
+            @Override
+            public UriBuilder getRequestUriBuilder() {
+                return null;
+            }
+
+            @Override
+            public URI getRequestUri() {
+                try {
+                    return new URI("http://localhost:8181/rest/v1/license");
+                } catch (URISyntaxException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            public MultivaluedMap<String, String> getQueryParameters(boolean arg0) {
+                return null;
+            }
+
+            @Override
+            public MultivaluedMap<String, String> getQueryParameters() {
+                return null;
+            }
+
+            @Override
+            public List<PathSegment> getPathSegments(boolean arg0) {
+                return null;
+            }
+
+            @Override
+            public List<PathSegment> getPathSegments() {
+                return null;
+            }
+
+            @Override
+            public MultivaluedMap<String, String> getPathParameters(boolean arg0) {
+                return null;
+            }
+
+            @Override
+            public MultivaluedMap<String, String> getPathParameters() {
+                return null;
+            }
+
+            @Override
+            public String getPath(boolean arg0) {
+                return null;
+            }
+
+            @Override
+            public String getPath() {
+                return null;
+            }
+
+            @Override
+            public List<String> getMatchedURIs(boolean arg0) {
+                return null;
+            }
+
+            @Override
+            public List<String> getMatchedURIs() {
+                return null;
+            }
+
+            @Override
+            public List<Object> getMatchedResources() {
+                return null;
+            }
+
+            @Override
+            public UriBuilder getBaseUriBuilder() {
+                return null;
+            }
+
+            @Override
+            public URI getBaseUri() {
+                return null;
+            }
+
+            @Override
+            public UriBuilder getAbsolutePathBuilder() {
+                return null;
+            }
+
+            @Override
+            public URI getAbsolutePath() {
+                return null;
+            }
+        };
     }
 }
