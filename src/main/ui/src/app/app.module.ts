@@ -37,7 +37,14 @@ import {ViewComponent} from './view/view.component';
 import { ExistingLicenseCodeValidatorDirective } from './custom-validators/existing-licensecode-validator';
 import { ExistingLicenseFedoraNameValidatorDirective } from './custom-validators/existing-licensefedoraname-validator';
 import { ExistingLicenseSpdxNameValidatorDirective } from './custom-validators/existing-licensesdpxname-validator';
+import { AutofocusDirective } from './custom-validators/autofocus';
 
+
+// Required for https://material.angular.io/guide/getting-started
+// USING THE MODULES BELOW, ALTHOUGH RECOMMENDED BY MATERIAL, WILL BREAK THE ANIMATION ON MAT-CHIPS
+// AND WILL CAUSE THE REMOVED CHIPS NOT TO BE REMOVED IN THE UI (ONLY IN THE BACKING MODEL)
+//import {NoopAnimationsModule, BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatChipsModule, MatIconModule, MatInputModule} from '@angular/material';
 
 const appRoutes: Routes = [
     { path: '', component: ListComponent },
@@ -58,13 +65,17 @@ const appRoutes: Routes = [
         ViewComponent,
         ExistingLicenseCodeValidatorDirective,
         ExistingLicenseFedoraNameValidatorDirective,
-        ExistingLicenseSpdxNameValidatorDirective
+        ExistingLicenseSpdxNameValidatorDirective,
+        AutofocusDirective
     ],
     imports: [
         BrowserModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes),
+        MatChipsModule,
+        MatIconModule,
+        MatInputModule
     ],
     providers: [
         AuthService,
