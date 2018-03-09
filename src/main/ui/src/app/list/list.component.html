@@ -23,7 +23,7 @@
 			<div class="btn-group pull-right" role="group"
 				aria-label="Action Toolbar">
 				<button type="button" class="btn btn-default btn-lg"
-				    routerLink="/edit">
+					routerLink="/edit">
 					<span class="glyphicon glyphicon-plus"></span>&nbsp;Create
 				</button>
 			</div>
@@ -34,7 +34,7 @@
 <div class="row">
 	<div class="col-md-4">
 		<div class="input-group input-group-md add-on">
-			<input type="text" class="form-control search-query"
+			<input appAutofocus type="text" class="form-control search-query"
 				[(ngModel)]="searchTerm" (keyup.enter)="searchForLicenses(0)"
 				placeholder="Enter a search term" name="name" />
 			<div class="input-group-btn">
@@ -85,15 +85,28 @@
 					<table>
 						<tbody>
 							<tr>
-								<td><div *ngFor="let alias of license.aliasNames">
-										{{alias}}<br>
-									</div></td>
+								<td><mat-chip-list name="licenseAliases"
+										[(ngModel)]="license.aliasNames"> <mat-chip
+										*ngFor="let alias of license.aliasNames" color="accent"
+										[selectable]="false" [removable]="false"> {{alias}}
+									</mat-chip> </mat-chip-list></td>
 							</tr>
 						</tbody>
 					</table>
 				</td>
-				<td style="font-size: inherit;"
-					class="state state-{{license.licenseApprovalStatus.name}}">{{license.licenseApprovalStatus.name}}</td>
+				<td><mat-chip class="material-chip status-notapproved"
+						*ngIf="license.licenseApprovalStatus.name == 'NOT_APPROVED'">
+					<mat-icon>error</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+					<mat-chip class="material-chip status-approved"
+						*ngIf="license.licenseApprovalStatus.name == 'APPROVED'">
+					<mat-icon>check_circle</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+					<mat-chip class="material-chip status-unknown"
+						*ngIf="license.licenseApprovalStatus.name == 'UNKNOWN'">
+					<mat-icon>warning</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+				</td>
 			</tr>
 		</tbody>
 		<tfoot>

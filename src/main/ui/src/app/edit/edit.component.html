@@ -180,6 +180,25 @@
 							</div>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="alias" class="col-sm-2 control-label">Alias</label>
+						<div class="col-sm-10">
+
+							<mat-chip-list name="licenseAliases" #chipList2
+								[(ngModel)]="licenseAliases"> <mat-chip
+								*ngFor="let licenseAlias of sortLicenseAlias(licenseAliases)" color="accent"
+								[selectable]="false" [removable]="true"
+								(remove)="removeAlias(licenseAlias)">
+							{{licenseAlias.aliasName}} <mat-icon matChipRemove>cancel</mat-icon>
+							</mat-chip> </mat-chip-list>
+							<input style="width: 25%;" 
+							    placeholder=" type here to add alias & press ENTER ..." 
+							    [matChipInputFor]="chipList2"
+								[matChipInputAddOnBlur]="addOnBlur"
+								(matChipInputTokenEnd)="addAlias($event)" />
+						</div>
+
+					</div>
 				</div>
 			</div>
 			<div class="form-group text-right">

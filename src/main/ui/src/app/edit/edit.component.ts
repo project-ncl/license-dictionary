@@ -18,8 +18,11 @@
 
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {EmptyLicense, License, LicenseApprovalStatus, LicenseApprovalStatusList, EmptyLicenseApprovalStatus, LicenseService} from "../license.service";
+import {EmptyLicense, License, LicenseAlias, LicenseApprovalStatus, LicenseApprovalStatusList, EmptyLicenseApprovalStatus, LicenseService} from "../license.service";
 import {AuthService} from "../auth.service";
+
+import {MatChipInputEvent} from '@angular/material';
+
 
 @Component({
     selector: 'app-edit',
@@ -33,6 +36,8 @@ export class EditComponent implements OnInit {
     selectedLicensesStatus: number;
     id: number;
     licensesStatusList: LicenseApprovalStatus[] = [];
+    licenseAliases: LicenseAlias[] = [];
+
 
     licenseCodeSafeCopy: string;
     licenseFedoraNameSafeCopy: string;
@@ -47,9 +52,8 @@ export class EditComponent implements OnInit {
 
     }
 
-    // loadToEdit()
-
     ngOnInit() {
+
         this.route.url.subscribe((segments: UrlSegment[]) => {
 
             this.licenseService.getLicensesApprovalStatus().subscribe(
@@ -69,6 +73,7 @@ export class EditComponent implements OnInit {
                 this.licenseFedoraNameSafeCopy = this.license.fedoraName;
                 this.licenseSpdxNameSafeCopy = this.license.spdxName;
                 this.selectedLicensesStatus = -1;
+                this.licenseAliases = [];
             }
         });
 
@@ -77,10 +82,11 @@ export class EditComponent implements OnInit {
 
     initializeLicense(license: License) {
         this.license = license;
-        this.selectedLicensesStatus = this.license.licenseApprovalStatus.id;
+        this.selectedLicensesStatus = license.licenseApprovalStatus.id;
         this.licenseCodeSafeCopy = license.code;
         this.licenseFedoraNameSafeCopy = license.fedoraName;
         this.licenseSpdxNameSafeCopy = license.spdxName;
+        this.licenseAliases = license.aliases;
     }
 
     saveLicense() {
@@ -123,7 +129,71 @@ export class EditComponent implements OnInit {
         }
         this.license = new EmptyLicense();
         this.selectedLicensesStatus = -1;
+        this.licenseAliases = [];
     };
 
+    removeAlias(alias: LicenseAlias) {
+        console.log('BEFORE removeAlias: ' + JSON.stringify(this.licenseAliases));
+        if (alias) {
+            if (alias.id !== -1) {
+                for (var j = 0; j < this.licenseAliases.length; j++) {
+                    if (this.licenseAliases[j].id == alias.id) {
+                        this.licenseAliases.splice(j, 1);
+                    }
+                }
+            }
+            else {
+                for (var j = 0; j < this.licenseAliases.length; j++) {
+                    if (this.licenseAliases[j].aliasName == alias.aliasName) {
+                        this.licenseAliases.splice(j, 1);
+                    }
+                }
+            }
+        }
+        console.log('AFTER removeAlias: ' + JSON.stringify(this.licenseAliases));
+    }
+
+    addAlias(event: MatChipInputEvent): void {
+        console.log('BEFORE addAlias: ' + JSON.stringify(this.licenseAliases));
+
+        let input = event.input;
+        let value = event.value;
+
+        // Add new alias
+        if ((value || '').trim()) {
+            if (!this.isDuplicatedValue(value)) {
+                this.licenseAliases.push({ id: -1, aliasName: value.trim(), licenseId: this.license.id });
+            }
+        }
+
+        // Reset the input value
+        if (input) {
+            input.value = '';
+        }
+        console.log('AFTER addAlias: ' + JSON.stringify(this.licenseAliases));
+    }
+
+    isDuplicatedValue(value) {
+        for (var j = 0; j < this.licenseAliases.length; j++) {
+            if (this.licenseAliases[j].aliasName == value.trim()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    sortLicenseAlias(licenseAliases) {
+        var sortedAliases: LicenseAlias[];
+        sortedAliases = licenseAliases.slice(0);
+        sortedAliases.sort((alias1, alias2): number => {
+            return alias1.aliasName.localeCompare(alias2.aliasName);
+        });
+
+        return sortedAliases;
+    }
+
+});
+
 }
+
 

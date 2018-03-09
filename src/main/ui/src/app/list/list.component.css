@@ -16,26 +16,26 @@
  * limitations under the License.
  */
 .urls-table {
-  margin-top: 1em;
-  margin-bottom: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 a.black-url {
-  color: inherit;
+	color: inherit;
 }
 
 .row-APPROVED {
-  background-color: rgb(240, 255, 230);
+	background-color: rgb(240, 255, 230);
 }
 
 .row-NOT_APPROVED {
-  background-color: rgb(255, 230, 230);
+	background-color: rgb(255, 230, 230);
 }
 
 .row-UNKNOWN {
-  background-color: rgb(250, 248, 230);
+	background-color: rgb(250, 248, 230);
 }
 
 .btn-block {
-  margin-top: 20px;
+	margin-top: 20px;
 }

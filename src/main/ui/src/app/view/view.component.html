@@ -68,7 +68,11 @@
 					<td><label style="padding-left: 15px;">Aliases</label></td>
 					<td>
 						<div style="padding-top: 7px;" class="col-sm-10">
-							<div *ngFor="let alias of license.aliasNames">{{alias}}</div>
+							<mat-chip-list name="licenseAliases"
+								[(ngModel)]="license.aliasNames"> <mat-chip
+								*ngFor="let alias of license.aliasNames" color="accent"
+								[selectable]="false" [removable]="false"> {{alias}} </mat-chip>
+							</mat-chip-list>
 						</div>
 					</td>
 				</tr>
@@ -87,8 +91,21 @@
 				</tr>
 				<tr>
 					<td><label style="padding-left: 15px;">Approval status</label></td>
-					<td><div style="padding-top: 7px;"
-							class="col-sm-10 state state-{{license.licenseApprovalStatus.name}}">{{license.licenseApprovalStatus.name}}</div></td>
+					<td><div style="padding-top: 7px;" class="col-sm-10">
+
+							<mat-chip class="material-chip status-notapproved"
+								*ngIf="license.licenseApprovalStatus.name == 'NOT_APPROVED'">
+							<mat-icon>error</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+							<mat-chip class="material-chip status-approved"
+								*ngIf="license.licenseApprovalStatus.name == 'APPROVED'">
+							<mat-icon>check_circle</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+							<mat-chip class="material-chip status-unknown"
+								*ngIf="license.licenseApprovalStatus.name == 'UNKNOWN'">
+							<mat-icon>warning</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+						</div></td>
 				</tr>
 			</tbody>
 		</table>
