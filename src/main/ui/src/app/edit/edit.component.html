@@ -17,6 +17,12 @@
     limitations under the License.
 
 -->
+<ol class="breadcrumb">
+  <li><a href="/">Licenses</a></li>
+  <li *ngIf="license.id != null"><a href="/view/{{license.id}}">View License</a></li>
+  <li *ngIf="license.id != null" class="active">Edit License</li>
+  <li *ngIf="license.id == null" class="active">Create License</li>
+</ol>
 <div class="row">
 	<div class="col-md-10">
 		<div class="page-header">

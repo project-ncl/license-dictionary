@@ -36,8 +36,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<!--<li><a href="{{logInLink}}">Login</a></li>-->
 					<li *ngIf="!isAuthenticated()"><a (click)="logIn()">Log in</a></li>
-					<li *ngIf="isAuthenticated()"><a (click)="logOut()">Log
-							out</a></li>
+					<li *ngIf="isAuthenticated()"><a (click)="logOut()">Log out</a></li>
 				</ul>
 			</div>
 		</div>
