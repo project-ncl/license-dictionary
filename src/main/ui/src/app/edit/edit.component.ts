@@ -16,12 +16,16 @@
 /// limitations under the License.
 ///
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {EmptyLicense, License, LicenseAlias, LicenseApprovalStatus, LicenseApprovalStatusList, EmptyLicenseApprovalStatus, LicenseService} from "../license.service";
-import {AuthService} from "../auth.service";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
 
-import {MatChipInputEvent} from '@angular/material';
+import { MatChipInputEvent } from '@angular/material';
+
+import { EmptyLicense, License, LicenseAlias, LicenseApprovalStatus, LicenseApprovalStatusList,
+    EmptyLicenseApprovalStatus, LicenseService } from "../license.service";
+
+import { AuthService } from "../auth.service";
+import { LoaderService } from '../loader/loader.service';
 
 
 @Component({
@@ -48,12 +52,12 @@ export class EditComponent implements OnInit {
     constructor(private route: ActivatedRoute,
         private router: Router,
         private licenseService: LicenseService,
-        private authService: AuthService) {
-
+        private authService: AuthService,
+        private loaderService: LoaderService) {
     }
 
     ngOnInit() {
-
+        this.showLoader();
         this.route.url.subscribe((segments: UrlSegment[]) => {
 
             this.licenseService.getLicensesApprovalStatus().subscribe(
@@ -75,6 +79,7 @@ export class EditComponent implements OnInit {
                 this.selectedLicensesStatus = -1;
                 this.licenseAliases = [];
             }
+            this.hideLoader();
         });
 
         this.authService.assureLoggedIn();
@@ -90,7 +95,7 @@ export class EditComponent implements OnInit {
     }
 
     saveLicense() {
-
+        this.showLoader();
         for (var j = 0; j < this.licensesStatusList.length; j++) {
             if (this.licensesStatusList[j].id == this.selectedLicensesStatus) {
                 this.license.licenseApprovalStatus = this.licensesStatusList[j];
@@ -99,20 +104,26 @@ export class EditComponent implements OnInit {
 
         if (this.id) {
             this.licenseService.updateLicense(this.id, this.license).subscribe(
-                license =>
-                    this.router.navigate(["/"]),
+                license => {
+                    this.router.navigate(["/"]);
+                    this.hideLoader();
+                },
                 error => {
                     console.log("error", error);
-                    this.errorMessage = error
+                    this.errorMessage = error;
+                    this.hideLoader();
                 }
             );
         } else {
             this.licenseService.addLicense(this.license).subscribe(
-                license =>
-                    this.router.navigate(["/"]),
+                license => {
+                    this.router.navigate(["/"]);
+                    this.hideLoader();
+                },
                 error => {
                     console.log("error", error);
-                    this.errorMessage = error
+                    this.errorMessage = error;
+                    this.hideLoader();
                 }
             );
         }
@@ -192,7 +203,13 @@ export class EditComponent implements OnInit {
         return sortedAliases;
     }
 
-});
+    private showLoader(): void {
+        this.loaderService.show();
+    }
+
+    private hideLoader(): void {
+        this.loaderService.hide();
+    }
 
 }
 

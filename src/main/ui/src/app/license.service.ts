@@ -16,13 +16,12 @@
 /// limitations under the License.
 ///
 
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
+import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 
-import {RestConfigService} from "./rest-config.service";
-
+import { RestConfigService } from "./rest-config.service";
 
 @Injectable()
 export class LicenseService {
@@ -84,14 +83,17 @@ export class LicenseService {
 
     removeLicense(id: number): Observable<any> {
         console.log("removing license ", id);
+
         return this.http.delete(RestConfigService.LICENSE_ENDPOINT + `/${id}`);
     }
 
     updateLicense(id: number, license: License): Observable<License> {
+
         return this.http.put<License>(RestConfigService.LICENSE_ENDPOINT + `/${id}`, license);
     }
 
     addLicense(license: License): Observable<License> {
+
         return this.http.post<License>(RestConfigService.LICENSE_ENDPOINT, license);
     }
 
@@ -120,7 +122,8 @@ export class LicenseService {
     }
 
     getLicenseApprovalStatus(id): Observable<LicenseApprovalStatus> {
-        return this.http.get<LicenseApprovalStatus>(RestConfigService.LICENSE_STATUS_ENDPOINT + `/${id}`)
+
+        return this.http.get<LicenseApprovalStatus>(RestConfigService.LICENSE_STATUS_ENDPOINT + `/${id}`);
     }
 
     private responseToLicenseList = (response, _) => {
@@ -144,8 +147,8 @@ export class LicenseService {
             offset: offset
         }
     }
-}
 
+}
 export interface LicenseList {
     entries: License[],
     totalCount: number,

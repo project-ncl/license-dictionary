@@ -16,35 +16,39 @@
 /// limitations under the License.
 ///
 
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {FormsModule} from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
+import { AppComponent } from './app.component';
+import { AuthService } from './auth.service';
+import { ListComponent } from './list/list.component';
+import { EditComponent } from './edit/edit.component';
+import { LicenseService } from "./license.service";
+import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { ConfirmationService } from "./confirmation.service";
+import { HttpHeadersInterceptor } from "./http-config.service";
+import { ImportComponent } from './import/import.component';
+import { ViewComponent } from './view/view.component';
 
-import {AppComponent} from './app.component';
-import {AuthService} from './auth.service';
-import {ListComponent} from './list/list.component';
-import {EditComponent} from './edit/edit.component';
-import {LicenseService} from "./license.service";
-import {ConfirmationComponent} from './confirmation/confirmation.component';
-import {ConfirmationService} from "./confirmation.service";
-import {HttpHeadersInterceptor} from "./http-config.service";
-import {ImportComponent} from './import/import.component';
-import {ViewComponent} from './view/view.component';
+import { HttpErrorInterceptor } from './http-error.interceptor';
+
 
 import { ExistingLicenseCodeValidatorDirective } from './custom-validators/existing-licensecode-validator';
 import { ExistingLicenseFedoraNameValidatorDirective } from './custom-validators/existing-licensefedoraname-validator';
 import { ExistingLicenseSpdxNameValidatorDirective } from './custom-validators/existing-licensesdpxname-validator';
 import { AutofocusDirective } from './custom-validators/autofocus';
 
+import { LoaderService } from './loader/loader.service';
+import { LoaderComponent } from './loader/loader.component';
 
 // Required for https://material.angular.io/guide/getting-started
 // USING THE MODULES BELOW, ALTHOUGH RECOMMENDED BY MATERIAL, WILL BREAK THE ANIMATION ON MAT-CHIPS
 // AND WILL CAUSE THE REMOVED CHIPS NOT TO BE REMOVED IN THE UI (ONLY IN THE BACKING MODEL)
 //import {NoopAnimationsModule, BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatChipsModule, MatIconModule, MatInputModule} from '@angular/material';
+import { MatChipsModule, MatIconModule, MatInputModule, MatProgressBarModule, MatProgressSpinnerModule } from '@angular/material';
 
 const appRoutes: Routes = [
     { path: '', component: ListComponent },
@@ -66,7 +70,8 @@ const appRoutes: Routes = [
         ExistingLicenseCodeValidatorDirective,
         ExistingLicenseFedoraNameValidatorDirective,
         ExistingLicenseSpdxNameValidatorDirective,
-        AutofocusDirective
+        AutofocusDirective,
+        LoaderComponent
     ],
     imports: [
         BrowserModule,
@@ -75,15 +80,26 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes),
         MatChipsModule,
         MatIconModule,
-        MatInputModule
+        MatInputModule,
+        MatProgressBarModule,
+        MatProgressSpinnerModule
+    ],
+    exports: [
+        LoaderComponent
     ],
     providers: [
         AuthService,
         LicenseService,
         ConfirmationService,
+        LoaderService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpHeadersInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
             multi: true,
         }
     ],

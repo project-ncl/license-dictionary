@@ -16,9 +16,10 @@
 /// limitations under the License.
 ///
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {License, LicenseList, LicenseService} from "../license.service";
-import {Router} from "@angular/router";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from "@angular/router";
+import { License, LicenseList, LicenseService } from "../license.service";
+import { LoaderService } from '../loader/loader.service';
 
 @Component({
     selector: 'app-list',
@@ -39,16 +40,20 @@ export class ListComponent implements OnInit {
     licenses: License[] = [];
     searchTerm: string;
 
-    constructor(private licenseService: LicenseService,
-        private router: Router) {
+    constructor(
+        private licenseService: LicenseService,
+        private router: Router,
+        private loaderService: LoaderService) {
     }
 
     ngOnInit() {
         this.currentPage = 0;
+        this.showLoader();
         this.licenseService.getLicenses(this.itemsPerPage, this.itemsPerPage * this.currentPage).subscribe(l => this.loadLicenseList(l));
     }
 
     searchForLicenses() {
+        this.showLoader();
         if (this.searchTerm === undefined || this.searchTerm == null || this.searchTerm.length <= 0) {
             this.licenseService.getLicenses(this.itemsPerPage, this.itemsPerPage * this.currentPage).subscribe(l => this.loadLicenseList(l));
         }
@@ -56,6 +61,7 @@ export class ListComponent implements OnInit {
             this.licenseService.findLicenses(this.searchTerm, this.itemsPerPage, this.itemsPerPage * this.currentPage)
                 .subscribe(l => this.loadLicenseList(l));
         }
+
     }
 
     private loadLicenseList(licenses: LicenseList) {
@@ -66,7 +72,7 @@ export class ListComponent implements OnInit {
         this.totalPages = Math.round(Math.ceil((this.totalResultsCount / this.itemsPerPage)));
 
         this.allLoaded = this.currentPage >= (this.totalPages - 1);
-        //console.log("allLoaded: ", this.allLoaded, "currentResultsCount:", this.currentResultsCount, "totalResultsCount: ", this.totalResultsCount, this.licenses);
+        this.hideLoader();
     };
 
     // show items per page
@@ -109,5 +115,13 @@ export class ListComponent implements OnInit {
     view = id => {
         this.router.navigate(["/view", id]);
     };
+
+    private showLoader(): void {
+        this.loaderService.show();
+    }
+
+    private hideLoader(): void {
+        this.loaderService.hide();
+    }
 
 }

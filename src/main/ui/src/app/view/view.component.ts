@@ -16,12 +16,13 @@
 /// limitations under the License.
 ///
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {EmptyLicense, License, LicenseService} from "../license.service";
-import {ConfirmationService} from "../confirmation.service";
-import {Location} from "@angular/common";
-import {AuthService} from "../auth.service";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
+import { EmptyLicense, License, LicenseService } from "../license.service";
+import { ConfirmationService } from "../confirmation.service";
+import { Location } from "@angular/common";
+import { AuthService } from "../auth.service";
+import { LoaderService } from '../loader/loader.service';
 
 @Component({
     selector: 'app-view',
@@ -38,10 +39,13 @@ export class ViewComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private licenseService: LicenseService,
         private authService: AuthService,
-        private router: Router) {
+        private router: Router,
+        private loaderService: LoaderService) {
     }
 
     ngOnInit() {
+
+        this.showLoader();
         this.route.url.subscribe((segments: UrlSegment[]) => {
             if (segments[1]) {
                 let id = Number(segments[1]);
@@ -50,13 +54,16 @@ export class ViewComponent implements OnInit {
                     license => this.license = license
                 );
             }
+            this.hideLoader();
         });
     }
 
     remove = id => {
-        this.authService.assureLoggedIn();
 
+        this.showLoader();
+        this.authService.assureLoggedIn();
         let path = this.location.path();
+
         this.licenseService.getLicense(id)
             .subscribe(license => {
                 this.confirmationService.init(
@@ -71,12 +78,23 @@ export class ViewComponent implements OnInit {
                         this.router.navigate([path]);
                     },
                 );
+                this.hideLoader();
             }
             );
     };
 
     edit = id => {
+        this.showLoader();
         this.router.navigate(["/edit", id])
+        this.hideLoader();
+    }
+
+    private showLoader(): void {
+        this.loaderService.show();
+    }
+
+    private hideLoader(): void {
+        this.loaderService.hide();
     }
 
 }

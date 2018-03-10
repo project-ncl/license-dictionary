@@ -16,93 +16,107 @@
 /// limitations under the License.
 ///
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../auth.service";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
-import {RestConfigService} from "../rest-config.service";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../auth.service";
+import { LoaderService } from '../loader/loader.service';
+
+import { RestConfigService } from "../rest-config.service";
 
 @Component({
-  selector: 'app-import',
-  templateUrl: './import.component.html',
-  styleUrls: ['./import.component.css'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-import',
+    templateUrl: './import.component.html',
+    styleUrls: ['./import.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ImportComponent implements OnInit {
-  successMessage;
-  errorMessage;
-  fileToUpload = null;
-  aliasFileToUpload = null;
+    successMessage;
+    errorMessage;
+    fileToUpload = null;
+    aliasFileToUpload = null;
 
-  constructor(private http: HttpClient,
-              private authService: AuthService) {
-  }
+    constructor(
+        private http: HttpClient,
+        private authService: AuthService,
+        private loaderService: LoaderService) {
+    }
 
-  ngOnInit() {
-    this.authService.assureLoggedIn();
-  }
+    ngOnInit() {
+        this.authService.assureLoggedIn();
+    }
 
-  updateFile($event) {
-    console.log("update file event: ", $event);
-    this.fileToUpload = $event.target.files[0];
-  }
-  updateAliasFile($event) {
-    console.log("update alias file event: ", $event);
-    this.aliasFileToUpload = $event.target.files[0];
-  }
+    updateFile($event) {
+        console.log("update file event: ", $event);
+        this.fileToUpload = $event.target.files[0];
+    }
+    updateAliasFile($event) {
+        console.log("update alias file event: ", $event);
+        this.aliasFileToUpload = $event.target.files[0];
+    }
 
-  importLicenses() {
-    this.successMessage = null;
-    this.errorMessage = null;
+    importLicenses() {
+        this.loaderService.show();
+        this.successMessage = null;
+        this.errorMessage = null;
 
-    let reader = new FileReader();
-    let upload = this.upload;
-    let component = this;
+        let reader = new FileReader();
+        let upload = this.upload;
+        let component = this;
+        let loaderService = this.loaderService;
 
-    reader.onloadend = function (file: any) {
-      let contents = file.target.result;
-      upload(contents, component);
-    };
+        reader.onloadend = function(file: any) {
+            let contents = file.target.result;
+            upload(contents, component, loaderService);
+        };
 
-    reader.readAsText(this.fileToUpload);
-  }
-  importLicensAliases() {
-    this.successMessage = null;
-    this.errorMessage = null;
+        reader.readAsText(this.fileToUpload);
+    }
 
-    let reader = new FileReader();
-    let uploadAliases = this.uploadAliases;
-    let component = this;
+    importLicensAliases() {
+        this.loaderService.show();
+        this.successMessage = null;
+        this.errorMessage = null;
 
-    reader.onloadend = function (file: any) {
-      let contents = file.target.result;
-      uploadAliases(contents, component);
-    };
+        let reader = new FileReader();
+        let uploadAliases = this.uploadAliases;
+        let component = this;
+        let loaderService = this.loaderService;
 
-    reader.readAsText(this.aliasFileToUpload);
-  }
-  
-  upload(content, component) {
-    component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_API, content).subscribe(
-      () => {
-        component.successMessage = "Successfully imported licenses";
-      },
-      error => {
-        console.log("error", error);
-        component.errorMessage = `Failed to import licenses. ${error.message}, ${error.error}`
-      }
-    )
-  }
-  uploadAliases(content, component) {
-    component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API, content).subscribe(
-      () => {
-        component.successMessage = "Successfully imported license aliases";
-      },
-      error => {
-        console.log("error", error);
-        component.errorMessage = `Failed to import license aliases. ${error.message}, ${error.error}`
-      }
-    )
-  }
+        reader.onloadend = function(file: any) {
+            let contents = file.target.result;
+            uploadAliases(contents, component, loaderService);
+        };
+
+        reader.readAsText(this.aliasFileToUpload);
+    }
+
+    upload(content, component, loaderService) {
+        component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_API, content).subscribe(
+            () => {
+                component.successMessage = "Successfully imported licenses";
+                loaderService.hide();
+            },
+            error => {
+                console.log("error", error);
+                component.errorMessage = `Failed to import licenses. ${error.message}, ${error.error}`;
+                loaderService.hide();
+            }
+        )
+    }
+
+    uploadAliases(content, component, loaderService) {
+        component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API, content).subscribe(
+            () => {
+                component.successMessage = "Successfully imported license aliases";
+                loaderService.hide();
+            },
+            error => {
+                console.log("error", error);
+                component.errorMessage = `Failed to import license aliases. ${error.message}, ${error.error}`;
+                loaderService.hide();
+            }
+        )
+    }
 
 }
