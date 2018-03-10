@@ -35,8 +35,12 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<!--<li><a href="{{logInLink}}">Login</a></li>-->
-					<li *ngIf="!isAuthenticated()"><a (click)="logIn()">Log in</a></li>
-					<li *ngIf="isAuthenticated()"><a (click)="logOut()">Log out</a></li>
+					<li *ngIf="!isAuthenticated()"><a (click)="logIn()">
+					   <span style="vertical-align: middle; display: inline-flex;"><mat-icon>person_white</mat-icon>Log in</span></a>
+					</li>
+					<li *ngIf="isAuthenticated()"><a (click)="logOut()">
+					   <span style="vertical-align: middle; display: inline-flex;"><mat-icon>person_outline_white</mat-icon>Log out</span></a>
+					</li>
 				</ul>
 			</div>
 		</div>
