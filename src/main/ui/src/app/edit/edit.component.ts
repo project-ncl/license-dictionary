@@ -26,6 +26,7 @@ import { EmptyLicense, License, LicenseAlias, LicenseApprovalStatus, LicenseAppr
 
 import { AuthService } from "../auth.service";
 import { LoaderService } from '../loader/loader.service';
+import { NotificationService } from '../notification/notification.service';
 
 
 @Component({
@@ -53,7 +54,8 @@ export class EditComponent implements OnInit {
         private router: Router,
         private licenseService: LicenseService,
         private authService: AuthService,
-        private loaderService: LoaderService) {
+        private loaderService: LoaderService,
+        private notificationService: NotificationService) {
     }
 
     ngOnInit() {
@@ -107,6 +109,7 @@ export class EditComponent implements OnInit {
                 license => {
                     this.router.navigate(["/"]);
                     this.hideLoader();
+                    this.notificationService.success('License updated !');
                 },
                 error => {
                     console.log("error", error);
@@ -119,6 +122,7 @@ export class EditComponent implements OnInit {
                 license => {
                     this.router.navigate(["/"]);
                     this.hideLoader();
+                    this.notificationService.success('License created !');
                 },
                 error => {
                     console.log("error", error);

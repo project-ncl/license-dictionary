@@ -19,10 +19,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { HttpClient } from "@angular/common/http";
+
 import { AuthService } from "../auth.service";
 import { LoaderService } from '../loader/loader.service';
-
 import { RestConfigService } from "../rest-config.service";
+import { NotificationService } from '../notification/notification.service';
+
 
 @Component({
     selector: 'app-import',
@@ -31,15 +33,14 @@ import { RestConfigService } from "../rest-config.service";
     encapsulation: ViewEncapsulation.None
 })
 export class ImportComponent implements OnInit {
-    successMessage;
-    errorMessage;
     fileToUpload = null;
     aliasFileToUpload = null;
 
     constructor(
         private http: HttpClient,
         private authService: AuthService,
-        private loaderService: LoaderService) {
+        private loaderService: LoaderService,
+        private notificationService: NotificationService) {
     }
 
     ngOnInit() {
@@ -57,17 +58,16 @@ export class ImportComponent implements OnInit {
 
     importLicenses() {
         this.loaderService.show();
-        this.successMessage = null;
-        this.errorMessage = null;
 
         let reader = new FileReader();
         let upload = this.upload;
         let component = this;
         let loaderService = this.loaderService;
+        let notificationService = this.notificationService;
 
         reader.onloadend = function(file: any) {
             let contents = file.target.result;
-            upload(contents, component, loaderService);
+            upload(contents, component, loaderService, notificationService);
         };
 
         reader.readAsText(this.fileToUpload);
@@ -75,45 +75,44 @@ export class ImportComponent implements OnInit {
 
     importLicensAliases() {
         this.loaderService.show();
-        this.successMessage = null;
-        this.errorMessage = null;
 
         let reader = new FileReader();
         let uploadAliases = this.uploadAliases;
         let component = this;
         let loaderService = this.loaderService;
+        let notificationService = this.notificationService;
 
         reader.onloadend = function(file: any) {
             let contents = file.target.result;
-            uploadAliases(contents, component, loaderService);
+            uploadAliases(contents, component, loaderService, notificationService);
         };
 
         reader.readAsText(this.aliasFileToUpload);
     }
 
-    upload(content, component, loaderService) {
+    upload(content, component, loaderService, notificationService) {
         component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_API, content).subscribe(
             () => {
-                component.successMessage = "Successfully imported licenses";
+                notificationService.success('Successfully imported licenses !');
                 loaderService.hide();
             },
             error => {
                 console.log("error", error);
-                component.errorMessage = `Failed to import licenses. ${error.message}, ${error.error}`;
+                notificationService.success(`Failed to import licenses. ${error.message}, ${error.error}`);
                 loaderService.hide();
             }
         )
     }
 
-    uploadAliases(content, component, loaderService) {
+    uploadAliases(content, component, loaderService, notificationService) {
         component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API, content).subscribe(
             () => {
-                component.successMessage = "Successfully imported license aliases";
+                notificationService.success('Successfully imported license aliases !');
                 loaderService.hide();
             },
             error => {
                 console.log("error", error);
-                component.errorMessage = `Failed to import license aliases. ${error.message}, ${error.error}`;
+                notificationService.success(`Failed to import license aliases. ${error.message}, ${error.error}`);
                 loaderService.hide();
             }
         )
