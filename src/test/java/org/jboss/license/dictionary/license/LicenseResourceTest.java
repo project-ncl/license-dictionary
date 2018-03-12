@@ -112,7 +112,7 @@ public class LicenseResourceTest {
                 .addPackage(KeycloakConfig.class.getPackage())
 
                 .addPackage(ErrorDto.class.getPackage()).addPackage(RhLicense.class.getPackage())
-                .addPackage(BadRequestException.class.getPackage())
+                .addPackage(BadRequestException.class.getPackage()).addAsResource("META-INF/import.sql", "META-INF/import.sql")
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml").addAsResource("project-test.yml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
@@ -130,16 +130,7 @@ public class LicenseResourceTest {
     @Before
     public void setUp() {
 
-        LicenseApprovalStatusRest APPROVED = LicenseApprovalStatusRest.Builder.newBuilder()
-                .name(LicenseApprovalStatusRest.APPROVED.getName()).build();
-        LicenseApprovalStatusRest NOT_APPROVED = LicenseApprovalStatusRest.Builder.newBuilder()
-                .name(LicenseApprovalStatusRest.NOT_APPROVED.getName()).build();
-        LicenseApprovalStatusRest UNKNOWN = LicenseApprovalStatusRest.Builder.newBuilder()
-                .name(LicenseApprovalStatusRest.UNKNOWN.getName()).build();
-
-        APPROVED = (LicenseApprovalStatusRest) licenseStatusResource.createNew(APPROVED, getUriInfo()).getEntity();
-        NOT_APPROVED = (LicenseApprovalStatusRest) licenseStatusResource.createNew(NOT_APPROVED, getUriInfo()).getEntity();
-        UNKNOWN = (LicenseApprovalStatusRest) licenseStatusResource.createNew(UNKNOWN, getUriInfo()).getEntity();
+        LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusResource.getSpecific(1).getEntity();
 
         if (getLicenses(null, null, null, null, MY_LICENSE_NAME).isEmpty()) {
             LicenseRest license = LicenseRest.Builder.newBuilder().code(MY_LICENSE_NAME).fedoraName(MY_LICENSE_NAME)
