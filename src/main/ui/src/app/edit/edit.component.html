@@ -18,19 +18,22 @@
 
 -->
 <ol class="breadcrumb">
-  <li><a href="/">Licenses</a></li>
-  <li *ngIf="license.id != null"><a href="/view/{{license.id}}">View License</a></li>
-  <li *ngIf="license.id != null" class="active">Edit License</li>
-  <li *ngIf="license.id == null" class="active">Create License</li>
+	<li><a href="/">Licenses</a></li>
+	<li *ngIf="license && license.id != null"><a
+		href="/view/{{license.id}}">View License</a></li>
+	<li *ngIf="license && license.id != null" class="active">Edit
+		License</li>
+	<li *ngIf="license && license.id == null" class="active">Create
+		License</li>
 </ol>
 <div class="row">
 	<div class="col-md-10">
 		<div class="page-header">
 
-			<div *ngIf="license.id != null">
+			<div *ngIf="license && license.id != null">
 				<h1 class="header-title">Edit license {{licenseCodeSafeCopy}}</h1>
 			</div>
-			<div *ngIf="license.id == null">
+			<div *ngIf="license && license.id == null">
 				<h1 class="header-title">Add a new License</h1>
 			</div>
 		</div>
@@ -58,9 +61,9 @@
 								name="licenseSpdxNameSafeCopy" id="licenseSpdxNameSafeCopy"
 								[(ngModel)]="licenseSpdxNameSafeCopy" /> <input type="text"
 								class="form-control" id="code" required licenseCodeExists
-								maxlength="50" [(ngModel)]="license.code" name="code"
-								#code="ngModel">
-							<div *ngIf="code.errors && (code.dirty || code.touched)"
+								maxlength="50" *ngIf="license" [(ngModel)]="license.code"
+								name="code" #code="ngModel">
+							<div *ngIf="code && code.errors && (code.dirty || code.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!code.errors.required">Required field</div>
 								<div [hidden]="!code.errors.maxlength">Code cannot be more
@@ -76,11 +79,11 @@
 							name</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="fedoraName"
-								licenseFedoraNameExists maxlength="255"
+								licenseFedoraNameExists maxlength="255" *ngIf="license"
 								[(ngModel)]="license.fedoraName" name="fedoraName"
 								#fedoraName="ngModel">
 							<div
-								*ngIf="fedoraName.errors && (fedoraName.dirty || fedoraName.touched)"
+								*ngIf="fedoraName && fedoraName.errors && (fedoraName.dirty || fedoraName.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!fedoraName.errors.maxlength">Fedora name
 									cannot be more than 255 characters long</div>
@@ -95,10 +98,11 @@
 							abbreviation</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="fedoraAbbreviation"
-								maxlength="50" [(ngModel)]="license.fedoraAbbreviation"
+								maxlength="50" *ngIf="license"
+								[(ngModel)]="license.fedoraAbbreviation"
 								name="fedoraAbbreviation" #fedoraAbbreviation="ngModel">
 							<div
-								*ngIf="fedoraAbbreviation.errors && (fedoraAbbreviation.dirty || fedoraAbbreviation.touched)"
+								*ngIf="fedoraAbbreviation && fedoraAbbreviation.errors && (fedoraAbbreviation.dirty || fedoraAbbreviation.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!fedoraAbbreviation.errors.maxlength">Fedora
 									abbreviation cannot be more than 50 characters long</div>
@@ -110,11 +114,11 @@
 						<label for="code" class="col-sm-2 control-label">Spdx name</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="spdxName"
-								licenseSpdxNameExists maxlength="255"
+								licenseSpdxNameExists maxlength="255" *ngIf="license"
 								[(ngModel)]="license.spdxName" name="spdxName"
 								#spdxName="ngModel">
 							<div
-								*ngIf="spdxName.errors && (spdxName.dirty || spdxName.touched)"
+								*ngIf="spdxName && spdxName.errors && (spdxName.dirty || spdxName.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!spdxName.errors.maxlength">Spdx name
 									cannot be more than 255 characters long</div>
@@ -129,10 +133,11 @@
 							abbreviation</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="spdxAbbreviation"
-								maxlength="50" [(ngModel)]="license.spdxAbbreviation"
-								name="spdxAbbreviation" #spdxAbbreviation="ngModel">
+								maxlength="50" *ngIf="license"
+								[(ngModel)]="license.spdxAbbreviation" name="spdxAbbreviation"
+								#spdxAbbreviation="ngModel">
 							<div
-								*ngIf="spdxAbbreviation.errors && (spdxAbbreviation.dirty || spdxAbbreviation.touched)"
+								*ngIf="spdxAbbreviation && spdxAbbreviation.errors && (spdxAbbreviation.dirty || spdxAbbreviation.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!spdxAbbreviation.errors.maxlength">Spdx
 									abbreviation cannot be more than 50 characters long</div>
@@ -144,9 +149,9 @@
 						<label for="code" class="col-sm-2 control-label">Url</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="url"
-								pattern="https?://.+" [(ngModel)]="license.url" name="url"
-								#url="ngModel">
-							<div *ngIf="url.errors && (url.dirty || url.touched)"
+								pattern="https?://.+" *ngIf="license" [(ngModel)]="license.url"
+								name="url" #url="ngModel">
+							<div *ngIf="url && url.errors && (url.dirty || url.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!url.errors.pattern">Url must be valid
 									(https?://.+ regexp)</div>
@@ -158,9 +163,10 @@
 						<label for="code" class="col-sm-2 control-label">Text url</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="textUrl"
-								pattern="https?://.+" [(ngModel)]="license.textUrl"
-								name="textUrl" #textUrl="ngModel">
-							<div *ngIf="textUrl.errors && (textUrl.dirty || textUrl.touched)"
+								pattern="https?://.+" *ngIf="license"
+								[(ngModel)]="license.textUrl" name="textUrl" #textUrl="ngModel">
+							<div
+								*ngIf="textUrl && textUrl.errors && (textUrl.dirty || textUrl.touched)"
 								class="alert alert-danger">
 								<div [hidden]="!selStatus.errors.pattern">Text url must be
 									valid (https?://.+ regexp)</div>
@@ -192,14 +198,14 @@
 
 							<mat-chip-list name="licenseAliases" #chipList2
 								[(ngModel)]="licenseAliases"> <mat-chip
-								*ngFor="let licenseAlias of sortLicenseAlias(licenseAliases)" color="accent"
-								[selectable]="false" [removable]="true"
+								*ngFor="let licenseAlias of sortLicenseAlias(licenseAliases)"
+								color="accent" [selectable]="false" [removable]="true"
 								(remove)="removeAlias(licenseAlias)">
 							{{licenseAlias.aliasName}} <mat-icon matChipRemove>cancel</mat-icon>
 							</mat-chip> </mat-chip-list>
-							<input style="width: 25%;" 
-							    placeholder=" type here to add alias & press ENTER ..." 
-							    [matChipInputFor]="chipList2"
+							<input style="width: 25%;"
+								placeholder=" type here to add alias & press ENTER ..."
+								[matChipInputFor]="chipList2"
 								[matChipInputAddOnBlur]="addOnBlur"
 								(matChipInputTokenEnd)="addAlias($event)" />
 						</div>
