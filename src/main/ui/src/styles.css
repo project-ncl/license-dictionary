@@ -39,11 +39,6 @@ a {
 	cursor: pointer;
 }
 
-.app-background {
-	background-color: #fafafa;
-	color: rgba(0, 0, 0, .87);
-}
-
 .material-chip.status-approved {
 	background-color: inherit;
 	color: #0b850b;
@@ -68,14 +63,58 @@ a {
 	padding: 1px;
 }
 
-.material-chip.status-approved:not(.material-basic-chip) {
+.material-chip.status-approved:not (.material-basic-chip ) {
 	padding: 1px;
 }
 
-.material-chip.status-notapproved:not(.material-basic-chip) {
+.material-chip.status-notapproved:not (.material-basic-chip ) {
 	padding: 1px;
 }
 
-.material-chip.status-unknown:not(.material-basic-chip) {
+.material-chip.status-unknown:not (.material-basic-chip ) {
 	padding: 1px;
+}
+
+.mat-simple-snackbar-action {
+    color: inherit;
+}
+
+.custom-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
+}
+
+.custom-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
+}
+
+.custom-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
+}
+
+.custom-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
 }
