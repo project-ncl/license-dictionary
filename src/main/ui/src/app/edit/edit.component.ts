@@ -16,85 +16,205 @@
 /// limitations under the License.
 ///
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {EmptyLicense, License, LicenseService} from "../license.service";
-import {AuthService} from "../auth.service";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
+
+import { MatChipInputEvent } from '@angular/material';
+
+import { EmptyLicense, License, LicenseAlias, LicenseApprovalStatus, LicenseApprovalStatusList,
+    EmptyLicenseApprovalStatus, LicenseService } from "../license.service";
+
+import { AuthService } from "../auth.service";
+import { LoaderService } from '../loader/loader.service';
+import { NotificationService } from '../notification/notification.service';
+
 
 @Component({
-  selector: 'app-edit',
-  templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-edit',
+    templateUrl: './edit.component.html',
+    styleUrls: ['./edit.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EditComponent implements OnInit {
-  license: License;
-  newAlias: string;
-  newUrlAlias: string;
-  id: number;
 
-  errorMessage: string;
+    license: License;
+    selectedLicensesStatus: number;
+    id: number;
+    licensesStatusList: LicenseApprovalStatus[] = [];
+    licenseAliases: LicenseAlias[] = [];
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private licenseService: LicenseService,
-              private authService: AuthService) {
-  }
 
-  // loadToEdit()
+    licenseCodeSafeCopy: string;
+    licenseFedoraNameSafeCopy: string;
+    licenseSpdxNameSafeCopy: string;
 
-  ngOnInit() {
-    this.route.url.subscribe((segments: UrlSegment[]) => {
-      this.license = new EmptyLicense();
-      let idAsObject = segments[1];
-      if (idAsObject) {
-        console.log("an id was passed", idAsObject);
-        this.id = Number(idAsObject);
-        this.licenseService.getLicense(this.id).subscribe(license => this.license = license);
-      }
-    });
+    errorMessage: string;
 
-    this.authService.assureLoggedIn();
-  }
-
-  addAlias() {
-    if (this.newAlias) {
-      this.license.nameAliases.push(this.newAlias);
-      this.newAlias = '';
+    constructor(private route: ActivatedRoute,
+        private router: Router,
+        private licenseService: LicenseService,
+        private authService: AuthService,
+        private loaderService: LoaderService,
+        private notificationService: NotificationService) {
     }
-  }
 
-  removeAlias(alias: string) {
-    this.license.nameAliases = this.license.nameAliases.filter(a => a != alias)
-  }
+    ngOnInit() {
+        this.showLoader();
+        this.route.url.subscribe((segments: UrlSegment[]) => {
 
-  addUrlAlias() {
-    if (this.newUrlAlias) {
-      this.license.urlAliases.push(this.newUrlAlias);
-      this.newUrlAlias = '';
+            this.licenseService.getLicensesApprovalStatus().subscribe(
+                statusList => this.licensesStatusList = statusList.entries
+            );
+
+            if (segments[1]) {
+                this.id = Number(segments[1]);
+                console.log("a license id was passed for editing: ", this.id);
+                this.licenseService.getLicense(this.id).subscribe(
+                    license => this.initializeLicense(license)
+                );
+            }
+            else {
+                this.license = new EmptyLicense();
+                this.licenseCodeSafeCopy = this.license.code;
+                this.licenseFedoraNameSafeCopy = this.license.fedoraName;
+                this.licenseSpdxNameSafeCopy = this.license.spdxName;
+                this.selectedLicensesStatus = -1;
+                this.licenseAliases = [];
+            }
+            this.hideLoader();
+        });
+
+        this.authService.assureLoggedIn();
     }
-  }
 
-  removeUrlAlias(urlAlias: string) {
-    this.license.urlAliases = this.license.urlAliases.filter(a => a != urlAlias)
-  }
+    initializeLicense(license: License) {
+        this.license = license;
+        this.selectedLicensesStatus = license.licenseApprovalStatus.id;
+        this.licenseCodeSafeCopy = license.code;
+        this.licenseFedoraNameSafeCopy = license.fedoraName;
+        this.licenseSpdxNameSafeCopy = license.spdxName;
+        this.licenseAliases = license.aliases;
+    }
 
-  saveLicense() {
-    if (this.id) {
-      this.licenseService.updateLicense(this.id, this.license).subscribe(
-        license =>
-          this.router.navigate(["/"]),
-        error => {
-          console.log("error", error);
-          this.errorMessage = error
+    saveLicense() {
+        this.showLoader();
+        for (var j = 0; j < this.licensesStatusList.length; j++) {
+            if (this.licensesStatusList[j].id == this.selectedLicensesStatus) {
+                this.license.licenseApprovalStatus = this.licensesStatusList[j];
+            }
         }
-      );
-    } else {
-      this.licenseService.addLicense(this.license).subscribe(
-        license =>
-          this.router.navigate(["/"]),
-        error => this.errorMessage = error
-      );
+
+        if (this.id) {
+            this.licenseService.updateLicense(this.id, this.license).subscribe(
+                license => {
+                    this.router.navigate(["/"]);
+                    this.hideLoader();
+                    this.notificationService.success('License updated !');
+                },
+                error => {
+                    console.log("error", error);
+                    this.errorMessage = error;
+                    this.hideLoader();
+                }
+            );
+        } else {
+            this.licenseService.addLicense(this.license).subscribe(
+                license => {
+                    this.router.navigate(["/"]);
+                    this.hideLoader();
+                    this.notificationService.success('License created !');
+                },
+                error => {
+                    console.log("error", error);
+                    this.errorMessage = error;
+                    this.hideLoader();
+                }
+            );
+        }
     }
-  }
+
+    isStatusSelected() {
+        return (this.selectedLicensesStatus != -1);
+    }
+
+    reset = function(form) {
+        if (form) {
+            form.$setPristine(true);
+            form.$setUntouched(true);
+        }
+        this.license = new EmptyLicense();
+        this.selectedLicensesStatus = -1;
+        this.licenseAliases = [];
+    };
+
+    removeAlias(alias: LicenseAlias) {
+        console.log('BEFORE removeAlias: ' + JSON.stringify(this.licenseAliases));
+        if (alias) {
+            if (alias.id !== -1) {
+                for (var j = 0; j < this.licenseAliases.length; j++) {
+                    if (this.licenseAliases[j].id == alias.id) {
+                        this.licenseAliases.splice(j, 1);
+                    }
+                }
+            }
+            else {
+                for (var j = 0; j < this.licenseAliases.length; j++) {
+                    if (this.licenseAliases[j].aliasName == alias.aliasName) {
+                        this.licenseAliases.splice(j, 1);
+                    }
+                }
+            }
+        }
+        console.log('AFTER removeAlias: ' + JSON.stringify(this.licenseAliases));
+    }
+
+    addAlias(event: MatChipInputEvent): void {
+        console.log('BEFORE addAlias: ' + JSON.stringify(this.licenseAliases));
+
+        let input = event.input;
+        let value = event.value;
+
+        // Add new alias
+        if ((value || '').trim()) {
+            if (!this.isDuplicatedValue(value)) {
+                this.licenseAliases.push({ id: -1, aliasName: value.trim(), licenseId: this.license.id });
+            }
+        }
+
+        // Reset the input value
+        if (input) {
+            input.value = '';
+        }
+        console.log('AFTER addAlias: ' + JSON.stringify(this.licenseAliases));
+    }
+
+    isDuplicatedValue(value) {
+        for (var j = 0; j < this.licenseAliases.length; j++) {
+            if (this.licenseAliases[j].aliasName == value.trim()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    sortLicenseAlias(licenseAliases) {
+        var sortedAliases: LicenseAlias[];
+        sortedAliases = licenseAliases.slice(0);
+        sortedAliases.sort((alias1, alias2): number => {
+            return alias1.aliasName.localeCompare(alias2.aliasName);
+        });
+
+        return sortedAliases;
+    }
+
+    private showLoader(): void {
+        this.loaderService.show();
+    }
+
+    private hideLoader(): void {
+        this.loaderService.hide();
+    }
+
 }
+
+

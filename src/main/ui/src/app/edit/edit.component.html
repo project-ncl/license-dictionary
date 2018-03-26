@@ -17,59 +17,211 @@
     limitations under the License.
 
 -->
-<div class="container">
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    <strong>Error saving license</strong>{{errorMessage}}
-  </div>
-  <form (submit)="saveLicense()" class="form-horizontal">
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Name: </label>
-      <div class="col-sm-10">
-        <input type="text" [(ngModel)]="license.name" name="name" class="form-control"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">URL: </label>
-      <div class="col-sm-10">
-        <input type="text" [(ngModel)]="license.url" name="url" class="form-control"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Text URL: </label>
-      <div class="col-sm-10">
-        <input type="text" [(ngModel)]="license.textUrl" name="textUrl" class="form-control"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Aliases: </label>
-      <div class="table-responsive">
-        <table class="table">
-          <tr *ngFor="let alias of license.nameAliases">
-            <td>{{alias}}</td>
-            <td>
-              <a (click)="removeAlias(alias)"><i class="glyphicon glyphicon-remove"></i>Remove</a>
-            </td>
-          </tr>
-        </table>
-        <input type="text" [(ngModel)]="newAlias" placeholder="New alias" name="newAlias"/>
-        <a (click)="addAlias()"><i class="glyphicon glyphicon-plus"></i>Add alias</a>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">URL Aliases: </label>
-      <div class="table-responsive">
-        <table class="table">
-          <tr *ngFor="let alias of license.urlAliases">
-            <td>{{alias}}</td>
-            <td>
-              <a (click)="removeUrlAlias(alias)"><i class="glyphicon glyphicon-remove"></i>Remove</a>
-            </td>
-          </tr>
-        </table>
-        <input type="text" [(ngModel)]="newUrlAlias" placeholder="New URL alias" name="newUrlAlias"/>
-        <a (click)="addUrlAlias()"><i class="glyphicon glyphicon-plus"></i>Add URL alias</a>
-      </div>
-    </div>
-    <button type="submit">Submit</button>
-  </form>
+<ol class="breadcrumb">
+	<li><a href="/">Licenses</a></li>
+	<li *ngIf="license && license.id != null"><a
+		href="/view/{{license.id}}">View License</a></li>
+	<li *ngIf="license && license.id != null" class="active">Edit
+		License</li>
+	<li *ngIf="license && license.id == null" class="active">Create
+		License</li>
+</ol>
+<div class="row">
+	<div class="col-md-10">
+		<div class="page-header">
+
+			<div *ngIf="license && license.id != null">
+				<h1 class="header-title">Edit license {{licenseCodeSafeCopy}}</h1>
+			</div>
+			<div *ngIf="license && license.id == null">
+				<h1 class="header-title">Add a new License</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<div *ngIf="errorMessage" class="alert alert-danger">
+	<strong>Error saving license</strong>{{errorMessage}}
+</div>
+<div class="row">
+	<div class="col-md-10 col-lg-10">
+		<form (submit)="saveLicense()" class="form-horizontal"
+			name="formLicense" #licenseForm="ngForm">
+
+			<div class="panel panel-default">
+				<div class="panel-body">
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">* Code</label>
+						<div class="col-sm-10">
+							<input type="hidden" name="licenseCodeSafeCopy"
+								id="licenseCodeSafeCopy" [(ngModel)]="licenseCodeSafeCopy" /> <input
+								type="hidden" name="licenseFedoraNameSafeCopy"
+								id="licenseFedoraNameSafeCopy"
+								[(ngModel)]="licenseFedoraNameSafeCopy" /> <input type="hidden"
+								name="licenseSpdxNameSafeCopy" id="licenseSpdxNameSafeCopy"
+								[(ngModel)]="licenseSpdxNameSafeCopy" /> <input type="text"
+								class="form-control" id="code" required licenseCodeExists
+								maxlength="50" *ngIf="license" [(ngModel)]="license.code"
+								name="code" #code="ngModel">
+							<div *ngIf="code && code.errors && (code.dirty || code.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!code.errors.required">Required field</div>
+								<div [hidden]="!code.errors.maxlength">Code cannot be more
+									than 50 characters long</div>
+								<div [hidden]="!code.errors.licenseCodeExists">Code
+									already exist</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">Fedora
+							name</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="fedoraName"
+								licenseFedoraNameExists maxlength="255" *ngIf="license"
+								[(ngModel)]="license.fedoraName" name="fedoraName"
+								#fedoraName="ngModel">
+							<div
+								*ngIf="fedoraName && fedoraName.errors && (fedoraName.dirty || fedoraName.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!fedoraName.errors.maxlength">Fedora name
+									cannot be more than 255 characters long</div>
+								<div [hidden]="!fedoraName.errors.licenseFedoraNameExists">Fedora
+									name already exist</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">Fedora
+							abbreviation</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="fedoraAbbreviation"
+								maxlength="50" *ngIf="license"
+								[(ngModel)]="license.fedoraAbbreviation"
+								name="fedoraAbbreviation" #fedoraAbbreviation="ngModel">
+							<div
+								*ngIf="fedoraAbbreviation && fedoraAbbreviation.errors && (fedoraAbbreviation.dirty || fedoraAbbreviation.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!fedoraAbbreviation.errors.maxlength">Fedora
+									abbreviation cannot be more than 50 characters long</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">Spdx name</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="spdxName"
+								licenseSpdxNameExists maxlength="255" *ngIf="license"
+								[(ngModel)]="license.spdxName" name="spdxName"
+								#spdxName="ngModel">
+							<div
+								*ngIf="spdxName && spdxName.errors && (spdxName.dirty || spdxName.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!spdxName.errors.maxlength">Spdx name
+									cannot be more than 255 characters long</div>
+								<div [hidden]="!spdxName.errors.licenseSpdxNameExists">Spdx
+									name already exist</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">Spdx
+							abbreviation</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="spdxAbbreviation"
+								maxlength="50" *ngIf="license"
+								[(ngModel)]="license.spdxAbbreviation" name="spdxAbbreviation"
+								#spdxAbbreviation="ngModel">
+							<div
+								*ngIf="spdxAbbreviation && spdxAbbreviation.errors && (spdxAbbreviation.dirty || spdxAbbreviation.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!spdxAbbreviation.errors.maxlength">Spdx
+									abbreviation cannot be more than 50 characters long</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">Url</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="url"
+								pattern="https?://.+" *ngIf="license" [(ngModel)]="license.url"
+								name="url" #url="ngModel">
+							<div *ngIf="url && url.errors && (url.dirty || url.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!url.errors.pattern">Url must be valid
+									(https?://.+ regexp)</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="code" class="col-sm-2 control-label">Text url</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="textUrl"
+								pattern="https?://.+" *ngIf="license"
+								[(ngModel)]="license.textUrl" name="textUrl" #textUrl="ngModel">
+							<div
+								*ngIf="textUrl && textUrl.errors && (textUrl.dirty || textUrl.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!selStatus.errors.pattern">Text url must be
+									valid (https?://.+ regexp)</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="status" class="col-sm-2 control-label">*
+							Approval status</label>
+						<div class="col-sm-10">
+
+							<select class="form-control" [(ngModel)]="selectedLicensesStatus"
+								[ngModelOptions]="{standalone: true}" name="selectedStatus">
+								<option [value]="-1" disabled selected>--&gt; Select
+									License Approval Status &lt;--</option>
+								<option *ngFor="let status of licensesStatusList"
+									[ngValue]="status.id">{{status.name}}</option>
+							</select>
+							<div
+								*ngIf="!isStatusSelected() && selectedStatus && (selectedStatus.dirty || selectedStatus.touched)"
+								class="alert alert-danger">
+								<div [hidden]="!isStatusSelected()">Required field</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="alias" class="col-sm-2 control-label">Alias</label>
+						<div class="col-sm-10">
+
+							<mat-chip-list name="licenseAliases" #chipList2
+								[(ngModel)]="licenseAliases"> <mat-chip
+								*ngFor="let licenseAlias of sortLicenseAlias(licenseAliases)"
+								color="accent" [selectable]="false" [removable]="true"
+								(remove)="removeAlias(licenseAlias)">
+							{{licenseAlias.aliasName}} <mat-icon matChipRemove>cancel</mat-icon>
+							</mat-chip> </mat-chip-list>
+							<input style="width: 25%;"
+								placeholder=" type here to add alias & press ENTER ..."
+								[matChipInputFor]="chipList2"
+								[matChipInputAddOnBlur]="addOnBlur"
+								(matChipInputTokenEnd)="addAlias($event)" />
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="form-group text-right">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="submit" class="btn btn-primary"
+						[disabled]="!licenseForm.form.valid || !isStatusSelected()"
+						value="Save"> <input type="reset" class="btn btn-default"
+						value="Clear" (click)="reset(formLicense)">
+				</div>
+
+			</div>
+		</form>
+	</div>
 </div>

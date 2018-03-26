@@ -17,15 +17,12 @@
  */
 package org.jboss.license.dictionary;
 
-import api.FullLicenseData;
-import org.jboss.logging.Logger;
+import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,13 +32,21 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-import static org.jboss.license.dictionary.utils.Mappers.licenseEntityListType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import org.jboss.license.dictionary.model.License;
+import org.jboss.license.dictionary.model.LicenseAlias;
+import org.jboss.license.dictionary.model.LicenseApprovalStatus;
+import org.jboss.logging.Logger;
+
+import api.LicenseAliasRest;
+import api.LicenseRest;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 8/31/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 8/31/17
  */
 @ApplicationScoped
 public class LicenseStore {
@@ -50,7 +55,7 @@ public class LicenseStore {
     @Inject
     private LicenseDbStore dbStore;
 
-    private Map<Integer, FullLicenseData> licensesById;
+    private Map<Integer, LicenseRest> licensesById;
 
     @Transactional
     public synchronized void init() {
@@ -64,82 +69,131 @@ public class LicenseStore {
         }
     }
 
-    public Optional<FullLicenseData> getById(Integer licenseId) {
+    @Transactional
+    public synchronized void forceReload() {
+        licensesById = null;
+        init();
+    }
+
+    public Optional<LicenseRest> getById(Integer licenseId) {
         return Optional.ofNullable(licensesById.get(licenseId));
     }
 
-    public Optional<FullLicenseData> getForName(String name) {
-        return findSingle(l -> searchEquals(name, l.getName()));
+    public Optional<LicenseRest> getForFedoraName(String name) {
+        return findSingle(l -> searchEquals(name, l.getFedoraName()));
     }
 
-    public Optional<FullLicenseData> getForUrl(String url) {
-        return findSingle(l -> searchEquals(url, l.getUrl()));
+    public Optional<LicenseRest> getForSpdxName(String name) {
+        return findSingle(l -> searchEquals(name, l.getSpdxName()));
     }
 
-    public Optional<FullLicenseData> getForNameAlias(String name) {
-        return findSingle(l -> isOneOf(l.getNameAliases(), name));
+    // public Optional<LicenseRest> getForUrl(String url) {
+    // return findSingle(l -> searchEquals(url, l.getUrl()));
+    // }
+    //
+    // public Optional<LicenseRest> getForTextUrl(String url) {
+    // return findSingle(l -> searchEquals(url, l.getTextUrl()));
+    // }
+
+    public Optional<LicenseRest> getForNameAlias(String alias) {
+        return findSingle(l -> isOneOf(l.getAliasNames(), alias));
     }
 
-    public Optional<FullLicenseData> getForUrlAlias(String url) {
-        return findSingle(l -> isOneOf(l.getUrlAliases(), url));
+    public Optional<LicenseRest> getForCode(String code) {
+        return findSingle(l -> searchEquals(code, l.getCode()));
     }
 
-    public FullLicenseData save(FullLicenseData license) {
-        LicenseEntity entity = fullMapper.map(license, LicenseEntity.class);
+    public LicenseRest save(LicenseRest licenseRest) {
+        License entity = fullMapper.map(licenseRest, License.class);
         entity = dbStore.save(entity);
 
-        license = fullMapper.map(entity, FullLicenseData.class);
-        licensesById.put(entity.getId(), license);
-        return license;
+        licenseRest = fullMapper.map(entity, LicenseRest.class);
+        licensesById.put(entity.getId(), licenseRest);
+        return licenseRest;
     }
 
-    public List<FullLicenseData> getAll() {
-        ArrayList<FullLicenseData> result = new ArrayList<>(licensesById.values());
-        result.sort(
-                Comparator.comparing(FullLicenseData::getName)
-        );
+    public LicenseRest update(LicenseRest licenseRest) {
+        License entity = fullMapper.map(licenseRest, License.class);
+        entity = dbStore.update(entity);
+
+        licenseRest = fullMapper.map(entity, LicenseRest.class);
+        licensesById.put(entity.getId(), licenseRest);
+        return licenseRest;
+    }
+
+    public List<LicenseRest> getAll() {
+        ArrayList<LicenseRest> result = new ArrayList<>(licensesById.values());
+        result.sort(Comparator.comparing(LicenseRest::getCode));
         return result;
     }
 
-    public Set<FullLicenseData> findBySearchTerm(String denormalizedSearchTerm) {
+    public Set<LicenseRest> findBySearchTerm(String denormalizedSearchTerm) {
         final String searchTerm = denormalizedSearchTerm.toLowerCase();
-        Set<FullLicenseData> resultSet = new TreeSet<>(Comparator.comparing(FullLicenseData::getName));
+        Set<LicenseRest> resultSet = new TreeSet<>(Comparator.comparing(LicenseRest::getCode));
 
-        resultSet.addAll(
-                join(getForName(searchTerm),
-                        getForUrl(searchTerm),
-                        getForNameAlias(searchTerm),
-                        getForUrlAlias(searchTerm))
-        );
+        resultSet.addAll(join(getForFedoraName(searchTerm), getForSpdxName(searchTerm), getForNameAlias(searchTerm),
+                getForCode(searchTerm)));
 
-        licensesById.values()
-                .stream()
-                .filter(l -> l.toFullString().toLowerCase().contains(searchTerm))
-                .forEach(resultSet::add);
+        licensesById.values().stream().filter(l -> l.toString().toLowerCase().contains(searchTerm)).forEach(resultSet::add);
 
         return resultSet;
     }
 
     <T> List<T> join(Optional<T>... optionals) {
-        return Stream.of(optionals)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        return Stream.of(optionals).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     @Transactional
     public boolean delete(Integer licenseId) {
-        boolean result = dbStore.delete(licenseId);
+        boolean result = dbStore.deleteLicense(licenseId);
         licensesById.remove(licenseId);
         return result;
     }
 
     @Transactional
-    public void replaceAllLicensesWith(Collection<FullLicenseData> licenses) {
-        log.infof("started replacing licenses with import data. Licenses to import: %d", licenses.size());
-        List<LicenseEntity> entityList = fullMapper.map(licenses, licenseEntityListType);
-        log.infof("will replace existing entities with %d new entities", entityList.size());
-        dbStore.replaceAllLicensesWith(entityList);
+    public void replaceAllLicensesWith(Map<String, Collection<LicenseRest>> licensesByName) {
+        log.infof("started replacing licenses with import data. Licenses to import: %d", licensesByName.values().size());
+
+        Map<String, License> licenseEntityByAlias = new HashMap<String, License>();
+        licensesByName.keySet().stream().forEach(alias -> {
+            License lic = fullMapper.map(licensesByName.get(alias).iterator().next(), License.class);
+            LicenseApprovalStatus las = dbStore.getLicenseApprovalStatus(lic.getLicenseApprovalStatus().getId());
+            lic.setLicenseApprovalStatus(las);
+            las.addLicense(lic);
+
+            licenseEntityByAlias.put(alias, lic);
+        });
+
+        log.infof("will replace existing entities with %d new entities", licenseEntityByAlias.values().size());
+        dbStore.replaceAllLicensesWith(licenseEntityByAlias);
+        log.info("started loading imported entities");
+        load();
+        log.info("finished loading imported entities");
+    }
+
+    @Transactional
+    public void replaceAllLicenseAliasesWith(Map<String, Collection<LicenseAliasRest>> licensesAliasByName) {
+        log.info("started replacing licens aliases with import data.");
+
+        licensesAliasByName.keySet().stream().forEach(key -> {
+            Collection<LicenseAliasRest> licensesAliases = licensesAliasByName.get(key);
+            Integer licenseId = licensesAliases.iterator().next().getLicenseId();
+            License license = dbStore.getLicense(licenseId);
+            if (license != null) {
+                license.getAliases().clear();
+
+                licensesAliases.stream().forEach(alias -> {
+                    LicenseAlias licenseAlias = LicenseAlias.Builder.newBuilder().aliasName(alias.getAliasName())
+                            .license(license).build();
+                    license.addAlias(licenseAlias);
+                    dbStore.saveLicenseAlias(licenseAlias);
+                });
+                // dbStore.save(license);
+            } else {
+                log.infof("No license found for id: %d", licenseId);
+            }
+        });
+
         log.info("started loading imported entities");
         load();
         log.info("finished loading imported entities");
@@ -147,16 +201,12 @@ public class LicenseStore {
 
     @Transactional
     public synchronized void load() {
-        licensesById = dbStore.getAll().stream()
-                .map(entity -> fullMapper.map(entity, FullLicenseData.class))
-                .peek(FullLicenseData::checkIntegrity)
-                .collect(Collectors.toMap(l -> l.getId(), l -> l));
+        licensesById = dbStore.getAllLicense().stream().map(entity -> fullMapper.map(entity, LicenseRest.class))
+                .peek(LicenseRest::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
     }
 
-    private Optional<FullLicenseData> findSingle(Predicate<FullLicenseData> predicate) {
-        return licensesById.values().stream()
-                .filter(predicate)
-                .findAny();
+    private Optional<LicenseRest> findSingle(Predicate<LicenseRest> predicate) {
+        return licensesById.values().stream().filter(predicate).findAny();
     }
 
     private boolean isOneOf(Collection<String> values, String value) {
@@ -164,13 +214,11 @@ public class LicenseStore {
             return false;
         }
         String normalizedValue = value.toLowerCase();
-        return values.stream()
-                .anyMatch(v -> v.toLowerCase().equals(normalizedValue));
+        return values.stream().anyMatch(v -> v.toLowerCase().equals(normalizedValue));
     }
 
     private boolean searchEquals(String value1, String value2) {
-        return value1 != null
-                && value2 != null
-                && value1.toLowerCase().equals(value2.toLowerCase());
+        return value1 != null && value2 != null && value1.toLowerCase().equals(value2.toLowerCase());
     }
+
 }

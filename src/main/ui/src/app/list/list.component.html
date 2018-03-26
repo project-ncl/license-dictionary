@@ -17,63 +17,121 @@
     limitations under the License.
 
 -->
-<h1>License list</h1>
-<form class="form form-inline">
-  <input type="text"
-         [(ngModel)]="searchTerm"
-         (keyup.enter)="searchForLicenses(0)"
-         placeholder="Enter a search term"
-         name="name"/>
-  <button type="button" (click)="searchForLicenses(0)">Find</button>
-</form>
-<table class="table table-striped">
-  <tr *ngFor="let license of licenses">
-    <td class="row-{{license.status}}">
-      <div class="row">
-        <div class="col-sm-9">
-          <h4><a (click)="view(license.id)" class="black-url">{{license.name}}</a></h4>
-        </div>
-        <div class="col-sm-3 state state-{{license.status}}">
-          {{license.status}}
-        </div>
-      </div>
-      <table class="urls-table">
-        <tr>
-          <td><strong>URL</strong></td>
-          <td><a href="{{license.url}}">{{license.url}}</a></td>
-        </tr>
-        <tr>
-          <td>
-            <strong>Text URL</strong></td>
-          <td>
-            <a href="{{license.textUrl}}">{{license.textUrl}}</a>
-          </td>
-        </tr>
-      </table>
+<ol class="breadcrumb">
+  <li><a href="#">Licenses</a></li>
+  <li class="active">License list</li>
+</ol>
 
-      <table class="table">
-        <thead>
-        <tr>
-          <td>Aliases</td>
-          <td>URL Aliases</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>
-            <div *ngFor="let alias of license.nameAliases">{{alias}}<br></div>
-          </td>
-          <td>
-            <div *ngFor="let urlAlias of license.urlAliases">{{urlAlias}}<br></div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </td>
-  </tr>
-</table>
-<button *ngIf="!allLoaded"
-        (click)="fetchMore()"
-        class="btn btn-default btn-block btn-lg">
-  Fetch more
-</button>
+<div class="row">
+	<div class="col-md-12">
+		<div class="page-header">
+			<div class="btn-group pull-right" role="group"
+				aria-label="Action Toolbar">
+				<button type="button" class="btn btn-default btn-lg"
+					routerLink="/edit">
+					<span class="glyphicon glyphicon-plus"></span>&nbsp;Create
+				</button>
+			</div>
+			<h1 class="header-title">License list</h1>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<div class="input-group input-group-md add-on">
+			<input appAutofocus type="text" class="form-control search-query"
+				[(ngModel)]="searchTerm" (keyup.enter)="searchForLicenses(0)"
+				placeholder="Enter a search term" name="name" />
+			<div class="input-group-btn">
+				<button class="btn btn-default" type="button"
+					(click)="searchForLicenses(0)">
+					<i class="glyphicon glyphicon-search"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<h4 class="text-center">&nbsp;</h4>
+	</div>
+	<div class="col-md-2">
+		<select class="form-control input-md pull-right"
+			[(ngModel)]="itemsPerPage" (ngModelChange)="setPagination()">
+			<option *ngFor="let pgSize of pageSizes" [value]="pgSize">show
+				{{pgSize}} per page</option>
+		</select>
+	</div>
+</div>
+<br>
+<div class="table-responsive">
+	<table class="datatable table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th style="text-align: center;" rowspan="2">Code</th>
+				<th style="text-align: center;" colspan="2"><span class="label label-info">Fedora</span></th>
+				<th style="text-align: center;" colspan="2"><span class="label label-success">Spdx</span></th>
+				<th style="text-align: center;" class="description" rowspan="2">Aliases</th>
+				<th style="text-align: center;" rowspan="2">Status</th>
+			</tr>
+			<tr>
+				<th style="text-align: center;">Full name</th>
+				<th style="text-align: center;">Abbrev</th>
+				<th style="text-align: center;">Full name</th>
+				<th style="text-align: center;">Abbrev</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let license of licenses">
+				<td><a (click)="view(license.id)">{{license.code}}</a></td>
+				<td>{{license.fedoraName}}</td>
+				<td>{{license.fedoraAbbreviation}}</td>
+				<td>{{license.spdxName}}</td>
+				<td>{{license.spdxAbbreviation}}</td>
+				<td>
+					<table>
+						<tbody>
+							<tr>
+								<td><mat-chip-list name="licenseAliases"
+										[(ngModel)]="license.aliasNames"> <mat-chip
+										*ngFor="let alias of license.aliasNames" color="accent"
+										[selectable]="false" [removable]="false"> {{alias}}
+									</mat-chip> </mat-chip-list></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td><mat-chip class="material-chip status-notapproved"
+						*ngIf="license.licenseApprovalStatus.name == 'NOT_APPROVED'">
+					<mat-icon>error</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+					<mat-chip class="material-chip status-approved"
+						*ngIf="license.licenseApprovalStatus.name == 'APPROVED'">
+					<mat-icon>check_circle</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+					<mat-chip class="material-chip status-unknown"
+						*ngIf="license.licenseApprovalStatus.name == 'UNKNOWN'">
+					<mat-icon>warning</mat-icon>&nbsp;{{license.licenseApprovalStatus.name}}</mat-chip>
+
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="9">
+					<div class="text-center">
+						<ul class="pagination">
+							<li [ngClass]="{disabled: currentPage == 0}"><a
+								href="javascript:;" (click)="prevPage()">« Prev</a></li>
+							<li *ngFor="let n of range(totalPages)"
+								[ngClass]="{active: n == currentPage}" (click)="setPage(n)">
+								<a href="javascript:;">{{n+1}}</a>
+							</li>
+							<li [ngClass]="{disabled: allLoaded == true}"><a
+								href="javascript:;" (click)="nextPage()">Next »</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+

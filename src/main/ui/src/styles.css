@@ -15,24 +15,106 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
 /* You can add global styles to this file, and also import other style files */
 .state {
-  font-size: large;
-  font-weight: bolder;
+	font-size: large;
+	font-weight: bolder;
 }
 
 .state-AWAITING_APPROVAL {
-  color: darkorange;
+	color: darkorange;
 }
 
 .state-NOT_APPROVED {
-  color: red;
+	color: red;
 }
 
 .state-APPROVED {
-  color: green;
+	color: green;
 }
 
 a {
-  cursor: pointer;
+	cursor: pointer;
+}
+
+.material-chip.status-approved {
+	background-color: inherit;
+	color: #0b850b;
+	font-size: inherit;
+	font-weight: bolder;
+	padding: 1px;
+}
+
+.material-chip.status-notapproved {
+	background-color: inherit;
+	color: #ff0000;
+	font-size: inherit;
+	font-weight: bolder;
+	padding: 1px;
+}
+
+.material-chip.status-unknown {
+	background-color: inherit;
+	color: #ec9d0e;
+	font-size: inherit;
+	font-weight: bolder;
+	padding: 1px;
+}
+
+.material-chip.status-approved:not (.material-basic-chip ) {
+	padding: 1px;
+}
+
+.material-chip.status-notapproved:not (.material-basic-chip ) {
+	padding: 1px;
+}
+
+.material-chip.status-unknown:not (.material-basic-chip ) {
+	padding: 1px;
+}
+
+.mat-simple-snackbar-action {
+    color: inherit;
+}
+
+.custom-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
+}
+
+.custom-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
+}
+
+.custom-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
+}
+
+.custom-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    font-weight: bolder;
+    position: absolute;
+	top: 50px;
+	right: 0;
 }

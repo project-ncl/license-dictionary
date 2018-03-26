@@ -29,9 +29,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 /**
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 8/31/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 8/31/17
  */
 @Consumes("application/json")
 @Produces("application/json")
@@ -42,28 +41,23 @@ public interface LicenseResource {
     String LICENSES = "/licenses";
 
     @GET
-    Response getLicenses(
-            @QueryParam("name") String name,
-            @QueryParam("url") String url,
-            @QueryParam("nameAlias") String nameAlias,
-            @QueryParam("urlAlias") String urlAlias,
-            @QueryParam("searchTerm") String searchTerm,
-            @QueryParam("count") Integer resultCount,
+    Response getLicenses(@QueryParam("fedoraName") String fedoraName, @QueryParam("spdxName") String spdxName,
+            @QueryParam("code") String code, @QueryParam("nameAlias") String nameAlias,
+            @QueryParam("searchTerm") String searchTerm, @QueryParam("count") Integer resultCount,
             @QueryParam("offset") Integer offset);
 
     @PUT
     @Path("/{id}")
-    License updateLicense(@PathParam("id") Integer licenseId,
-                          FullLicenseData license);
+    LicenseRest updateLicense(@PathParam("id") Integer licenseId, LicenseRest license);
 
     @DELETE
     @Path("/{id}")
     void deleteLicense(@PathParam("id") Integer licenseId);
 
     @POST
-    License addLicense(FullLicenseData license);
+    LicenseRest addLicense(LicenseRest license);
 
     @GET
     @Path("/{id}")
-    License getLicense(@PathParam("id") Integer licenseId);
+    LicenseRest getLicense(@PathParam("id") Integer licenseId);
 }

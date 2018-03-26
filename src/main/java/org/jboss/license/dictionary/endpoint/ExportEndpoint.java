@@ -15,9 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.license.dictionary.imports;
+package org.jboss.license.dictionary.endpoint;
 
 import org.jboss.license.dictionary.LicenseStore;
+import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.imports.RhLicense;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -28,11 +30,10 @@ import java.util.Map;
 /**
  * mstodo: Header
  *
- * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
- * <br>
- * Date: 11/21/17
+ * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
+ *         Date: 11/21/17
  */
-@Path("/export")
+@Path(RestApplication.REST_VERS_1 + RestApplication.EXPORT_ENDPOINT)
 public class ExportEndpoint {
 
     @Inject
@@ -43,12 +44,9 @@ public class ExportEndpoint {
     public Map<String, RhLicense> exportLicenses() {
         Map<String, RhLicense> resultMap = new HashMap<>();
 
-        store.getAll().forEach(license ->
-                license.getNameAliases().forEach(
-                        alias ->
-                                resultMap.put(alias, license.toRhLicense())
-                )
-        );
+        store.getAll().forEach(
+                license -> license.getAliasNames().forEach(alias -> resultMap.put(alias, RhLicense.fromLicenseRest(license))));
+
         return resultMap;
     }
 }

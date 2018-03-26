@@ -16,68 +16,112 @@
 /// limitations under the License.
 ///
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {License, LicenseList, LicenseService} from "../license.service";
-import {Router} from "@angular/router";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from "@angular/router";
+import { License, LicenseList, LicenseService } from "../license.service";
+import { LoaderService } from '../loader/loader.service';
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ListComponent implements OnInit {
 
-  licenses: License[] = [];
-  searchTerm: string;
+    pageSizes = [5, 10, 25, 50];
+    itemsPerPage = 25;
+    currentPage = 0;
+    totalPages = 0;
+    totalResultsCount = 0;
+    currentResultsCount = 0;
+    allLoaded = false;
 
-  defaultCount = 20;
+    licenses: License[] = [];
+    searchTerm: string;
 
-  loadedUntil = 0;
-  allLoaded = false;
-
-  constructor(private licenseService: LicenseService,
-              private router: Router) {
-  }
-
-  ngOnInit() {
-    this.licenseService.getLicenses(this.defaultCount, 0).subscribe(l => this.loadLicenseList(l));
-  }
-
-  searchForLicenses() {
-    console.log("search term: ", this.searchTerm);
-    this.licenseService.findLicenses(this.searchTerm, this.defaultCount, 0)
-      .subscribe(l => this.loadLicenseList(l)); //todo
-  }
-
-  fetchMore() {
-    console.log("fetching more");
-    if (this.searchTerm) {
-      console.log("with search term");
-      this.licenseService.findLicenses(this.searchTerm, this.defaultCount, this.loadedUntil)
-        .subscribe(l => this.appendLicenseList(l));
-    } else {
-      console.log("without search term");
-      this.licenseService.getLicenses(this.defaultCount, this.loadedUntil)
-        .subscribe(l => this.appendLicenseList(l));
+    constructor(
+        private licenseService: LicenseService,
+        private router: Router,
+        private loaderService: LoaderService) {
     }
-  }
 
-  view = id => {
-    this.router.navigate(["/view", id]);
-  };
+    ngOnInit() {
+        this.currentPage = 0;
+        this.showLoader();
+        this.licenseService.getLicenses(this.itemsPerPage, this.itemsPerPage * this.currentPage).subscribe(l => this.loadLicenseList(l));
+    }
 
-  private loadLicenseList(licenses: LicenseList) {
-    this.licenses = licenses.entries;
-    this.loadedUntil = this.licenses.length;
-    this.allLoaded = this.loadedUntil >= licenses.totalCount;
-    console.log("allLoaded: ", this.allLoaded, "loadedUntil:", this.loadedUntil, "totalCount: ", licenses.totalCount, this.licenses);
-  };
+    searchForLicenses() {
+        this.showLoader();
+        if (this.searchTerm === undefined || this.searchTerm == null || this.searchTerm.length <= 0) {
+            this.licenseService.getLicenses(this.itemsPerPage, this.itemsPerPage * this.currentPage).subscribe(l => this.loadLicenseList(l));
+        }
+        else {
+            this.licenseService.findLicenses(this.searchTerm, this.itemsPerPage, this.itemsPerPage * this.currentPage)
+                .subscribe(l => this.loadLicenseList(l));
+        }
 
-  private appendLicenseList(licenses: LicenseList) {
-    this.licenses = this.licenses.concat(licenses.entries);
-    this.loadedUntil = this.licenses.length + licenses.offset;
-    this.allLoaded = this.loadedUntil >= licenses.totalCount;
-    console.log("appended: ", this.allLoaded, "loadedUntil:", this.loadedUntil, "totalCount: ", licenses.totalCount, this.licenses);
-  };
+    }
+
+    private loadLicenseList(licenses: LicenseList) {
+        this.licenses = licenses.entries;
+
+        this.totalResultsCount = licenses.totalCount;
+        this.currentResultsCount = this.licenses.length + this.itemsPerPage * this.currentPage;
+        this.totalPages = Math.round(Math.ceil((this.totalResultsCount / this.itemsPerPage)));
+
+        this.allLoaded = this.currentPage >= (this.totalPages - 1);
+        this.hideLoader();
+    };
+
+    // show items per page
+    setPagination() {
+        this.currentPage = 0;
+        this.searchForLicenses();
+    };
+
+    prevPage() {
+        if (this.currentPage > 0) {
+            this.currentPage--;
+        }
+        this.searchForLicenses();
+    };
+
+    nextPage() {
+        if (!this.allLoaded) {
+            this.currentPage++;
+        }
+        this.searchForLicenses();
+    };
+
+    setPage(page) {
+        this.currentPage = page;
+        this.searchForLicenses();
+    };
+
+    range(start, end) {
+        var ret = [];
+        if (!end) {
+            end = start;
+            start = 0;
+        }
+        for (var i = start; i < end; i++) {
+            ret.push(i);
+        }
+        return ret;
+    };
+
+    view = id => {
+        this.router.navigate(["/view", id]);
+    };
+
+    private showLoader(): void {
+        this.loaderService.show();
+    }
+
+    private hideLoader(): void {
+        this.loaderService.hide();
+    }
+
 }
