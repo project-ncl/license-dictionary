@@ -25,6 +25,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import api.LicenseRest;
+import api.ProjectRest;
+import api.ProjectVersionLicenseCheckRest;
+import api.ProjectVersionLicenseHintRest;
+import api.ProjectVersionLicenseRest;
+import api.ProjectVersionRest;
 
 /**
  * mstodo: Header
@@ -38,6 +43,21 @@ public class Mappers {
     }.getType();
 
     public static final Type licenseListType = new TypeToken<List<License>>() {
+    }.getType();
+
+    public static final Type projectVersionLicenseRestListType = new TypeToken<List<ProjectVersionLicenseRest>>() {
+    }.getType();
+
+    public static final Type projectVersionRestListType = new TypeToken<List<ProjectVersionRest>>() {
+    }.getType();
+
+    public static final Type projectVersionLicenseCheckRestListType = new TypeToken<List<ProjectVersionLicenseCheckRest>>() {
+    }.getType();
+
+    public static final Type projectVersionLicenseHintRestListType = new TypeToken<List<ProjectVersionLicenseHintRest>>() {
+    }.getType();
+
+    public static final Type projectRestListType = new TypeToken<List<ProjectRest>>() {
     }.getType();
 
     public static final ModelMapper limitedMapper;
