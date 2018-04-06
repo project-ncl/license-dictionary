@@ -24,8 +24,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -38,13 +42,22 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "LicenseHintType")
-@Table(name = "license_hint_type")
+@Table(name = "license_hint_type", indexes = {
+        @Index(name = LicenseHintType.IDX_NAME_LICENSE_HINT_TYPE_NAME, columnList = "name") }, uniqueConstraints = {
+                @UniqueConstraint(name = LicenseHintType.UC_NAME_LICENSE_HINT_TYPE_NAME, columnNames = { "name" }) })
+@NamedQueries({ @NamedQuery(name = LicenseHintType.QUERY_FIND_ALL_UNORDERED, query = "SELECT lht FROM LicenseHintType lht"),
+        @NamedQuery(name = LicenseHintType.QUERY_FIND_BY_NAME_UNORDERED, query = "SELECT lht FROM LicenseHintType lht WHERE lht.name = :name") })
 
 @ToString(exclude = { "projectVersionLicenseHints" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class LicenseHintType {
 
+    public static final String QUERY_FIND_ALL_UNORDERED = "LicenseHintType.findAllUnordered";
+    public static final String QUERY_FIND_BY_NAME_UNORDERED = "LicenseHintType.findByNameUnordered";
+
+    public static final String IDX_NAME_LICENSE_HINT_TYPE_NAME = "idx_license_hint_type_name";
     public static final String SEQUENCE_NAME = "license_hinttype_id_seq";
+    public static final String UC_NAME_LICENSE_HINT_TYPE_NAME = "uc_license_hint_type_name";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -52,6 +65,7 @@ public class LicenseHintType {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull

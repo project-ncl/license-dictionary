@@ -25,6 +25,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -39,16 +41,30 @@ import lombok.ToString;
 @Table(name = "project_version_license_hint", indexes = {
         @Index(name = ProjectVersionLicenseHint.IDX_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE, columnList = "project_version_license_id"),
         @Index(name = ProjectVersionLicenseHint.IDX_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE, columnList = "license_hint_type_id") })
-
+@NamedQueries({
+        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_BY_VALUE_PROJVERSLICID_LICHINTTYPE_UNORDERED, query = "SELECT DISTINCT pvlh FROM ProjectVersionLicenseHint pvlh "
+                + " JOIN FETCH pvlh.projectVersionLicense pvl JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
+                + " WHERE pvlh.value = :value "
+                + " AND pvlh.projectVersionLicense.id = :projVersLicenseId AND pvlh.licenseHintType.id = :licHintTypeId"),
+        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_BY_PROJVERSLICID_UNORDERED, query = "SELECT DISTINCT pvlh FROM ProjectVersionLicenseHint pvlh "
+                + " JOIN FETCH pvlh.projectVersionLicense pvl JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
+                + " WHERE pvlh.projectVersionLicense.id = :projVersLicenseId"),
+        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_BY_PROJVERSLICID_LICHINTTYPE_UNORDERED, query = "SELECT DISTINCT pvlh FROM ProjectVersionLicenseHint pvlh "
+                + " JOIN FETCH pvlh.projectVersionLicense pvl JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
+                + " WHERE pvlh.projectVersionLicense.id = :projVersLicenseId AND pvlh.licenseHintType.id = :licHintTypeId") })
 @ToString
 @EqualsAndHashCode
 public class ProjectVersionLicenseHint {
 
-    public static final String SEQUENCE_NAME = "project_version_license_hint_id_seq";
+    public static final String QUERY_FIND_BY_VALUE_PROJVERSLICID_LICHINTTYPE_UNORDERED = "ProjectVersionLicenseHint.findByValueProjVersLicIdUnordered";
+    public static final String QUERY_FIND_BY_PROJVERSLICID_UNORDERED = "ProjectVersionLicenseHint.findByProjVersLicIdUnordered";
+    public static final String QUERY_FIND_BY_PROJVERSLICID_LICHINTTYPE_UNORDERED = "ProjectVersionLicenseHint.findByProjVersLicIdLicHintTypeUnordered";
+
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE = "idx_projverlichint_projverlic";
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE = "idx_projverlichint_lichinttype";
     public static final String FK_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE = "fk_projverlichint_projverlic";
     public static final String FK_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE = "fk_projverlichint_lichinttype";
+    public static final String SEQUENCE_NAME = "project_version_license_hint_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -56,6 +72,7 @@ public class ProjectVersionLicenseHint {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @Column(name = "value")

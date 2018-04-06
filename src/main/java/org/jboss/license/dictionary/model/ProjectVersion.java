@@ -28,8 +28,11 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -43,15 +46,24 @@ import lombok.ToString;
 
 @Entity(name = "ProjectVersion")
 @Table(name = "project_version", indexes = {
-        @Index(name = ProjectVersion.IDX_NAME_PROJECT_VERSION_PROJECT, columnList = "project_id") })
+        @Index(name = ProjectVersion.IDX_NAME_PROJECT_VERSION_PROJECT, columnList = "project_id") }, uniqueConstraints = {
+                @UniqueConstraint(name = ProjectVersion.UC_NAME_PROJECT_VERSION_PROJECT_VERSION, columnNames = { "project_id",
+                        "vers" }) })
+@NamedQueries({
+        @NamedQuery(name = ProjectVersion.QUERY_FIND_BY_VERSION_PROJECT_ID_UNORDERED, query = "SELECT pv FROM ProjectVersion pv WHERE pv.version = :version AND pv.project.id = :projectId"),
+        @NamedQuery(name = ProjectVersion.QUERY_FIND_ALL_BY_PROJECT_ID_UNORDERED, query = "SELECT pv FROM ProjectVersion pv WHERE pv.project.id = :projectId") })
 
 @ToString(exclude = { "projectVersionLicenseChecks" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseChecks" })
 public class ProjectVersion {
 
+    public static final String QUERY_FIND_ALL_BY_PROJECT_ID_UNORDERED = "ProjectVersion.findAllByProjectIdUnordered";
+    public static final String QUERY_FIND_BY_VERSION_PROJECT_ID_UNORDERED = "ProjectVersion.findByVersionProjectIdUnordered";
+
     public static final String SEQUENCE_NAME = "project_version_id_seq";
     public static final String IDX_NAME_PROJECT_VERSION_PROJECT = "idx_projver_proj";
     public static final String FK_NAME_PROJECT_VERSION_PROJECT = "fk_projver_proj";
+    public static final String UC_NAME_PROJECT_VERSION_PROJECT_VERSION = "uc_projver_proj_version";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -59,6 +71,7 @@ public class ProjectVersion {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -73,6 +86,12 @@ public class ProjectVersion {
     @Getter
     @Setter
     private String scmRevision;
+
+    @NotNull
+    @Column(name = "vers")
+    @Getter
+    @Setter
+    private String version;
 
     @ManyToOne
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_VERSION_PROJECT))
@@ -99,6 +118,7 @@ public class ProjectVersion {
         private Integer id;
         private String scmUrl;
         private String scmRevision;
+        private String version;
         private Project project;
         private Set<ProjectVersionLicenseCheck> projectVersionLicenseChecks;
 
@@ -125,6 +145,11 @@ public class ProjectVersion {
             return this;
         }
 
+        public Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
         public Builder project(Project project) {
             this.project = project;
             return this;
@@ -140,6 +165,7 @@ public class ProjectVersion {
             projectVersion.id = this.id;
             projectVersion.setScmUrl(scmUrl);
             projectVersion.setScmRevision(scmRevision);
+            projectVersion.setVersion(version);
             projectVersion.setProject(project);
             projectVersion.setProjectVersionLicenseChecks(projectVersionLicenseChecks);
 

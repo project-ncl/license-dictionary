@@ -30,6 +30,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -50,10 +52,13 @@ import lombok.ToString;
         @Index(name = License.IDX_NAME_LICENSE_SPDX_ABBREVIATION, columnList = "spdx_abbrev"),
         @Index(name = License.IDX_NAME_LICENSE_LICENSE_APPROVAL_STATUS, columnList = "license_approval_status_id"), }, uniqueConstraints = {
                 @UniqueConstraint(name = License.UC_NAME_LICENSE_CODE, columnNames = { "code" }) })
+@NamedQueries({ @NamedQuery(name = License.QUERY_FIND_ALL_UNORDERED, query = "SELECT e FROM License e") })
 
 @ToString(exclude = { "aliases", "projectVersionLicenses" })
 @EqualsAndHashCode(exclude = { "aliases", "projectVersionLicenses" })
 public class License {
+
+    public static final String QUERY_FIND_ALL_UNORDERED = "License.findAllUnordered";
 
     public static final String SEQUENCE_NAME = "license_id_seq";
     public static final String IDX_NAME_LICENSE_CODE = "idx_license_code";

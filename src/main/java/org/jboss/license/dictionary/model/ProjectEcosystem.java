@@ -41,22 +41,30 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "LicenseApprovalStatus")
-@Table(name = "license_approval_status", indexes = {
-        @Index(name = LicenseApprovalStatus.IDX_NAME_LICENSE_STATUS_NAME, columnList = "name") }, uniqueConstraints = {
-                @UniqueConstraint(name = LicenseApprovalStatus.UC_NAME_LICENSE_STATUS_NAME, columnNames = { "name" }) })
-@NamedQueries({
-        @NamedQuery(name = LicenseApprovalStatus.QUERY_FIND_ALL_UNORDERED, query = "SELECT las FROM LicenseApprovalStatus las") })
+@Entity(name = "ProjectEcosystem")
+@Table(name = "project_ecosystem", indexes = {
+        @Index(name = ProjectEcosystem.IDX_NAME_PROJECT_ECOSYSTEM_NAME, columnList = "name") }, uniqueConstraints = {
+                @UniqueConstraint(name = ProjectEcosystem.UC_NAME_PROJECT_ECOSYSTEM_NAME, columnNames = { "name" }) })
+@NamedQueries({ @NamedQuery(name = ProjectEcosystem.QUERY_FIND_ALL_UNORDERED, query = "SELECT pe FROM ProjectEcosystem pe"),
+        @NamedQuery(name = ProjectEcosystem.QUERY_FIND_BY_NAME_UNORDERED, query = "SELECT pe FROM ProjectEcosystem pe WHERE pe.name = :name") })
 
-@ToString(exclude = { "licenses" })
-@EqualsAndHashCode(exclude = { "licenses" })
-public class LicenseApprovalStatus {
+@ToString(exclude = { "projects" })
+@EqualsAndHashCode(exclude = { "projects" })
+public class ProjectEcosystem {
 
-    public static final String QUERY_FIND_ALL_UNORDERED = "LicenseApprovalStatus.findAllUnordered";
+    public static final String QUERY_FIND_ALL_UNORDERED = "ProjectEcosystem.findAllUnordered";
+    public static final String QUERY_FIND_BY_NAME_UNORDERED = "ProjectEcosystem.findByNameUnordered";
 
-    public static final String IDX_NAME_LICENSE_STATUS_NAME = "idx_license_status_name";
-    public static final String SEQUENCE_NAME = "license_apprstatus_id_seq";
-    public static final String UC_NAME_LICENSE_STATUS_NAME = "uc_license_status_name";
+    public static final String IDX_NAME_PROJECT_ECOSYSTEM_NAME = "idx_project_ecosystem_name";
+    public static final String SEQUENCE_NAME = "project_ecosystem_id_seq";
+    public static final String UC_NAME_PROJECT_ECOSYSTEM_NAME = "uc_project_ecosystem_name";
+
+    public static final String MAVEN = "mvn";
+    public static final String NPM = "npm";
+    public static final String NUGET = "nuget";
+    public static final String PYPI = "pypi";
+    public static final String GEM = "gem";
+    public static final String GITHUB = "github";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -71,30 +79,33 @@ public class LicenseApprovalStatus {
     @Size(max = 100)
     @Column(name = "name", length = 100)
     @Getter
-    @Setter
     private String name;
 
-    @OneToMany(mappedBy = "licenseApprovalStatus", orphanRemoval = false)
+    @OneToMany(mappedBy = "projectEcosystem", orphanRemoval = false)
     @Getter
     @Setter
-    private Set<License> licenses;
+    private Set<Project> projects;
 
-    public LicenseApprovalStatus() {
-        this.licenses = new HashSet<License>();
+    public ProjectEcosystem() {
+        this.projects = new HashSet<Project>();
     }
 
-    public void addLicense(License license) {
-        this.licenses.add(license);
+    public void addProject(Project project) {
+        this.projects.add(project);
+    }
+
+    public void setName(String name) {
+        this.name = (name == null ? "" : name.toLowerCase());
     }
 
     public static class Builder {
 
         private Integer id;
         private String name;
-        private Set<License> licenses;
+        private Set<Project> projects;
 
         private Builder() {
-            this.licenses = new HashSet<License>();
+            this.projects = new HashSet<Project>();
         }
 
         public static Builder newBuilder() {
@@ -111,23 +122,23 @@ public class LicenseApprovalStatus {
             return this;
         }
 
-        public Builder licenses(Set<License> licenses) {
-            this.licenses = licenses;
+        public Builder projects(Set<Project> projects) {
+            this.projects = projects;
             return this;
         }
 
-        public LicenseApprovalStatus build() {
-            LicenseApprovalStatus licenseApprovalStatus = new LicenseApprovalStatus();
-            licenseApprovalStatus.id = this.id;
-            licenseApprovalStatus.setName(name);
-            licenseApprovalStatus.setLicenses(licenses);
+        public ProjectEcosystem build() {
+            ProjectEcosystem projectEcosystem = new ProjectEcosystem();
+            projectEcosystem.id = this.id;
+            projectEcosystem.setName(name);
+            projectEcosystem.setProjects(projects);
 
             // Set bi-directional mappings
-            licenses.stream().forEach(license -> {
-                license.setLicenseApprovalStatus(licenseApprovalStatus);
+            projects.stream().forEach(project -> {
+                project.setProjectEcosystem(projectEcosystem);
             });
 
-            return licenseApprovalStatus;
+            return projectEcosystem;
         }
     }
 
