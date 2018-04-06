@@ -147,7 +147,7 @@ public class LicenseRest {
 
     @Override
     public String toString() {
-        return "License{" + "id=" + id + ", code='" + code + '\'' + ", fedoraAbbreviation='" + fedoraAbbreviation + '\''
+        return "LicenseRest{" + "id=" + id + ", code='" + code + '\'' + ", fedoraAbbreviation='" + fedoraAbbreviation + '\''
                 + ", fedoraName='" + fedoraName + '\'' + ", spdxAbbreviation='" + spdxAbbreviation + '\'' + ", spdxName='"
                 + spdxName + '\'' + ", url='" + url + '\'' + ", textUrl='" + textUrl + '\'' + ", licenseApprovalStatus='"
                 + licenseApprovalStatus + '\'' + '}';

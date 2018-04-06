@@ -67,7 +67,7 @@ public class LicenseDeterminationTypeRest {
 
     @Override
     public String toString() {
-        return "LicenseApprovalStatusRest{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\''
+        return "LicenseDeterminationTypeRest{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\''
                 + '}';
     }
 
