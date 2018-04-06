@@ -37,7 +37,7 @@ import lombok.Data;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RhLicense {
+public class JsonLicense {
 
     // private Set<LicenseAliasRest> aliases;
 
@@ -87,10 +87,10 @@ public class RhLicense {
     public boolean isValid() {
         boolean valid = true;
 
-        if (StringUtils.isBlank(fedora_name) && StringUtils.isBlank(spdx_name)) {
-            System.out.println("***" + id + ": Fedora and SPDX names are empty");
-            valid = false;
-        }
+//        if (StringUtils.isBlank(fedora_name) && StringUtils.isBlank(spdx_name)) {
+//            System.out.println("***" + id + ": Fedora and SPDX names are empty");
+//            valid = false;
+//        }
         if (StringUtils.isNotBlank(fedora_name) && StringUtils.isNotBlank(fedora_abbrev)
                 && StringUtils.length(fedora_abbrev) > License.ABBREV_MAX_LENGHT) {
             System.out.println("***" + id + ": Fedora abbrev exceeds " + License.ABBREV_MAX_LENGHT + " chars");
@@ -114,9 +114,9 @@ public class RhLicense {
         return licenseRest;
     }
 
-    public static RhLicense fromLicenseRest(LicenseRest licenseRest) {
+    public static JsonLicense fromLicenseRest(LicenseRest licenseRest) {
 
-        return RhLicense.Builder.newBuilder().id(licenseRest.getId()).fedora_abbrev(licenseRest.getFedoraAbbreviation())
+        return JsonLicense.Builder.newBuilder().id(licenseRest.getId()).fedora_abbrev(licenseRest.getFedoraAbbreviation())
                 .fedora_name(licenseRest.getFedoraName()).spdx_abbrev(licenseRest.getSpdxAbbreviation())
                 .spdx_name(licenseRest.getSpdxName()).url(licenseRest.getUrl()).license_text_url(licenseRest.getTextUrl())
                 .approved(LicenseApprovalStatusRest.jsonFromRestEntity(licenseRest.getLicenseApprovalStatus())).build();
@@ -186,8 +186,8 @@ public class RhLicense {
             return this;
         }
 
-        public RhLicense build() {
-            RhLicense rhLicense = new RhLicense();
+        public JsonLicense build() {
+            JsonLicense rhLicense = new JsonLicense();
             rhLicense.setId(id);
             rhLicense.setFedora_name(fedora_name);
             rhLicense.setFedora_abbrev(fedora_abbrev);
@@ -202,10 +202,15 @@ public class RhLicense {
         }
     }
 
-    /*
-     * "3dfx Glide License": { "approved": "yes", "fedora_abbrev": "Glide", "fedora_name": "3dfx Glide License", "id": "1",
-     * "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Glide.txt",
-     * "spdx_abbrev": "Glide", "spdx_license_url": "https://spdx.org/licenses/Glide.html#licenseText", "spdx_name":
-     * "3dfx Glide License", "url": "http://www.users.on.net/~triforce/glidexp/COPYING.txt" }
-     */
+    // "3dfx Glide License": {
+    // "approved": "yes",
+    // "fedora_abbrev": "Glide",
+    // "fedora_name": "3dfx Glide License",
+    // "id": "1",
+    // "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Glide.txt",
+    // "spdx_abbrev": "Glide",
+    // "spdx_license_url": "https://spdx.org/licenses/Glide.html#licenseText",
+    // "spdx_name": "3dfx Glide License",
+    // "url": "http://www.users.on.net/~triforce/glidexp/COPYING.txt"
+    // },
 }
