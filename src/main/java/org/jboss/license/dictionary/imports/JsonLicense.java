@@ -87,10 +87,10 @@ public class JsonLicense {
     public boolean isValid() {
         boolean valid = true;
 
-//        if (StringUtils.isBlank(fedora_name) && StringUtils.isBlank(spdx_name)) {
-//            System.out.println("***" + id + ": Fedora and SPDX names are empty");
-//            valid = false;
-//        }
+        // if (StringUtils.isBlank(fedora_name) && StringUtils.isBlank(spdx_name)) {
+        // System.out.println("***" + id + ": Fedora and SPDX names are empty");
+        // valid = false;
+        // }
         if (StringUtils.isNotBlank(fedora_name) && StringUtils.isNotBlank(fedora_abbrev)
                 && StringUtils.length(fedora_abbrev) > License.ABBREV_MAX_LENGHT) {
             System.out.println("***" + id + ": Fedora abbrev exceeds " + License.ABBREV_MAX_LENGHT + " chars");
@@ -202,15 +202,4 @@ public class JsonLicense {
         }
     }
 
-    // "3dfx Glide License": {
-    // "approved": "yes",
-    // "fedora_abbrev": "Glide",
-    // "fedora_name": "3dfx Glide License",
-    // "id": "1",
-    // "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Glide.txt",
-    // "spdx_abbrev": "Glide",
-    // "spdx_license_url": "https://spdx.org/licenses/Glide.html#licenseText",
-    // "spdx_name": "3dfx Glide License",
-    // "url": "http://www.users.on.net/~triforce/glidexp/COPYING.txt"
-    // },
 }

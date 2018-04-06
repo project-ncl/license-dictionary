@@ -39,11 +39,3 @@ public class JsonProjectSCMInfo {
     }
 
 }
-// "SCM info": [
-// {
-// "name": "internal",
-// "type": "git",
-// "url": "git://git.app.eng.bos.redhat.com/antlr2.git",
-// "revision": "bd0ab97"
-// }
-// ],

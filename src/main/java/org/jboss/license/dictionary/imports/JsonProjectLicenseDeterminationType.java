@@ -37,8 +37,3 @@ public class JsonProjectLicenseDeterminationType {
     }
 
 }
-
-// "license determination type": {
-// "id": "14",
-// "name": "License file, readme file, missing in pom file"
-// },

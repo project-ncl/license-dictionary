@@ -36,22 +36,3 @@ public class JsonProjectLicenseDeterminationHint {
     }
 
 }
-
-// "license determination hints": [
-// {
-// "name": "license file",
-// "values": [
-// "LICENSE.txt"
-// ]
-// },
-// {
-// "name": "pom file",
-// "value": "pom.xml"
-// },
-// {
-// "name": "readme file",
-// "values": [
-// "README.txt:2:33"
-// ]
-// }
-// ],
