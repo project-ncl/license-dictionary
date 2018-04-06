@@ -39,9 +39,14 @@ import javax.transaction.Transactional;
 import org.jboss.license.dictionary.model.License;
 import org.jboss.license.dictionary.model.LicenseAlias;
 import org.jboss.license.dictionary.model.LicenseApprovalStatus;
+import org.jboss.license.dictionary.model.LicenseDeterminationType;
+import org.jboss.license.dictionary.model.LicenseHintType;
 import org.jboss.logging.Logger;
 
 import api.LicenseAliasRest;
+import api.LicenseApprovalStatusRest;
+import api.LicenseDeterminationTypeRest;
+import api.LicenseHintTypeRest;
 import api.LicenseRest;
 
 /**
@@ -75,15 +80,21 @@ public class LicenseStore {
         init();
     }
 
-    public Optional<LicenseRest> getById(Integer licenseId) {
+    @Transactional
+    public synchronized void load() {
+        licensesById = dbStore.getAllLicense().stream().map(entity -> fullMapper.map(entity, LicenseRest.class))
+                .peek(LicenseRest::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
+    }
+
+    public Optional<LicenseRest> getLicenseById(Integer licenseId) {
         return Optional.ofNullable(licensesById.get(licenseId));
     }
 
-    public Optional<LicenseRest> getForFedoraName(String name) {
+    public Optional<LicenseRest> getLicenseForFedoraName(String name) {
         return findSingle(l -> searchEquals(name, l.getFedoraName()));
     }
 
-    public Optional<LicenseRest> getForSpdxName(String name) {
+    public Optional<LicenseRest> getLicenseForSpdxName(String name) {
         return findSingle(l -> searchEquals(name, l.getSpdxName()));
     }
 
@@ -95,33 +106,33 @@ public class LicenseStore {
     // return findSingle(l -> searchEquals(url, l.getTextUrl()));
     // }
 
-    public Optional<LicenseRest> getForNameAlias(String alias) {
+    public Optional<LicenseRest> getLicenseForNameAlias(String alias) {
         return findSingle(l -> isOneOf(l.getAliasNames(), alias));
     }
 
-    public Optional<LicenseRest> getForCode(String code) {
+    public Optional<LicenseRest> getLicenseForCode(String code) {
         return findSingle(l -> searchEquals(code, l.getCode()));
     }
 
-    public LicenseRest save(LicenseRest licenseRest) {
+    public LicenseRest saveLicense(LicenseRest licenseRest) {
         License entity = fullMapper.map(licenseRest, License.class);
-        entity = dbStore.save(entity);
+        entity = dbStore.saveLicense(entity);
 
         licenseRest = fullMapper.map(entity, LicenseRest.class);
         licensesById.put(entity.getId(), licenseRest);
         return licenseRest;
     }
 
-    public LicenseRest update(LicenseRest licenseRest) {
+    public LicenseRest updateLicense(LicenseRest licenseRest) {
         License entity = fullMapper.map(licenseRest, License.class);
-        entity = dbStore.update(entity);
+        entity = dbStore.updateLicense(entity);
 
         licenseRest = fullMapper.map(entity, LicenseRest.class);
         licensesById.put(entity.getId(), licenseRest);
         return licenseRest;
     }
 
-    public List<LicenseRest> getAll() {
+    public List<LicenseRest> getAllLicense() {
         ArrayList<LicenseRest> result = new ArrayList<>(licensesById.values());
         result.sort(Comparator.comparing(LicenseRest::getCode));
         return result;
@@ -131,10 +142,23 @@ public class LicenseStore {
         final String searchTerm = denormalizedSearchTerm.toLowerCase();
         Set<LicenseRest> resultSet = new TreeSet<>(Comparator.comparing(LicenseRest::getCode));
 
-        resultSet.addAll(join(getForFedoraName(searchTerm), getForSpdxName(searchTerm), getForNameAlias(searchTerm),
-                getForCode(searchTerm)));
+        resultSet.addAll(join(getLicenseForFedoraName(searchTerm), getLicenseForSpdxName(searchTerm),
+                getLicenseForNameAlias(searchTerm), getLicenseForCode(searchTerm)));
 
         licensesById.values().stream().filter(l -> l.toString().toLowerCase().contains(searchTerm)).forEach(resultSet::add);
+
+        return resultSet;
+    }
+
+    public Set<LicenseRest> findByExactSearchTerm(String denormalizedSearchTerm) {
+        final String searchTerm = denormalizedSearchTerm.toLowerCase();
+        Set<LicenseRest> resultSet = new TreeSet<>(Comparator.comparing(LicenseRest::getCode));
+
+        resultSet.addAll(join(getLicenseForFedoraName(searchTerm), getLicenseForSpdxName(searchTerm),
+                getLicenseForNameAlias(searchTerm), getLicenseForCode(searchTerm)));
+
+        licensesById.values().stream().filter(l -> l.toString().toLowerCase().equalsIgnoreCase(searchTerm))
+                .forEach(resultSet::add);
 
         return resultSet;
     }
@@ -144,7 +168,7 @@ public class LicenseStore {
     }
 
     @Transactional
-    public boolean delete(Integer licenseId) {
+    public boolean deleteLicense(Integer licenseId) {
         boolean result = dbStore.deleteLicense(licenseId);
         licensesById.remove(licenseId);
         return result;
@@ -157,7 +181,7 @@ public class LicenseStore {
         Map<String, License> licenseEntityByAlias = new HashMap<String, License>();
         licensesByName.keySet().stream().forEach(alias -> {
             License lic = fullMapper.map(licensesByName.get(alias).iterator().next(), License.class);
-            LicenseApprovalStatus las = dbStore.getLicenseApprovalStatus(lic.getLicenseApprovalStatus().getId());
+            LicenseApprovalStatus las = dbStore.getLicenseApprovalStatusById(lic.getLicenseApprovalStatus().getId());
             lic.setLicenseApprovalStatus(las);
             las.addLicense(lic);
 
@@ -178,7 +202,7 @@ public class LicenseStore {
         licensesAliasByName.keySet().stream().forEach(key -> {
             Collection<LicenseAliasRest> licensesAliases = licensesAliasByName.get(key);
             Integer licenseId = licensesAliases.iterator().next().getLicenseId();
-            License license = dbStore.getLicense(licenseId);
+            License license = dbStore.getLicenseById(licenseId);
             if (license != null) {
                 license.getAliases().clear();
 
@@ -199,10 +223,91 @@ public class LicenseStore {
         log.info("finished loading imported entities");
     }
 
-    @Transactional
-    public synchronized void load() {
-        licensesById = dbStore.getAllLicense().stream().map(entity -> fullMapper.map(entity, LicenseRest.class))
-                .peek(LicenseRest::checkIntegrity).collect(Collectors.toMap(l -> l.getId(), l -> l));
+    public List<LicenseApprovalStatusRest> getAllLicenseApprovalStatus() {
+        log.info("Get all license approval status ...");
+        return dbStore.getAllLicenseApprovalStatus().stream()
+                .map(entity -> fullMapper.map(entity, LicenseApprovalStatusRest.class)).collect(Collectors.toList());
+    }
+
+    public Optional<LicenseApprovalStatusRest> getLicenseApprovalStatusById(Integer licenseStatusId) {
+        log.infof("Get license approval status by id %d", licenseStatusId);
+
+        LicenseApprovalStatus licenseApprovalStatus = dbStore.getLicenseApprovalStatusById(licenseStatusId);
+        if (licenseApprovalStatus == null) {
+            return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(fullMapper.map(licenseApprovalStatus, LicenseApprovalStatusRest.class));
+    }
+
+    public LicenseApprovalStatusRest saveLicenseApprovalStatus(LicenseApprovalStatusRest licenseApprovalStatusRest) {
+        LicenseApprovalStatus entity = fullMapper.map(licenseApprovalStatusRest, LicenseApprovalStatus.class);
+        entity = dbStore.saveLicenseApprovalStatus(entity);
+
+        licenseApprovalStatusRest = fullMapper.map(entity, LicenseApprovalStatusRest.class);
+        return licenseApprovalStatusRest;
+    }
+
+    public List<LicenseDeterminationTypeRest> getAllLicenseDeterminationType() {
+        log.info("Get all license determination type ...");
+        return dbStore.getAllLicenseDeterminationType().stream()
+                .map(entity -> fullMapper.map(entity, LicenseDeterminationTypeRest.class)).collect(Collectors.toList());
+    }
+
+    public Optional<LicenseDeterminationTypeRest> getLicenseDeterminationTypeById(Integer licenseDetTypeId) {
+        log.infof("Get license determination type by id %d", licenseDetTypeId);
+
+        LicenseDeterminationType licenseDeterminationType = dbStore.getLicenseDeterminationTypeById(licenseDetTypeId);
+        if (licenseDeterminationType == null) {
+            return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(fullMapper.map(licenseDeterminationType, LicenseDeterminationTypeRest.class));
+    }
+
+    public LicenseDeterminationTypeRest saveLicenseDeterminationType(
+            LicenseDeterminationTypeRest licenseDeterminationTypeRest) {
+        LicenseDeterminationType entity = fullMapper.map(licenseDeterminationTypeRest, LicenseDeterminationType.class);
+        entity = dbStore.saveLicenseDeterminationType(entity);
+
+        licenseDeterminationTypeRest = fullMapper.map(entity, LicenseDeterminationTypeRest.class);
+        return licenseDeterminationTypeRest;
+    }
+
+    public List<LicenseHintTypeRest> getAllLicenseHintType() {
+        log.info("Get all license hint type ...");
+        return dbStore.getAllLicenseHintType().stream().map(entity -> fullMapper.map(entity, LicenseHintTypeRest.class))
+                .collect(Collectors.toList());
+    }
+
+    public Optional<LicenseHintTypeRest> getLicenseHintTypeById(Integer licenseHintTypeId) {
+        log.infof("Get license hint type by id %d", licenseHintTypeId);
+
+        LicenseHintType licenseHintType = dbStore.getLicenseHintTypeById(licenseHintTypeId);
+        if (licenseHintType == null) {
+            return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(fullMapper.map(licenseHintType, LicenseHintTypeRest.class));
+    }
+
+    public LicenseHintTypeRest saveLicenseHintType(LicenseHintTypeRest licenseHintTypeRest) {
+        LicenseHintType entity = fullMapper.map(licenseHintTypeRest, LicenseHintType.class);
+        entity = dbStore.saveLicenseHintType(entity);
+
+        licenseHintTypeRest = fullMapper.map(entity, LicenseHintTypeRest.class);
+        return licenseHintTypeRest;
+    }
+
+    public Optional<LicenseHintTypeRest> getLicenseHintTypeByName(String name) {
+        log.infof("Get license hint type by name %s", name);
+
+        LicenseHintType licenseHintType = dbStore.getLicenseHintTypeByName(name);
+        if (licenseHintType == null) {
+            return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(fullMapper.map(licenseHintType, LicenseHintTypeRest.class));
     }
 
     private Optional<LicenseRest> findSingle(Predicate<LicenseRest> predicate) {
