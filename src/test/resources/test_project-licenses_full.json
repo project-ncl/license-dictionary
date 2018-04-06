@@ -1,0 +1,251 @@
+[
+  {
+    "project": "antlr2:2.7.7",
+    "root pom GAV": "antlr:antlr:2.7.7",
+    "scope": "PROJECT",
+    "SCM info": [
+      {
+        "name": "internal",
+        "type": "git",
+        "url": "https://github.com/antlr/antlr4.git",
+        "revision": "bd0ab97"
+      }
+    ],
+    "license": [
+      "The Antlr 2.7.7 License"
+    ],
+    "license determination type": {
+      "id": "14",
+      "name": "License file, readme file, missing in pom file"
+    },
+    "license determination hints": [
+      {
+        "name": "license file",
+        "values": [
+          "LICENSE.txt"
+        ]
+      },
+      {
+        "name": "pom file",
+        "value": "pom.xml"
+      },
+      {
+        "name": "readme file",
+        "values": [
+          "README.txt:2:33"
+        ]
+      }
+    ],
+    "determined by": "martinm",
+    "determined date": "2017-07-19"
+  },
+  {
+    "project": "asm:3.3.1",
+    "root pom GAV": "asm:asm-project:3.3.1",
+    "scope": "PROJECT",
+    "SCM info": [
+      {
+        "name": "internal",
+        "type": "git",
+        "url": "https://gitlab.ow2.org/asm/asm.git",
+        "revision": "83da518331f181dd1a764358308321b48f01fbcc"
+      }
+    ],
+    "license": [
+      "The Asm BSD License"
+    ],
+    "license determination type": {
+      "id": "5",
+      "name": "License file, pom, part of readme"
+    },
+    "license determination hints": [
+      {
+        "name": "license file",
+        "values": [
+          "LICENSE.txt"
+        ]
+      },
+      {
+        "name": "pom file",
+        "value": "pom.xml"
+      },
+      {
+        "name": "readme file",
+        "values": [
+          "README.txt"
+        ]
+      }
+    ],
+    "determined by": "martinm",
+    "determined date": "2017-07-19"
+  },
+  {
+    "project": "gf-metro-jaxb:2.2.11",
+    "root pom GAV": "com.sun.xml.bind.mvn:jaxb-parent:2.2.11",
+    "scope": "PROJECT_WITH_EXCEPTIONS",
+    "SCM info": [
+      {
+        "name": "internal",
+        "type": "git",
+        "url": "https://github.com/javaee/jaxb-v2.git",
+        "revision": "6d7cb438bd024a04b640dbba5f308bd485b3fcb0"
+      }
+    ],
+    "license": [
+      "Common Development and Distribution License 1.1",
+      "GNU General Public License v2.0 only, with Classpath exception"
+    ],
+    "license determination type": {
+      "id": "5",
+      "name": "License file, pom, part of readme"
+    },
+    "license determination hints": [
+      {
+        "name": "license file",
+        "values": [
+          "License.txt",
+          "License.html"
+        ]
+      },
+      {
+        "name": "pom file",
+        "value": "jaxb-ri/pom.xml"
+      },
+      {
+        "name": "readme file",
+        "values": [
+          "README.md:3:4"
+        ]
+      }
+    ],
+    "determined by": "martinm",
+    "determined date": "2017-07-21"
+  },
+  {
+    "project": "gf-metro-jaxb:2.2.11",
+    "root pom GAV": "com.sun.xml.bind.mvn:jaxb-parent:2.2.11",
+    "scope": "GAV",
+    "GAV": "com.sun.xml.bind.external:rngom:2.2.11",
+    "SCM info": [
+      {
+        "name": "internal",
+        "type": "git",
+        "url": "https://github.com/javaee/jaxb-v2.git",
+        "revision": "6d7cb438bd024a04b640dbba5f308bd485b3fcb0"
+      }
+    ],
+    "license": [
+      "MIT License"
+    ],
+    "license determination type": {
+      "id": "3",
+      "name": "License file with wrong licenses in pom"
+    },
+    "license determination hints": [
+      {
+        "name": "license file",
+        "values": [
+          "jaxb-ri/external/rngom/src/main/resources/META-INF/LICENSE.txt",
+          "jaxb-ri/external/rngom/src/main/resources/META-INF/jing-copying.html"
+        ]
+      },
+      {
+        "name": "pom file",
+        "value": "jaxb-ri/external/rngom/pom.xml"
+      },
+      {
+        "name": "readme file",
+        "values": [
+          
+        ]
+      }
+    ],
+    "determined by": "petrsakar",
+    "determined date": "2017-09-11"
+  },
+  {
+    "project": "gf-metro-jaxb:2.3.0",
+    "root pom GAV": "com.sun.xml.bind.mvn:jaxb-parent:2.3.0",
+    "scope": "PROJECT_WITH_EXCEPTIONS",
+    "SCM info": [
+      {
+        "name": "internal",
+        "type": "git",
+        "url": "https://github.com/javaee/jaxb-v2.git",
+        "revision": "7f537f01c7eaddfb62a6c2150279eddac7d06b50"
+      }
+    ],
+    "license": [
+      "Common Development and Distribution License 1.1",
+      "GNU General Public License v2.0 only, with Classpath exception"
+    ],
+    "license determination type": {
+      "id": "5",
+      "name": "License file, pom, part of readme"
+    },
+    "license determination hints": [
+      {
+        "name": "license file",
+        "values": [
+          "License.txt",
+          "License.html"
+        ]
+      },
+      {
+        "name": "pom file",
+        "value": "jaxb-ri/pom.xml"
+      },
+      {
+        "name": "readme file",
+        "values": [
+          "README.md:3:4"
+        ]
+      }
+    ],
+    "determined by": "vladimird",
+    "determined date": "2018-03-02",
+    "determined automatically based on": "gf-metro-jaxb:2.2.11"
+  },
+  {
+    "project": "gf-metro-jaxb:2.3.0",
+    "root pom GAV": "com.sun.xml.bind.external:rngom:2.3.0",
+    "scope": "GAV",
+    "SCM info": [
+      {
+        "name": "internal",
+        "type": "git",
+        "url": "https://github.com/javaee/jaxb-v2.git",
+        "revision": "7f537f01c7eaddfb62a6c2150279eddac7d06b50"
+      }
+    ],
+    "license": [
+      "MIT License"
+    ],
+    "license determination type": {
+      "id": "3",
+      "name": "License file with wrong licenses in pom"
+    },
+    "license determination hints": [
+      {
+        "name": "license file",
+        "values": [
+          "jaxb-ri/external/rngom/src/main/resources/META-INF/LICENSE.txt",
+          "jaxb-ri/external/rngom/src/main/resources/META-INF/jing-copying.html"
+        ]
+      },
+      {
+        "name": "pom file",
+        "value": "jaxb-ri/external/rngom/pom.xml"
+      },
+      {
+        "name": "readme file",
+        "values": [
+          
+        ]
+      }
+    ],
+    "determined by": "vladimird",
+    "determined date": "2018-03-02",
+    "determined automatically based on": "gf-metro-jaxb:2.2.11"
+  }
+]
