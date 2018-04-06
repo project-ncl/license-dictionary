@@ -20,7 +20,14 @@ package api;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ProjectRest {
+public class ProjectEcosystemRest {
+
+    public static final ProjectEcosystemRest MAVEN = ProjectEcosystemRest.Builder.newBuilder().id(1).name("mvn").build();
+    public static final ProjectEcosystemRest NPM = ProjectEcosystemRest.Builder.newBuilder().id(2).name("npm").build();
+    public static final ProjectEcosystemRest NUGET = ProjectEcosystemRest.Builder.newBuilder().id(3).name("nuget").build();
+    public static final ProjectEcosystemRest PYPI = ProjectEcosystemRest.Builder.newBuilder().id(4).name("pypi").build();
+    public static final ProjectEcosystemRest GEM = ProjectEcosystemRest.Builder.newBuilder().id(5).name("gem").build();
+    public static final ProjectEcosystemRest GITHUB = ProjectEcosystemRest.Builder.newBuilder().id(6).name("github").build();
 
     @Getter
     @Setter
@@ -28,13 +35,9 @@ public class ProjectRest {
 
     @Getter
     @Setter
-    private ProjectEcosystemRest projectEcosystem; // NPM, MAVEN, NUGET, GEM, COCOAPOD, GITHUB, PYPI
+    private String name;
 
-    @Getter
-    @Setter
-    private String key;
-
-    public ProjectRest() {
+    public ProjectEcosystemRest() {
     }
 
     @Override
@@ -44,14 +47,11 @@ public class ProjectRest {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        ProjectRest projectRest = (ProjectRest) o;
+        ProjectEcosystemRest projectEcosystemRest = (ProjectEcosystemRest) o;
 
-        if (id != null ? !id.equals(projectRest.id) : projectRest.id != null)
+        if (id != null ? !id.equals(projectEcosystemRest.id) : projectEcosystemRest.id != null)
             return false;
-        if (projectEcosystem != null ? !projectEcosystem.equals(projectRest.projectEcosystem)
-                : projectRest.projectEcosystem != null)
-            return false;
-        if (key != null ? !key.equals(projectRest.key) : projectRest.key != null)
+        if (name != null ? !name.equals(projectEcosystemRest.name) : projectEcosystemRest.name != null)
             return false;
 
         return true;
@@ -60,22 +60,19 @@ public class ProjectRest {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (projectEcosystem != null ? projectEcosystem.hashCode() : 0);
-        result = 31 * result + (key != null ? key.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "ProjectRest{" + "id=" + id + ", projectEcosystem='" + projectEcosystem.getName() + '\'' + ", key='" + key + '\''
-                + '}';
+        return "ProjectEcosystemRest{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 
     public static class Builder {
 
         private Integer id;
-        private ProjectEcosystemRest projectEcosystem;
-        private String key;
+        private String name;
 
         private Builder() {
         }
@@ -89,22 +86,16 @@ public class ProjectRest {
             return this;
         }
 
-        public Builder ecosystem(ProjectEcosystemRest projectEcosystem) {
-            this.projectEcosystem = projectEcosystem;
+        public Builder name(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder key(String key) {
-            this.key = key;
-            return this;
-        }
-
-        public ProjectRest build() {
-            ProjectRest projectRest = new ProjectRest();
-            projectRest.setId(id);
-            projectRest.setProjectEcosystem(projectEcosystem);
-            projectRest.setKey(key);
-            return projectRest;
+        public ProjectEcosystemRest build() {
+            ProjectEcosystemRest projectEcosystemRest = new ProjectEcosystemRest();
+            projectEcosystemRest.setId(id);
+            projectEcosystemRest.setName(name);
+            return projectEcosystemRest;
         }
     }
 

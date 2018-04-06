@@ -36,6 +36,10 @@ public class ProjectVersionRest {
 
     @Getter
     @Setter
+    private String version;
+
+    @Getter
+    @Setter
     private ProjectRest project;
 
     public ProjectVersionRest() {
@@ -56,6 +60,8 @@ public class ProjectVersionRest {
             return false;
         if (scmRevision != null ? !scmRevision.equals(projectVersionRest.scmRevision) : projectVersionRest.scmRevision != null)
             return false;
+        if (version != null ? !version.equals(projectVersionRest.version) : projectVersionRest.version != null)
+            return false;
         if (project != null ? !project.equals(projectVersionRest.project) : projectVersionRest.project != null)
             return false;
 
@@ -67,6 +73,7 @@ public class ProjectVersionRest {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (scmUrl != null ? scmUrl.hashCode() : 0);
         result = 31 * result + (scmRevision != null ? scmRevision.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
         result = 31 * result + (project != null ? project.hashCode() : 0);
 
         return result;
@@ -75,7 +82,7 @@ public class ProjectVersionRest {
     @Override
     public String toString() {
         return "ProjectVersionRest{" + "id=" + id + ", scmUrl='" + scmUrl + '\'' + ", scmRevision='" + scmRevision + '\''
-                + ", project='" + project + '\'' + '}';
+                + ", version='" + version + '\'' + ", project='" + project + '\'' + '}';
     }
 
     public static class Builder {
@@ -83,6 +90,7 @@ public class ProjectVersionRest {
         private Integer id;
         private String scmUrl;
         private String scmRevision;
+        private String version;
         private ProjectRest project;
 
         private Builder() {
@@ -107,6 +115,11 @@ public class ProjectVersionRest {
             return this;
         }
 
+        public Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
         public Builder project(ProjectRest project) {
             this.project = project;
             return this;
@@ -117,6 +130,7 @@ public class ProjectVersionRest {
             projectVersionRest.setId(id);
             projectVersionRest.setScmUrl(scmUrl);
             projectVersionRest.setScmRevision(scmRevision);
+            projectVersionRest.setVersion(version);
             projectVersionRest.setProject(project);
             return projectVersionRest;
         }

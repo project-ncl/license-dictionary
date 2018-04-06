@@ -17,7 +17,7 @@
  */
 package api;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ public class ProjectVersionLicenseCheckRest {
 
     @Getter
     @Setter
-    private Date determinationDate;
+    private LocalDateTime determinationDate;
 
     @Getter
     @Setter
@@ -103,7 +103,7 @@ public class ProjectVersionLicenseCheckRest {
 
         private Integer id;
         private String determinedByUser;
-        private Date determinationDate;
+        private LocalDateTime determinationDate;
         private String notes;
         private ProjectVersionRest projectVersion;
         private LicenseDeterminationTypeRest licenseDeterminationType;
@@ -125,7 +125,7 @@ public class ProjectVersionLicenseCheckRest {
             return this;
         }
 
-        public Builder determinationDate(Date determinationDate) {
+        public Builder determinationDate(LocalDateTime determinationDate) {
             this.determinationDate = determinationDate;
             return this;
         }
