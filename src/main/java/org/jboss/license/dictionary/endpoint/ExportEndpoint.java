@@ -19,7 +19,7 @@ package org.jboss.license.dictionary.endpoint;
 
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
-import org.jboss.license.dictionary.imports.RhLicense;
+import org.jboss.license.dictionary.imports.JsonLicense;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -41,11 +41,11 @@ public class ExportEndpoint {
 
     @GET
     @Path("/licenses")
-    public Map<String, RhLicense> exportLicenses() {
-        Map<String, RhLicense> resultMap = new HashMap<>();
+    public Map<String, JsonLicense> exportLicenses() {
+        Map<String, JsonLicense> resultMap = new HashMap<>();
 
-        store.getAll().forEach(
-                license -> license.getAliasNames().forEach(alias -> resultMap.put(alias, RhLicense.fromLicenseRest(license))));
+        store.getAllLicense().forEach(
+                license -> license.getAliasNames().forEach(alias -> resultMap.put(alias, JsonLicense.fromLicenseRest(license))));
 
         return resultMap;
     }

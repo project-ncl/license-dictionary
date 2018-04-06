@@ -17,6 +17,9 @@
  */
 package org.jboss.license.dictionary.endpoint;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import javax.ws.rs.core.Response;
 
 public class AbstractEndpoint {
@@ -27,5 +30,9 @@ public class AbstractEndpoint {
     protected <T> Response paginated(T content, int totalCount, int offset) {
         return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
     }
-    
+
+    protected long nonNullCount(Object... args) {
+        return Stream.of(args).filter(Objects::nonNull).count();
+    }
+
 }
