@@ -33,16 +33,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.license.dictionary.LicenseStore;
+import org.jboss.license.dictionary.ProjectLicenseStore;
 import org.jboss.license.dictionary.RestApplication;
-import org.jboss.license.dictionary.imports.RhLicense;
+import org.jboss.license.dictionary.api.LicenseAliasRest;
+import org.jboss.license.dictionary.api.LicenseRest;
+import org.jboss.license.dictionary.imports.JsonLicense;
+import org.jboss.license.dictionary.imports.JsonProjectLicense;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.logging.Logger;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
-import api.LicenseAliasRest;
-import api.LicenseRest;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
@@ -56,10 +57,14 @@ public class ImportEndpoint {
     @Inject
     private LicenseStore store;
 
+    @Inject
+    private ProjectLicenseStore projectLicenseStore;
+
     @Path(RestApplication.IMPORT_ENDPOINT_IMPORT_LICENSE_API)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
-    public void importLicenses(Map<String, RhLicense> rhLicenses) {
+    public void importLicenses(Map<String, JsonLicense> rhLicenses) {
+        log.debug("Import licenses ...");
 
         Multimap<String, LicenseRest> licensesByName = ArrayListMultimap.create();
         rhLicenses.forEach((alias, license) -> {
@@ -88,6 +93,7 @@ public class ImportEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
     public void importLicenseAliases(Map<String, String[]> rhAlias) {
+        log.debug("Import license aliases ...");
 
         Map<String, Collection<LicenseAliasRest>> licensesAliasByName = new HashMap<String, Collection<LicenseAliasRest>>();
         rhAlias.forEach((alias, aliases) -> {
@@ -114,10 +120,19 @@ public class ImportEndpoint {
         store.replaceAllLicenseAliasesWith(licensesAliasByName);
     }
 
+    @Path(RestApplication.IMPORT_ENDPOINT_IMPORT_PROJECT_LICENSE_API)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @POST
+    public void importProjectLicense(JsonProjectLicense[] jsonProjectLicenses) {
+        log.debug("Import project license ...");
+
+        projectLicenseStore.importProjectLicenses(jsonProjectLicenses);
+    }
+
     private LicenseRest pickLicenseByName(String alias) {
-        Optional<LicenseRest> optionalLicenseRest = store.getForFedoraName(alias);
+        Optional<LicenseRest> optionalLicenseRest = store.getLicenseForFedoraName(alias);
         if (!optionalLicenseRest.isPresent()) {
-            optionalLicenseRest = store.getForSpdxName(alias);
+            optionalLicenseRest = store.getLicenseForSpdxName(alias);
         }
         return optionalLicenseRest.get();
     }

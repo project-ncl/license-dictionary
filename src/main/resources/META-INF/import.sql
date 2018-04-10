@@ -23,13 +23,22 @@ INSERT INTO license_approval_status VALUES (nextval('license_apprstatus_id_seq')
 INSERT INTO license_approval_status VALUES (nextval('license_apprstatus_id_seq'), 'UNKNOWN');
 
 --
-INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'LICENSE file');
-INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'pom.xml file');
-INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'README file');
+INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'license file');
+INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'pom file');
+INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'readme file');
 INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'package.json file');
 INSERT INTO license_hint_type VALUES (nextval('license_hinttype_id_seq'), 'npm-shrinkwrap.json file');
 
 --
+INSERT INTO project_ecosystem VALUES (nextval('project_ecosystem_id_seq'), 'mvn');
+INSERT INTO project_ecosystem VALUES (nextval('project_ecosystem_id_seq'), 'npm');
+INSERT INTO project_ecosystem VALUES (nextval('project_ecosystem_id_seq'), 'nuget');
+INSERT INTO project_ecosystem VALUES (nextval('project_ecosystem_id_seq'), 'pypi');
+INSERT INTO project_ecosystem VALUES (nextval('project_ecosystem_id_seq'), 'gem');
+INSERT INTO project_ecosystem VALUES (nextval('project_ecosystem_id_seq'), 'github');
+
+--
+INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'License file only', 'Project licenses are specified in license file, pom.xml is missing license tag, project does not have readme file or licenses are not mentioned in readme');
 INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'License file and pom', 'Project licenses are specified in license file, pom.xml contains license tag listing the same licenses, project does not have readme file or licenses are not mentioned in readme');
 INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'License file with wrong licenses in pom', 'Project licenses are specified in license file, pom.xml contains license tag listing different licenses, project does not have readme file or licenses are not mentioned in readme');
 INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'Missing license file, license part of readme', 'Project does not contain license file, pom.xml does not contain license tag listing different licenses, project has readme where are specified licenses');
@@ -44,4 +53,5 @@ INSERT INTO license_determination_type(id, name, description) VALUES (nextval('l
 INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'License file, readme file, wrong licenses in pom', 'Project licenses are specified in license file and mentioned in readme file, but pom.xml contains licenses tag listing different licenses');
 INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'License file, readme file, missing in pom file', 'Project licenses are specified in license file and mentioned in readme file, pom.xml does not contain licenses tag');
 INSERT INTO license_determination_type(id, name, description) VALUES (nextval('license_dettype_id_seq'), 'No license file, no readme or without license, only pom file without licenses tag', 'Project does not contain license file, license is not specified in readme or readme is not present and project consists of a pom file and no actual source code files. Can be ignored or marked as having Public Domain license');
+
 

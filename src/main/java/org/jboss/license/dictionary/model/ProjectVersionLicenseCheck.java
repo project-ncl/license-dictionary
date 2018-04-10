@@ -17,9 +17,7 @@
  */
 package org.jboss.license.dictionary.model;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +30,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -50,16 +50,24 @@ import lombok.ToString;
 @Table(name = "project_version_license_chk", indexes = {
         @Index(name = ProjectVersionLicenseCheck.IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION, columnList = "project_version_id"),
         @Index(name = ProjectVersionLicenseCheck.IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE, columnList = "license_det_type_id") })
+@NamedQueries({
+        @NamedQuery(name = ProjectVersionLicenseCheck.QUERY_FIND_BY_PROJVERSID_UNORDERED, query = "SELECT pvlc FROM ProjectVersionLicenseCheck pvlc "
+                + "WHERE pvlc.projectVersion.id = :projVersId"),
+        @NamedQuery(name = ProjectVersionLicenseCheck.QUERY_FIND_BY_PROJVERSID_LICDETTYPE_UNORDERED, query = "SELECT pvlc FROM ProjectVersionLicenseCheck pvlc "
+                + "WHERE pvlc.projectVersion.id = :projVersId AND pvlc.licenseDeterminationType.id = :licDetTypeId") })
 
 @ToString(exclude = { "projectVersionLicenses" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenses" })
 public class ProjectVersionLicenseCheck {
 
-    public static final String SEQUENCE_NAME = "projverlicchk_id_seq";
+    public static final String QUERY_FIND_BY_PROJVERSID_UNORDERED = "ProjectVersionLicenseCheck.findByProjVersIdUnordered";
+    public static final String QUERY_FIND_BY_PROJVERSID_LICDETTYPE_UNORDERED = "ProjectVersionLicenseCheck.findByProjVersIdLicDetTypeUnordered";
+
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION = "idx_projverlicchk_projver";
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE = "idx_projverlicchk_licdettype";
     public static final String FK_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION = "fk_projverlicchk_projver";
     public static final String FK_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE = "fk_projverlicchk_licdettype";
+    public static final String SEQUENCE_NAME = "projverlicchk_id_seq";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -67,6 +75,7 @@ public class ProjectVersionLicenseCheck {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
@@ -77,7 +86,7 @@ public class ProjectVersionLicenseCheck {
     private String determinedByUser;
 
     @NotNull
-    //@Column(name = "determination_date", columnDefinition = "timestamp with time zone")
+    // @Column(name = "determination_date", columnDefinition = "timestamp with time zone")
     @Column(name = "determination_date")
     @Getter
     @Setter
@@ -112,7 +121,9 @@ public class ProjectVersionLicenseCheck {
 
     @PrePersist
     private void initDeterminationTime() {
-        this.determinationDate = LocalDateTime.now();
+        if (this.determinationDate == null) {
+            this.determinationDate = LocalDateTime.now();
+        }
     }
 
     public void addProjectVersionLicense(ProjectVersionLicense projectVersionLicense) {

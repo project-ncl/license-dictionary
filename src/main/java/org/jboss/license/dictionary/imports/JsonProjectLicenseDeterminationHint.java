@@ -15,24 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.license.dictionary.endpoint;
+package org.jboss.license.dictionary.imports;
 
-import java.util.Objects;
-import java.util.stream.Stream;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.ws.rs.core.Response;
+import lombok.Data;
+import lombok.ToString;
 
-public class AbstractEndpoint {
+@Data
+@ToString(includeFieldNames = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class JsonProjectLicenseDeterminationHint {
 
-    public AbstractEndpoint() {
-    }
+    private String name;
+    private String[] values;
+    private String value;
 
-    protected <T> Response paginated(T content, int totalCount, int offset) {
-        return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
-    }
+    public JsonProjectLicenseDeterminationHint() {
 
-    protected long nonNullCount(Object... args) {
-        return Stream.of(args).filter(Objects::nonNull).count();
     }
 
 }

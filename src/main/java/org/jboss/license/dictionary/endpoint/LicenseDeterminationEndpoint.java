@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
-import org.jboss.license.dictionary.api.LicenseApprovalStatusRest;
+import org.jboss.license.dictionary.api.LicenseDeterminationTypeRest;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 
@@ -45,42 +45,43 @@ import org.jboss.logging.Logger;
  */
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_STATUS_ENDPOINT)
-public class LicenseStatusEndpoint extends AbstractEndpoint {
+@Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_DETERMINATION_ENDPOINT)
+public class LicenseDeterminationEndpoint extends AbstractEndpoint {
 
-    private static final Logger log = Logger.getLogger(LicenseStatusEndpoint.class);
+    private static final Logger log = Logger.getLogger(LicenseDeterminationEndpoint.class);
 
     @Inject
     private LicenseStore licenseStore;
 
     @GET
-    public Response getAllLicenseApprovalStatus() {
-        log.debug("Get all license approval status");
+    public Response getAllLicenseDeterminationType() {
+        log.debug("Get all license determination type");
 
-        List<LicenseApprovalStatusRest> results = licenseStore.getAllLicenseApprovalStatus();
+        List<LicenseDeterminationTypeRest> results = licenseStore.getAllLicenseDeterminationType();
         return paginated(results, results.size(), 0);
     }
 
     @GET
     @Path("/{id}")
-    public Response getSpecificLicenseApprovalStatus(@PathParam("id") Integer id) {
-        log.debugf("Get license approval status with %d", id);
+    public Response getSpecificLicenseDeterminationType(@PathParam("id") Integer id) {
+        log.debugf("Get license determination type with %d", id);
 
-        LicenseApprovalStatusRest entity = licenseStore.getLicenseApprovalStatusById(id)
-                .orElseThrow(() -> new NotFoundException("No license status found for id " + id));
+        LicenseDeterminationTypeRest entity = licenseStore.getLicenseDeterminationTypeById(id)
+                .orElseThrow(() -> new NotFoundException("No license determination type found for id " + id));
 
         return Response.ok().entity(entity).build();
     }
 
     @POST
     @Transactional
-    public Response createNewLicenseApprovalStatus(LicenseApprovalStatusRest licenseApprovalStatusRest, @Context UriInfo uriInfo) {
-        log.debugf("Creating new license approval status %s", licenseApprovalStatusRest);
+    public Response createNewLicenseDeterminationType(LicenseDeterminationTypeRest licenseDeterminationTypeRest, @Context UriInfo uriInfo) {
+        log.debugf("Creating new license determination type %s", licenseDeterminationTypeRest);
 
-        licenseApprovalStatusRest = licenseStore.saveLicenseApprovalStatus(licenseApprovalStatusRest);
+        licenseDeterminationTypeRest = licenseStore.saveLicenseDeterminationType(licenseDeterminationTypeRest);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
-        return Response.created(uriBuilder.build(licenseApprovalStatusRest.getId())).entity(licenseApprovalStatusRest).build();
+        return Response.created(uriBuilder.build(licenseDeterminationTypeRest.getId())).entity(licenseDeterminationTypeRest)
+                .build();
     }
 
 }

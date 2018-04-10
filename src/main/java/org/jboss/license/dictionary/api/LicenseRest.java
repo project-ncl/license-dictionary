@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -25,9 +25,13 @@ import java.util.stream.Collectors;
 
 import org.jboss.license.dictionary.model.LicenseAlias;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString(exclude = { "aliases" })
+@EqualsAndHashCode(exclude = { "aliases" })
 public class LicenseRest {
 
     @Getter
@@ -94,63 +98,6 @@ public class LicenseRest {
 
     public void addAlias(Integer id, String licenseAlias, Integer licenseId) {
         aliases.add(LicenseAliasRest.Builder.newBuilder().id(id).aliasName(licenseAlias).licenseId(licenseId).build());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        LicenseRest licenseRest = (LicenseRest) o;
-
-        if (id != null ? !id.equals(licenseRest.id) : licenseRest.id != null)
-            return false;
-        if (code != null ? !code.equals(licenseRest.code) : licenseRest.code != null)
-            return false;
-        if (fedoraAbbreviation != null ? !fedoraAbbreviation.equals(licenseRest.fedoraAbbreviation)
-                : licenseRest.fedoraAbbreviation != null)
-            return false;
-        if (fedoraName != null ? !fedoraName.equals(licenseRest.fedoraName) : licenseRest.fedoraName != null)
-            return false;
-        if (spdxAbbreviation != null ? !spdxAbbreviation.equals(licenseRest.spdxAbbreviation)
-                : licenseRest.spdxAbbreviation != null)
-            return false;
-        if (spdxName != null ? !spdxName.equals(licenseRest.spdxName) : licenseRest.spdxName != null)
-            return false;
-        if (url != null ? !url.equals(licenseRest.url) : licenseRest.url != null)
-            return false;
-        if (textUrl != null ? !textUrl.equals(licenseRest.textUrl) : licenseRest.textUrl != null)
-            return false;
-        if (licenseApprovalStatus != null ? !licenseApprovalStatus.equals(licenseRest.licenseApprovalStatus)
-                : licenseRest.licenseApprovalStatus != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (fedoraAbbreviation != null ? fedoraAbbreviation.hashCode() : 0);
-        result = 31 * result + (fedoraName != null ? fedoraName.hashCode() : 0);
-        result = 31 * result + (spdxAbbreviation != null ? spdxAbbreviation.hashCode() : 0);
-        result = 31 * result + (spdxName != null ? spdxName.hashCode() : 0);
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (textUrl != null ? textUrl.hashCode() : 0);
-        result = 31 * result + (licenseApprovalStatus != null ? licenseApprovalStatus.hashCode() : 0);
-
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "License{" + "id=" + id + ", code='" + code + '\'' + ", fedoraAbbreviation='" + fedoraAbbreviation + '\''
-                + ", fedoraName='" + fedoraName + '\'' + ", spdxAbbreviation='" + spdxAbbreviation + '\'' + ", spdxName='"
-                + spdxName + '\'' + ", url='" + url + '\'' + ", textUrl='" + textUrl + '\'' + ", licenseApprovalStatus='"
-                + licenseApprovalStatus + '\'' + '}';
     }
 
     public static class Builder {

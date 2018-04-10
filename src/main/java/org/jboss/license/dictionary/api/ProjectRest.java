@@ -15,11 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class ProjectRest {
 
     @Getter
@@ -28,7 +32,7 @@ public class ProjectRest {
 
     @Getter
     @Setter
-    private String ecosystem;
+    private ProjectEcosystemRest projectEcosystem; // NPM, MAVEN, NUGET, GEM, COCOAPOD, GITHUB, PYPI
 
     @Getter
     @Setter
@@ -37,42 +41,10 @@ public class ProjectRest {
     public ProjectRest() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        ProjectRest projectRest = (ProjectRest) o;
-
-        if (id != null ? !id.equals(projectRest.id) : projectRest.id != null)
-            return false;
-        if (ecosystem != null ? !ecosystem.equals(projectRest.ecosystem) : projectRest.ecosystem != null)
-            return false;
-        if (key != null ? !key.equals(projectRest.key) : projectRest.key != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (ecosystem != null ? ecosystem.hashCode() : 0);
-        result = 31 * result + (key != null ? key.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "LicenseHintTypeRest{" + "id=" + id + ", ecosystem='" + ecosystem + '\'' + ", key='" + key + '\'' + '}';
-    }
-
     public static class Builder {
 
         private Integer id;
-        private String ecosystem;
+        private ProjectEcosystemRest projectEcosystem;
         private String key;
 
         private Builder() {
@@ -87,8 +59,8 @@ public class ProjectRest {
             return this;
         }
 
-        public Builder ecosystem(String ecosystem) {
-            this.ecosystem = ecosystem;
+        public Builder ecosystem(ProjectEcosystemRest projectEcosystem) {
+            this.projectEcosystem = projectEcosystem;
             return this;
         }
 
@@ -100,7 +72,7 @@ public class ProjectRest {
         public ProjectRest build() {
             ProjectRest projectRest = new ProjectRest();
             projectRest.setId(id);
-            projectRest.setEcosystem(ecosystem);
+            projectRest.setProjectEcosystem(projectEcosystem);
             projectRest.setKey(key);
             return projectRest;
         }

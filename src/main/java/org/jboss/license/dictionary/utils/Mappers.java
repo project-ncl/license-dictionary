@@ -20,11 +20,15 @@ package org.jboss.license.dictionary.utils;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.jboss.license.dictionary.api.LicenseRest;
+import org.jboss.license.dictionary.api.ProjectRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseCheckRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseHintRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
 import org.jboss.license.dictionary.model.License;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-
-import api.LicenseRest;
 
 /**
  * mstodo: Header
@@ -38,6 +42,21 @@ public class Mappers {
     }.getType();
 
     public static final Type licenseListType = new TypeToken<List<License>>() {
+    }.getType();
+
+    public static final Type projectVersionLicenseRestListType = new TypeToken<List<ProjectVersionLicenseRest>>() {
+    }.getType();
+
+    public static final Type projectVersionRestListType = new TypeToken<List<ProjectVersionRest>>() {
+    }.getType();
+
+    public static final Type projectVersionLicenseCheckRestListType = new TypeToken<List<ProjectVersionLicenseCheckRest>>() {
+    }.getType();
+
+    public static final Type projectVersionLicenseHintRestListType = new TypeToken<List<ProjectVersionLicenseHintRest>>() {
+    }.getType();
+
+    public static final Type projectRestListType = new TypeToken<List<ProjectRest>>() {
     }.getType();
 
     public static final ModelMapper limitedMapper;

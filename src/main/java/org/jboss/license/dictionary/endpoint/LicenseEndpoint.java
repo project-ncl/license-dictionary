@@ -25,10 +25,8 @@ import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -50,13 +48,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 import org.modelmapper.ValidationException;
 import org.modelmapper.spi.ErrorMessage;
-
-import api.LicenseRest;
 
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
@@ -78,6 +75,10 @@ public class LicenseEndpoint extends AbstractEndpoint {
             @QueryParam("searchTerm") String searchTerm, @QueryParam("count") Integer resultCount,
             @QueryParam("offset") Integer offset) {
 
+        log.debugf(
+                "Finding licenses with fedoraName '%s', spdxName '%s', code '%s', alias '%s', searchTerm '%s', numResults '%d', offset '%d'",
+                fedoraName, spdxName, code, nameAlias, searchTerm, resultCount, offset);
+
         if (offset == null) {
             offset = 0;
         }
@@ -96,16 +97,16 @@ public class LicenseEndpoint extends AbstractEndpoint {
 
             LicenseRest entity;
             if (fedoraName != null) {
-                entity = valueOrNotFound(licenseStore.getForFedoraName(fedoraName), "No license was found for Fedora name %s",
-                        fedoraName);
+                entity = valueOrNotFound(licenseStore.getLicenseForFedoraName(fedoraName),
+                        "No license was found for Fedora name %s", fedoraName);
             } else if (spdxName != null) {
-                entity = valueOrNotFound(licenseStore.getForSpdxName(spdxName), "No license was found for SPDX name %s",
+                entity = valueOrNotFound(licenseStore.getLicenseForSpdxName(spdxName), "No license was found for SPDX name %s",
                         spdxName);
             } else if (nameAlias != null) {
-                entity = valueOrNotFound(licenseStore.getForNameAlias(nameAlias), "Could not find license for nameAlias %s",
-                        nameAlias);
+                entity = valueOrNotFound(licenseStore.getLicenseForNameAlias(nameAlias),
+                        "Could not find license for nameAlias %s", nameAlias);
             } else {
-                entity = valueOrNotFound(licenseStore.getForCode(code), "Could not find license for code %s", code);
+                entity = valueOrNotFound(licenseStore.getLicenseForCode(code), "Could not find license for code %s", code);
             }
             return paginated(singletonList(limitedMapper.map(entity, LicenseRest.class)), 1, 0);
         } else {
@@ -113,7 +114,7 @@ public class LicenseEndpoint extends AbstractEndpoint {
             if (searchTerm != null) {
                 results = licenseStore.findBySearchTerm(searchTerm).stream().collect(Collectors.toList());
             } else {
-                results = licenseStore.getAll();
+                results = licenseStore.getAllLicense();
             }
 
             int totalCount = results.size();
@@ -131,20 +132,23 @@ public class LicenseEndpoint extends AbstractEndpoint {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response update(@PathParam("id") Integer id, LicenseRest license) {
-        Optional<LicenseRest> maybeLicense = licenseStore.getById(id);
+    public Response updateLicense(@PathParam("id") Integer id, LicenseRest license) {
+        log.debugf("Updating license with %d with entity %s", id, license);
+
+        Optional<LicenseRest> maybeLicense = licenseStore.getLicenseById(id);
         LicenseRest licenseData = maybeLicense.orElseThrow(() -> new NotFoundException("No license found for id " + id));
         fullMapper.map(license, licenseData);
 
-        licenseData = licenseStore.update(licenseData);
+        licenseData = licenseStore.updateLicense(licenseData);
         return Response.ok().entity(licenseData).build();
     }
 
     @DELETE
     @Path("/{id}")
-    public Response delete(@PathParam("id") Integer id) {
-        log.info("deleting license: " + id);
-        if (!licenseStore.delete(id)) {
+    public Response deleteLicense(@PathParam("id") Integer id) {
+        log.debugf("Deleting license with %d", id);
+
+        if (!licenseStore.deleteLicense(id)) {
             throw new NotFoundException("No license found for id " + id);
         }
         return Response.ok().build();
@@ -152,10 +156,11 @@ public class LicenseEndpoint extends AbstractEndpoint {
 
     @POST
     @Transactional
-    public Response createNew(LicenseRest license, @Context UriInfo uriInfo) {
-        log.info("creating license: " + license);
+    public Response createNewLicense(LicenseRest license, @Context UriInfo uriInfo) {
+        log.debugf("Creating new license %s", license);
+
         validate(license);
-        license = licenseStore.save(license);
+        license = licenseStore.saveLicense(license);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
         return Response.created(uriBuilder.build(license.getId())).entity(license).build();
@@ -163,9 +168,11 @@ public class LicenseEndpoint extends AbstractEndpoint {
 
     @GET
     @Path("/{id}")
-    public Response getSpecific(@PathParam("id") Integer id) {
+    public Response getSpecificLicense(@PathParam("id") Integer id) {
+        log.debugf("Get license with %d", id);
 
-        LicenseRest entity = licenseStore.getById(id).orElseThrow(() -> new NotFoundException("No license found for id " + id));
+        LicenseRest entity = licenseStore.getLicenseById(id)
+                .orElseThrow(() -> new NotFoundException("No license found for id " + id));
 
         return Response.ok().entity(fullMapper.map(entity, LicenseRest.class)).build();
     }
@@ -178,13 +185,21 @@ public class LicenseEndpoint extends AbstractEndpoint {
     private void validate(LicenseRest license) {
         List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
 
-        licenseStore.getForFedoraName(license.getFedoraName()).ifPresent(l -> errors
-                .add(new ErrorMessage("License with the same Fedora name found. Conflicting license id: " + l.getId())));
-        licenseStore.getForSpdxName(license.getSpdxName()).ifPresent(l -> errors
-                .add(new ErrorMessage("License with the same SPDX name found. Conflicting license id: " + l.getId())));
-        licenseStore.getForCode(license.getCode()).ifPresent(
-                l -> errors.add(new ErrorMessage("License with the same code found. Conflicting license id: " + l.getId())));
-        license.getAliasNames().forEach(alias -> licenseStore.getForNameAlias(alias).ifPresent(l -> errors
+        if (license.getFedoraName() != null && !license.getFedoraName().isEmpty()) {
+            licenseStore.getLicenseForFedoraName(license.getFedoraName()).ifPresent(l -> errors
+                    .add(new ErrorMessage("License with the same Fedora name found. Conflicting license id: " + l.getId())));
+        }
+
+        if (license.getSpdxName() != null && !license.getSpdxName().isEmpty()) {
+            licenseStore.getLicenseForSpdxName(license.getSpdxName()).ifPresent(l -> errors
+                    .add(new ErrorMessage("License with the same SPDX name found. Conflicting license id: " + l.getId())));
+        }
+
+        if (license.getCode() != null && !license.getCode().isEmpty()) {
+            licenseStore.getLicenseForCode(license.getCode()).ifPresent(l -> errors
+                    .add(new ErrorMessage("License with the same code found. Conflicting license id: " + l.getId())));
+        }
+        license.getAliasNames().forEach(alias -> licenseStore.getLicenseForNameAlias(alias).ifPresent(l -> errors
                 .add(new ErrorMessage("License with the same name alias found. Conflicting license id: " + l.getId()))));
 
         if (!errors.isEmpty()) {
@@ -192,7 +207,4 @@ public class LicenseEndpoint extends AbstractEndpoint {
         }
     }
 
-    private long nonNullCount(Object... args) {
-        return Stream.of(args).filter(Objects::nonNull).count();
-    }
 }

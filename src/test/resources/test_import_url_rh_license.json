@@ -98,17 +98,6 @@
     "spdx_name": "Abstyles License",
     "url": "https://fedoraproject.org/wiki/Licensing/Abstyles"
   },
-  "Academic Free License": {
-    "approved": "yes",
-    "fedora_abbrev": "AFL",
-    "fedora_name": "Academic Free License",
-    "id": "5",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/AFL-3.0.txt",
-    "spdx_abbrev": "AFL-3.0",
-    "spdx_license_url": "https://spdx.org/licenses/AFL-3.0.html#licenseText",
-    "spdx_name": "Academic Free License v3.0",
-    "url": "http://opensource.org/licenses/afl-3.0.php"
-  },
   "Academic Free License v1.1": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -175,17 +164,6 @@
     "spdx_name": "Academy of Motion Picture Arts and Sciences BSD",
     "url": "https://fedoraproject.org/wiki/Licensing/BSD#AMPASBSD"
   },
-  "Adaptive Public License": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "Adaptive Public License",
-    "id": "12",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/APL-1.0.txt",
-    "spdx_abbrev": "APL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/APL-1.0.html#licenseText",
-    "spdx_name": "Adaptive Public License 1.0",
-    "url": "https://opensource.org/licenses/apl1.0.php"
-  },
   "Adaptive Public License 1.0": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -230,25 +208,14 @@
     "spdx_name": "Adobe Systems Incorporated Source Code License Agreement",
     "url": "https://fedoraproject.org/wiki/Licensing/AdobeLicense"
   },
-  "Affero General Public License 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "AGPLv1",
-    "fedora_name": "Affero General Public License 1.0",
-    "id": "17",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/AGPL-1.0.txt",
-    "spdx_abbrev": "AGPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/AGPL-1.0.html#licenseText",
-    "spdx_name": "Affero General Public License v1.0",
-    "url": "http://www.affero.org/oagpl.html"
-  },
-  "Affero General Public License 3.0": {
+  "GNU Affero General Public License v3.0": {
     "approved": "yes",
     "fedora_abbrev": "AGPLv3",
     "fedora_name": "Affero General Public License 3.0",
-    "id": "18",
+    "id": "215",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/AGPL-3.0.txt",
     "spdx_abbrev": "AGPL-3.0",
-    "spdx_license_url": "",
+    "spdx_license_url": "https://spdx.org/licenses/AGPL-3.0.html#licenseText",
     "spdx_name": "GNU Affero General Public License v3.0",
     "url": "https://spdx.org/licenses/AGPL-3.0.html"
   },
@@ -367,83 +334,6 @@
     "fedora_abbrev": "ASL 2.0",
     "fedora_name": "Apache Software License 2.0",
     "id": "32",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "Apache License Version 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "574",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "Apache License, Version 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "579",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "Apache Software License 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 1.0",
-    "fedora_name": "Apache Software License 1.0",
-    "id": "33",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-1.0.txt",
-    "spdx_abbrev": "Apache-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-1.0.html#licenseText",
-    "spdx_name": "Apache License 1.0",
-    "url": "http://www.apache.org/licenses/LICENSE-1.0"
-  },
-  "Apache Software License 1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 1.1",
-    "fedora_name": "Apache Software License 1.1",
-    "id": "34",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-1.1.txt",
-    "spdx_abbrev": "Apache-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-1.1.html#licenseText",
-    "spdx_name": "Apache License 1.1",
-    "url": "http://www.apache.org/licenses/LICENSE-1.1"
-  },
-  "Apache Software License 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "35",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "Apache Software License, Version 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "36",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "Apache v2": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "575",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
     "spdx_abbrev": "Apache-2.0",
     "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
@@ -571,11 +461,11 @@
     "spdx_name": "",
     "url": "http://dev.perl.org/licenses/artistic.html"
   },
-  "Artistic 2.0": {
+  "Artistic License 2.0": {
     "approved": "yes",
     "fedora_abbrev": "Artistic 2.0",
     "fedora_name": "Artistic 2.0",
-    "id": "47",
+    "id": "52",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Artistic-2.0.txt",
     "spdx_abbrev": "Artistic-2.0",
     "spdx_license_url": "https://spdx.org/licenses/Artistic-2.0.html#licenseText",
@@ -614,17 +504,6 @@
     "spdx_license_url": "https://spdx.org/licenses/Artistic-1.0-cl8.html#licenseText",
     "spdx_name": "Artistic License 1.0 w/clause 8",
     "url": "http://opensource.org/licenses/Artistic-1.0"
-  },
-  "Artistic License 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "Artistic 2.0",
-    "fedora_name": "Artistic 2.0",
-    "id": "52",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Artistic-2.0.txt",
-    "spdx_abbrev": "Artistic-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Artistic-2.0.html#licenseText",
-    "spdx_name": "Artistic License 2.0",
-    "url": "http://www.perlfoundation.org/artistic_license_2_0"
   },
   "Aspell-ru License": {
     "approved": "yes",
@@ -714,7 +593,7 @@
     "spdx_name": "BSD 3-Clause No Nuclear Warranty",
     "url": "https://jogamp.org/git/?p=gluegen.git;a=blob_plain;f=LICENSE.txt"
   },
-  "BSD 3-clause \"New\" or \"Revised\" License": {
+  "BSD 3-Clause \"New\" or \"Revised\" License": {
     "approved": "yes",
     "fedora_abbrev": "",
     "fedora_name": "",
@@ -722,10 +601,10 @@
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/BSD-3-Clause.txt",
     "spdx_abbrev": "BSD-3-Clause",
     "spdx_license_url": "https://spdx.org/licenses/BSD-3-Clause.html#licenseText",
-    "spdx_name": "BSD 3-clause \"New\" or \"Revised\" License",
+    "spdx_name": "BSD 3-Clause \"New\" or \"Revised\" License",
     "url": "http://www.opensource.org/licenses/BSD-3-Clause"
   },
-  "BSD 3-clause Clear License": {
+  "BSD 3-Clause Clear License": {
     "approved": "unknown",
     "fedora_abbrev": "",
     "fedora_name": "",
@@ -733,7 +612,7 @@
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/BSD-3-Clause-Clear.txt",
     "spdx_abbrev": "BSD-3-Clause-Clear",
     "spdx_license_url": "https://spdx.org/licenses/BSD-3-Clause-Clear.html#licenseText",
-    "spdx_name": "BSD 3-clause Clear License",
+    "spdx_name": "BSD 3-Clause Clear License",
     "url": "http://labs.metacarta.com/license-explanation.html#license"
   },
   "BSD 4-clause \"Original\" or \"Old\" License": {
@@ -890,17 +769,6 @@
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/Bibtex"
   },
-  "BitTorrent License": {
-    "approved": "yes",
-    "fedora_abbrev": "BitTorrent",
-    "fedora_name": "BitTorrent License",
-    "id": "61",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/BitTorrent-1.1.txt",
-    "spdx_abbrev": "BitTorrent-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/BitTorrent-1.1.html#licenseText",
-    "spdx_name": "BitTorrent Open Source License v1.1",
-    "url": "https://fedoraproject.org/wiki/Licensing/BitTorrent_Open_Source_License"
-  },
   "BitTorrent Open Source License v1.0": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -923,17 +791,6 @@
     "spdx_name": "BitTorrent Open Source License v1.1",
     "url": "https://fedoraproject.org/wiki/Licensing/BitTorrent_Open_Source_License"
   },
-  "Boost Software License": {
-    "approved": "yes",
-    "fedora_abbrev": "Boost",
-    "fedora_name": "Boost Software License",
-    "id": "64",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/BSL-1.0.txt",
-    "spdx_abbrev": "BSL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/BSL-1.0.html#licenseText",
-    "spdx_name": "Boost Software License 1.0",
-    "url": "http://www.boost.org/LICENSE_1_0.txt"
-  },
   "Boost Software License 1.0": {
     "approved": "yes",
     "fedora_abbrev": "Boost",
@@ -955,6 +812,17 @@
     "spdx_license_url": "https://spdx.org/licenses/Borceux.html#licenseText",
     "spdx_name": "Borceux license",
     "url": "https://fedoraproject.org/wiki/Licensing/Borceux"
+  },
+  "Bouncy Castle Licence": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "67",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.bouncycastle.org/licence.html"
   },
   "C/Migemo License": {
     "approved": "no",
@@ -1044,15 +912,15 @@
     "spdx_name": "CNRI Python Open Source GPL Compatible License Agreement",
     "url": "http://www.python.org/download/releases/1.6.1/download_win/"
   },
-  "CPAL License 1.0": {
+  "Common Public Attribution License 1.0": {
     "approved": "yes",
     "fedora_abbrev": "CPAL",
     "fedora_name": "CPAL License 1.0",
-    "id": "123",
-    "license_text_url": "",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
-    "spdx_name": "",
+    "id": "115",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CPAL-1.0.txt",
+    "spdx_abbrev": "CPAL-1.0",
+    "spdx_license_url": "https://spdx.org/licenses/CPAL-1.0.html#licenseText",
+    "spdx_name": "Common Public Attribution License 1.0",
     "url": "https://www.socialtext.net/open/index.cgi?cpal_license_in_wikitext"
   },
   "CRC32 License": {
@@ -1066,7 +934,7 @@
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/CRC32"
   },
-  "CUA Office Public License Version 1.0": {
+  "CUA Office Public License v1.0": {
     "approved": "yes",
     "fedora_abbrev": "MPLv1.1",
     "fedora_name": "CUA Office Public License Version 1.0",
@@ -1132,28 +1000,6 @@
     "spdx_name": "CeCILL Free Software License Agreement v2.1",
     "url": "http://www.cecill.info/licences/Licence_CeCILL_V2.1-fr.html"
   },
-  "CeCILL License v1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "CeCILL",
-    "fedora_name": "CeCILL License v1.1",
-    "id": "97",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CECILL-1.1.txt",
-    "spdx_abbrev": "CECILL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/CECILL-1.1.html#licenseText",
-    "spdx_name": "CeCILL Free Software License Agreement v1.1",
-    "url": "http://www.cecill.info/licences/Licence_CeCILL_V1.1-US.html"
-  },
-  "CeCILL License v2": {
-    "approved": "yes",
-    "fedora_abbrev": "CeCILL",
-    "fedora_name": "CeCILL License v2",
-    "id": "98",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CECILL-2.0.txt",
-    "spdx_abbrev": "CECILL-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/CECILL-2.0.html#licenseText",
-    "spdx_name": "CeCILL Free Software License Agreement v2.0",
-    "url": "http://www.cecill.info/licences/Licence_CeCILL_V2-fr.html"
-  },
   "CeCILL-B Free Software License Agreement": {
     "approved": "yes",
     "fedora_abbrev": "CeCILL-B",
@@ -1165,33 +1011,11 @@
     "spdx_name": "CeCILL-B Free Software License Agreement",
     "url": "http://www.cecill.info/licences/Licence_CeCILL-B_V1-fr.html"
   },
-  "CeCILL-B License": {
-    "approved": "yes",
-    "fedora_abbrev": "CeCILL-B",
-    "fedora_name": "CeCILL-B License",
-    "id": "90",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CECILL-B.txt",
-    "spdx_abbrev": "CECILL-B",
-    "spdx_license_url": "https://spdx.org/licenses/CECILL-B.html#licenseText",
-    "spdx_name": "CeCILL-B Free Software License Agreement",
-    "url": "http://www.cecill.info/licences/Licence_CeCILL-B_V1-fr.html"
-  },
   "CeCILL-C Free Software License Agreement": {
     "approved": "yes",
     "fedora_abbrev": "CeCILL-C",
     "fedora_name": "CeCILL-C License",
     "id": "91",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CECILL-C.txt",
-    "spdx_abbrev": "CECILL-C",
-    "spdx_license_url": "https://spdx.org/licenses/CECILL-C.html#licenseText",
-    "spdx_name": "CeCILL-C Free Software License Agreement",
-    "url": "http://www.cecill.info/licences/Licence_CeCILL-C_V1-fr.html"
-  },
-  "CeCILL-C License": {
-    "approved": "yes",
-    "fedora_abbrev": "CeCILL-C",
-    "fedora_name": "CeCILL-C License",
-    "id": "92",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CECILL-C.txt",
     "spdx_abbrev": "CECILL-C",
     "spdx_license_url": "https://spdx.org/licenses/CECILL-C.html#licenseText",
@@ -1231,49 +1055,16 @@
     "spdx_name": "Code Project Open License 1.02",
     "url": "http://www.codeproject.com/info/cpol10.aspx"
   },
-  "CodeProject Open License (CPOL)": {
-    "approved": "no",
+  "Common Development and Distribution License (CDDL) and GNU Public License v.2 w/Classpath Exception": {
+    "approved": "yes",
     "fedora_abbrev": "",
-    "fedora_name": "CodeProject Open License (CPOL)",
-    "id": "109",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CPOL-1.02.txt",
-    "spdx_abbrev": "CPOL-1.02",
-    "spdx_license_url": "https://spdx.org/licenses/CPOL-1.02.html#licenseText",
-    "spdx_name": "Code Project Open License 1.02",
-    "url": "http://www.codeproject.com/info/cpol10.aspx"
-  },
-  "Common Development Distribution License": {
-    "approved": "yes",
-    "fedora_abbrev": "CDDL-1.0",
-    "fedora_name": "Common Development Distribution License 1.0",
-    "id": "114",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CDDL-1.0.txt",
-    "spdx_abbrev": "CDDL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CDDL-1.0.html#licenseText",
-    "spdx_name": "Common Development and Distribution License 1.0",
-    "url": "http://repository.jboss.org/licenses/cddl.txt"
-  },
-  "Common Development and Distribution License": {
-    "approved": "yes",
-    "fedora_abbrev": "CDDL-1.0",
-    "fedora_name": "Common Development Distribution License 1.0",
-    "id": "110",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CDDL-1.0.txt",
-    "spdx_abbrev": "CDDL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CDDL-1.0.html#licenseText",
-    "spdx_name": "Common Development and Distribution License 1.0",
-    "url": "http://repository.jboss.org/licenses/cddl.txt"
-  },
-  "Common Development Distribution License 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "CDDL-1.0",
-    "fedora_name": "Common Development Distribution License 1.0",
-    "id": "111",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CDDL-1.0.txt",
-    "spdx_abbrev": "CDDL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CDDL-1.0.html#licenseText",
-    "spdx_name": "Common Development and Distribution License 1.0",
-    "url": "http://repository.jboss.org/licenses/cddl.txt"
+    "fedora_name": "",
+    "id": "573",
+    "license_text_url": "",
+    "spdx_abbrev": "CDDL-1.0 OR GPL-2.0-with-classpath-exception",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://netbeans.org/cddl-gplv2.html"
   },
   "Common Development and Distribution License 1.0": {
     "approved": "yes",
@@ -1286,17 +1077,6 @@
     "spdx_name": "Common Development and Distribution License 1.0",
     "url": "http://repository.jboss.org/licenses/cddl.txt"
   },
-  "Common Development Distribution License 1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "CDDL-1.1",
-    "fedora_name": "Common Development Distribution License 1.1",
-    "id": "112",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CDDL-1.1.txt",
-    "spdx_abbrev": "CDDL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/CDDL-1.1.html#licenseText",
-    "spdx_name": "Common Development and Distribution License 1.1",
-    "url": "https://javaee.github.io/glassfish/LICENSE"
-  },
   "Common Development and Distribution License 1.1": {
     "approved": "yes",
     "fedora_abbrev": "CDDL-1.1",
@@ -1308,55 +1088,11 @@
     "spdx_name": "Common Development and Distribution License 1.1",
     "url": "https://javaee.github.io/glassfish/LICENSE"
   },
-  "Common Development and Distribution License version 1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "CDDL-1.1",
-    "fedora_name": "Common Development Distribution License 1.1",
-    "id": "113",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CDDL-1.1.txt",
-    "spdx_abbrev": "CDDL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/CDDL-1.1.html#licenseText",
-    "spdx_name": "Common Development and Distribution License 1.1",
-    "url": "https://javaee.github.io/glassfish/LICENSE"
-  },
-  "Common Public Attribution License 1.0": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "115",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CPAL-1.0.txt",
-    "spdx_abbrev": "CPAL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CPAL-1.0.html#licenseText",
-    "spdx_name": "Common Public Attribution License 1.0",
-    "url": "https://www.socialtext.net/open/index.cgi?cpal_license_in_wikitext"
-  },
-  "Common Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "CPL",
-    "fedora_name": "Common Public License",
-    "id": "116",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CPL-1.0.txt",
-    "spdx_abbrev": "CPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CPL-1.0.html#licenseText",
-    "spdx_name": "Common Public License 1.0",
-    "url": "http://www.eclipse.org/legal/cpl-v10.html"
-  },
   "Common Public License 1.0": {
     "approved": "yes",
     "fedora_abbrev": "CPL",
     "fedora_name": "Common Public License",
     "id": "117",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CPL-1.0.txt",
-    "spdx_abbrev": "CPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CPL-1.0.html#licenseText",
-    "spdx_name": "Common Public License 1.0",
-    "url": "http://www.eclipse.org/legal/cpl-v10.html"
-  },
-  "Common Public License, Version 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "CPL",
-    "fedora_name": "Common Public License",
-    "id": "118",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CPL-1.0.txt",
     "spdx_abbrev": "CPL-1.0",
     "spdx_license_url": "https://spdx.org/licenses/CPL-1.0.html#licenseText",
@@ -1441,9 +1177,9 @@
     "url": "http://creativecommons.org/licenses/by/2.5/legalcode"
   },
   "Creative Commons Attribution 3.0": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "CC-BY",
+    "fedora_name": "Creative Commons Attribution license",
     "id": "128",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC-BY-3.0.txt",
     "spdx_abbrev": "CC-BY-3.0",
@@ -1496,9 +1232,9 @@
     "url": "http://creativecommons.org/licenses/by-nd/2.5/legalcode"
   },
   "Creative Commons Attribution No Derivatives 3.0": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "CC-BY-ND",
+    "fedora_name": "Creative Commons Attribution-NoDerivs",
     "id": "133",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC-BY-ND-3.0.txt",
     "spdx_abbrev": "CC-BY-ND-3.0",
@@ -1551,9 +1287,9 @@
     "url": "http://creativecommons.org/licenses/by-nc/2.5/legalcode"
   },
   "Creative Commons Attribution Non Commercial 3.0": {
-    "approved": "unknown",
+    "approved": "no",
     "fedora_abbrev": "",
-    "fedora_name": "",
+    "fedora_name": "Creative Commons Attribution-NonCommercial",
     "id": "138",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC-BY-NC-3.0.txt",
     "spdx_abbrev": "CC-BY-NC-3.0",
@@ -1606,9 +1342,9 @@
     "url": "http://creativecommons.org/licenses/by-nc-nd/2.5/legalcode"
   },
   "Creative Commons Attribution Non Commercial No Derivatives 3.0": {
-    "approved": "unknown",
+    "approved": "no",
     "fedora_abbrev": "",
-    "fedora_name": "",
+    "fedora_name": "Creative Commons Attribution-NonCommercial-NoDerivs",
     "id": "143",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC-BY-NC-ND-3.0.txt",
     "spdx_abbrev": "CC-BY-NC-ND-3.0",
@@ -1661,9 +1397,9 @@
     "url": "http://creativecommons.org/licenses/by-nc-sa/2.5/legalcode"
   },
   "Creative Commons Attribution Non Commercial Share Alike 3.0": {
-    "approved": "unknown",
+    "approved": "no",
     "fedora_abbrev": "",
-    "fedora_name": "",
+    "fedora_name": "Creative Commons Attribution-NonCommercial-ShareAlike",
     "id": "148",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC-BY-NC-SA-3.0.txt",
     "spdx_abbrev": "CC-BY-NC-SA-3.0",
@@ -1716,9 +1452,9 @@
     "url": "http://creativecommons.org/licenses/by-sa/2.5/legalcode"
   },
   "Creative Commons Attribution Share Alike 3.0": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "CC-BY-SA",
+    "fedora_name": "Creative Commons Attribution-ShareAlike",
     "id": "153",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC-BY-SA-3.0.txt",
     "spdx_abbrev": "CC-BY-SA-3.0",
@@ -1727,7 +1463,7 @@
     "url": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "Creative Commons Attribution Share Alike 4.0": {
-    "approved": "unknown",
+    "approved": "yes",
     "fedora_abbrev": "",
     "fedora_name": "",
     "id": "154",
@@ -1770,17 +1506,6 @@
     "spdx_name": "",
     "url": "http://creativecommons.org/choose/cc-lgpl"
   },
-  "Creative Commons Zero 1.0 Universal": {
-    "approved": "yes",
-    "fedora_abbrev": "CC0",
-    "fedora_name": "Creative Commons Zero 1.0 Universal",
-    "id": "158",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC0-1.0.txt",
-    "spdx_abbrev": "CC0-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CC0-1.0.html#licenseText",
-    "spdx_name": "Creative Commons Zero v1.0 Universal",
-    "url": "http://creativecommons.org/publicdomain/zero/1.0/legalcode"
-  },
   "Creative Commons Zero v1.0 Universal": {
     "approved": "yes",
     "fedora_abbrev": "CC0",
@@ -1814,7 +1539,7 @@
     "spdx_name": "",
     "url": "http://www.cryptix.org/LICENSE.TXT"
   },
-  "Crystal Stacker License": {
+  "CrystalStacker License": {
     "approved": "yes",
     "fedora_abbrev": "Crystal Stacker",
     "fedora_name": "Crystal Stacker License",
@@ -1848,13 +1573,13 @@
     "url": "https://fedoraproject.org/wiki/Licensing/DWPL"
   },
   "DOC License": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "DOC",
+    "fedora_name": "DOC License",
     "id": "169",
-    "license_text_url": "",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/DOC.txt",
+    "spdx_abbrev": "DOC",
+    "spdx_license_url": "https://spdx.org/licenses/DOC.html#licenseText",
     "spdx_name": "DOC License",
     "url": "http://www.cs.wustl.edu/~schmidt/ACE-copying.html"
   },
@@ -1913,6 +1638,17 @@
     "spdx_name": "Dotseqn License",
     "url": "https://fedoraproject.org/wiki/Licensing/Dotseqn"
   },
+  "Dual license consisting of the CDDL v1.1 and GPL v2": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "586",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CDDL+GPL-1.1.txt",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://oss.oracle.com/licenses/CDDL+GPL-1.1"
+  },
   "EMC2 License": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -1957,31 +1693,9 @@
     "spdx_name": "",
     "url": "http://repository.jboss.org/licenses/edl-1.0.txt"
   },
-  "Eclipse Distribution License, Version 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "BSD",
-    "fedora_name": "Eclipse Distribution License 1.0",
-    "id": "176",
-    "license_text_url": "",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
-    "spdx_name": "",
-    "url": "http://repository.jboss.org/licenses/edl-1.0.txt"
-  },
-  "Eclipse Public License - v 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "EPL",
-    "fedora_name": "Eclipse Public License 1.0",
-    "id": "580",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/EPL-1.0.txt",
-    "spdx_abbrev": "EPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/EPL-1.0.html#licenseText",
-    "spdx_name": "Eclipse Public License 1.0",
-    "url": "http://www.eclipse.org/legal/epl-v10.html"
-  },
   "Eclipse Public License 1.0": {
     "approved": "yes",
-    "fedora_abbrev": "EPL",
+    "fedora_abbrev": "EPL-1.0",
     "fedora_name": "Eclipse Public License 1.0",
     "id": "177",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/EPL-1.0.txt",
@@ -1990,18 +1704,18 @@
     "spdx_name": "Eclipse Public License 1.0",
     "url": "http://www.eclipse.org/legal/epl-v10.html"
   },
-  "Eclipse Public License, Version 1.0": {
+  "Eclipse Public License 2.0": {
     "approved": "yes",
-    "fedora_abbrev": "EPL",
-    "fedora_name": "Eclipse Public License 1.0",
-    "id": "178",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/EPL-1.0.txt",
-    "spdx_abbrev": "EPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/EPL-1.0.html#licenseText",
-    "spdx_name": "Eclipse Public License 1.0",
-    "url": "http://www.eclipse.org/legal/epl-v10.html"
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "589",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/EPL-2.0.txt",
+    "spdx_abbrev": "EPL-2.0",
+    "spdx_license_url": "https://spdx.org/licenses/EPL-2.0.html#licenseText",
+    "spdx_name": "Eclipse Public License 2.0",
+    "url": "http://www.eclipse.org/legal/epl-v20.html"
   },
-  "Educational Community License 1.0": {
+  "Educational Community License v1.0": {
     "approved": "yes",
     "fedora_abbrev": "ECL 1.0",
     "fedora_name": "Educational Community License 1.0",
@@ -2012,7 +1726,7 @@
     "spdx_name": "Educational Community License v1.0",
     "url": "http://opensource.org/licenses/ecl1.php"
   },
-  "Educational Community License 2.0": {
+  "Educational Community License v2.0": {
     "approved": "yes",
     "fedora_abbrev": "ECL 2.0",
     "fedora_name": "Educational Community License 2.0",
@@ -2023,7 +1737,7 @@
     "spdx_name": "Educational Community License v2.0",
     "url": "http://www.osedu.org/licenses/ECL-2.0/"
   },
-  "Eiffel Forum License 1.0": {
+  "Eiffel Forum License v1.0": {
     "approved": "no",
     "fedora_abbrev": "",
     "fedora_name": "Eiffel Forum License 1.0",
@@ -2034,7 +1748,7 @@
     "spdx_name": "Eiffel Forum License v1.0",
     "url": "http://www.eiffel-nice.org/license/forum.txt"
   },
-  "Eiffel Forum License 2.0": {
+  "Eiffel Forum License v2.0": {
     "approved": "yes",
     "fedora_abbrev": "EFL 2.0",
     "fedora_name": "Eiffel Forum License 2.0",
@@ -2056,17 +1770,6 @@
     "spdx_name": "Enlightenment License (e16)",
     "url": "https://fedoraproject.org/wiki/Licensing/MIT_With_Advertising"
   },
-  "Entessa Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "Entessa",
-    "fedora_name": "Entessa Public License",
-    "id": "189",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Entessa.txt",
-    "spdx_abbrev": "Entessa",
-    "spdx_license_url": "https://spdx.org/licenses/Entessa.html#licenseText",
-    "spdx_name": "Entessa Public License v1.0",
-    "url": "http://opensource.org/licenses/entessa.php"
-  },
   "Entessa Public License v1.0": {
     "approved": "yes",
     "fedora_abbrev": "Entessa",
@@ -2078,7 +1781,7 @@
     "spdx_name": "Entessa Public License v1.0",
     "url": "http://opensource.org/licenses/entessa.php"
   },
-  "Erlang Public License 1.1": {
+  "Erlang Public License v1.1": {
     "approved": "yes",
     "fedora_abbrev": "ERPL",
     "fedora_name": "Erlang Public License 1.1",
@@ -2111,17 +1814,6 @@
     "spdx_name": "European Union Public License 1.1",
     "url": "http://ec.europa.eu/idabc/en/document/7774.html"
   },
-  "European Union Public License v1.0": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "European Union Public License v1.0",
-    "id": "196",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/EUPL-1.0.txt",
-    "spdx_abbrev": "EUPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/EUPL-1.0.html#licenseText",
-    "spdx_name": "European Union Public License 1.0",
-    "url": "http://ec.europa.eu/idabc/en/document/7330.html"
-  },
   "Eurosym License": {
     "approved": "yes",
     "fedora_abbrev": "Eurosym",
@@ -2145,9 +1837,9 @@
     "url": "http://www.fltk.org/COPYING.php"
   },
   "FSF All Permissive License": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "FSFAP",
+    "fedora_name": "FSF All Permissive license",
     "id": "209",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/FSFAP.txt",
     "spdx_abbrev": "FSFAP",
@@ -2199,17 +1891,6 @@
     "spdx_name": "",
     "url": "http://directory.fedoraproject.org/wiki/GPL_Exception_License_Text"
   },
-  "Frameworx License": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "Frameworx License",
-    "id": "202",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Frameworx-1.0.txt",
-    "spdx_abbrev": "Frameworx-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/Frameworx-1.0.html#licenseText",
-    "spdx_name": "Frameworx Open License 1.0",
-    "url": "http://www.opensource.org/licenses/Frameworx-1.0"
-  },
   "Frameworx Open License 1.0": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -2221,17 +1902,6 @@
     "spdx_name": "Frameworx Open License 1.0",
     "url": "http://www.opensource.org/licenses/Frameworx-1.0"
   },
-  "FreeImage Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "MPLv1.0",
-    "fedora_name": "FreeImage Public License",
-    "id": "204",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/FreeImage.txt",
-    "spdx_abbrev": "FreeImage",
-    "spdx_license_url": "https://spdx.org/licenses/FreeImage.html#licenseText",
-    "spdx_name": "FreeImage Public License v1.0",
-    "url": "http://freeimage.sourceforge.net/freeimage-license.txt"
-  },
   "FreeImage Public License v1.0": {
     "approved": "yes",
     "fedora_abbrev": "MPLv1.0",
@@ -2242,17 +1912,6 @@
     "spdx_license_url": "https://spdx.org/licenses/FreeImage.html#licenseText",
     "spdx_name": "FreeImage Public License v1.0",
     "url": "http://freeimage.sourceforge.net/freeimage-license.txt"
-  },
-  "Freetype License": {
-    "approved": "yes",
-    "fedora_abbrev": "FTL",
-    "fedora_name": "Freetype License",
-    "id": "206",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/FTL.txt",
-    "spdx_abbrev": "FTL",
-    "spdx_license_url": "https://spdx.org/licenses/FTL.html#licenseText",
-    "spdx_name": "Freetype Project License",
-    "url": "http://freetype.fis.uniroma2.it/FTL.TXT"
   },
   "Freetype Project License": {
     "approved": "yes",
@@ -2287,17 +1946,6 @@
     "spdx_name": "GL2PS License",
     "url": "http://www.geuz.org/gl2ps/COPYING.GL2PS"
   },
-  "GNU Affero General Public License v3.0": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "215",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/AGPL-3.0.txt",
-    "spdx_abbrev": "AGPL-3.0",
-    "spdx_license_url": "https://spdx.org/licenses/AGPL-3.0.html#licenseText",
-    "spdx_name": "GNU Affero General Public License v3.0",
-    "url": "https://spdx.org/licenses/AGPL-3.0.html"
-  },
   "GNU Free Documentation License v1.1": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -2321,9 +1969,9 @@
     "url": "http://www.gnu.org/licenses/old-licenses/fdl-1.2.txt"
   },
   "GNU Free Documentation License v1.3": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "GFDL",
+    "fedora_name": "GNU Free Documentation License",
     "id": "218",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/GFDL-1.3.txt",
     "spdx_abbrev": "GFDL-1.3",
@@ -2397,22 +2045,22 @@
     "spdx_name": "GNU General Public License v2.0 only",
     "url": "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
   },
-  "GNU General Public License v2.0 only, with Classpath exception": {
+  "GNU General Public License v2.0 w/Classpath exception": {
     "approved": "yes",
     "fedora_abbrev": "GPLv2 with exceptions",
     "fedora_name": "GNU General Public License v2.0 only, with Classpath exception",
-    "id": "225",
+    "id": "565",
     "license_text_url": "http://repository.jboss.org/licenses/gpl-2.0-ce.txt",
     "spdx_abbrev": "GPL-2.0-with-classpath-exception",
     "spdx_license_url": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html#licenseText",
     "spdx_name": "GNU General Public License v2.0 w/Classpath exception",
     "url": "https://fedoraproject.org/wiki/Licensing/GPL_Classpath_Exception"
   },
-  "GNU General Public License v2.0 only, with font embedding exception": {
+  "GNU General Public License v2.0 w/Font exception": {
     "approved": "yes",
     "fedora_abbrev": "GPLv2 with exceptions",
     "fedora_name": "GNU General Public License v2.0 only, with font embedding exception",
-    "id": "226",
+    "id": "566",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/depreciate_GPL-2.0-with-font-exception.txt",
     "spdx_abbrev": "GPL-2.0-with-font-exception",
     "spdx_license_url": "https://spdx.org/licenses/GPL-2.0-with-font-exception.html#licenseText",
@@ -2473,28 +2121,6 @@
     "spdx_license_url": "https://spdx.org/licenses/GPL-2.0-with-bison-exception.html#licenseText",
     "spdx_name": "GNU General Public License v2.0 w/Bison exception",
     "url": "https://spdx.org/licenses/GPL-2.0-with-bison-exception.html"
-  },
-  "GNU General Public License v2.0 w/Classpath exception": {
-    "approved": "yes",
-    "fedora_abbrev": "GPLv2 with exceptions",
-    "fedora_name": "GNU General Public License v2.0 only, with Classpath exception",
-    "id": "565",
-    "license_text_url": "http://repository.jboss.org/licenses/gpl-2.0-ce.txt",
-    "spdx_abbrev": "GPL-2.0-with-classpath-exception",
-    "spdx_license_url": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html#licenseText",
-    "spdx_name": "GNU General Public License v2.0 w/Classpath exception",
-    "url": "https://fedoraproject.org/wiki/Licensing/GPL_Classpath_Exception"
-  },
-  "GNU General Public License v2.0 w/Font exception": {
-    "approved": "yes",
-    "fedora_abbrev": "GPLv2 with exceptions",
-    "fedora_name": "GNU General Public License v2.0 only, with font embedding exception",
-    "id": "566",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/depreciate_GPL-2.0-with-font-exception.txt",
-    "spdx_abbrev": "GPL-2.0-with-font-exception",
-    "spdx_license_url": "https://spdx.org/licenses/GPL-2.0-with-font-exception.html#licenseText",
-    "spdx_name": "GNU General Public License v2.0 w/Font exception",
-    "url": "http://www.gnu.org/licenses/gpl-faq.html#FontException"
   },
   "GNU General Public License v2.0 w/GCC Runtime Library exception": {
     "approved": "unknown",
@@ -2595,6 +2221,17 @@
     "spdx_name": "GNU General Public License v3.0 w/GCC Runtime Library exception",
     "url": "https://spdx.org/licenses/GPL-3.0-with-GCC-exception.html"
   },
+  "GNU General Public License, Version 2 with the Classpath Exception": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "236",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://repository.jboss.org/licenses/gpl-2.0-ce.txt"
+  },
   "GNU Lesser General Public License (no version)": {
     "approved": "yes",
     "fedora_abbrev": "LGPLv2+",
@@ -2650,17 +2287,6 @@
     "spdx_name": "",
     "url": ""
   },
-  "GNU Lesser General Public License v2.1 only": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "238",
-    "license_text_url": "http://repository.jboss.org/licenses/lgpl-2.1.txt",
-    "spdx_abbrev": "LGPL-2.1",
-    "spdx_license_url": "https://spdx.org/licenses/LGPL-2.1.html#licenseText",
-    "spdx_name": "GNU Lesser General Public License v2.1 only",
-    "url": "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"
-  },
   "GNU Lesser General Public License v2.1 or later": {
     "approved": "yes",
     "fedora_abbrev": "",
@@ -2671,17 +2297,6 @@
     "spdx_license_url": "https://spdx.org/licenses/LGPL-2.1+.html#licenseText",
     "spdx_name": "GNU Lesser General Public License v2.1 or later",
     "url": "http://www.gnu.org/licenses/old-licenses/lgpl-2.1-standalone.html"
-  },
-  "GNU Lesser General Public License v3.0 only": {
-    "approved": "yes",
-    "fedora_abbrev": "LGPLv3",
-    "fedora_name": "GNU Lesser General Public License v3.0 only",
-    "id": "243",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/LGPL-3.0.txt",
-    "spdx_abbrev": "LGPL-3.0",
-    "spdx_license_url": "https://spdx.org/licenses/LGPL-3.0.html#licenseText",
-    "spdx_name": "GNU Lesser General Public License v3.0 only",
-    "url": "http://www.gnu.org/licenses/lgpl-3.0-standalone.html"
   },
   "GNU Lesser General Public License v3.0 only, with exceptions": {
     "approved": "yes",
@@ -2716,22 +2331,22 @@
     "spdx_name": "",
     "url": ""
   },
-  "GNU Lesser General Public License, Version 2.1": {
+  "GNU Lesser General Public License v2.1 only": {
     "approved": "yes",
     "fedora_abbrev": "",
     "fedora_name": "",
-    "id": "247",
+    "id": "238",
     "license_text_url": "http://repository.jboss.org/licenses/lgpl-2.1.txt",
     "spdx_abbrev": "LGPL-2.1",
     "spdx_license_url": "https://spdx.org/licenses/LGPL-2.1.html#licenseText",
     "spdx_name": "GNU Lesser General Public License v2.1 only",
     "url": "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"
   },
-  "GNU Lesser General Public License, Version 3": {
+  "GNU Lesser General Public License v3.0 only": {
     "approved": "yes",
     "fedora_abbrev": "LGPLv3",
     "fedora_name": "GNU Lesser General Public License v3.0 only",
-    "id": "248",
+    "id": "243",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/LGPL-3.0.txt",
     "spdx_abbrev": "LGPL-3.0",
     "spdx_license_url": "https://spdx.org/licenses/LGPL-3.0.html#licenseText",
@@ -2759,17 +2374,6 @@
     "spdx_license_url": "https://spdx.org/licenses/LGPL-2.0+.html#licenseText",
     "spdx_name": "GNU Library General Public License v2 or later",
     "url": "https://spdx.org/licenses/LGPL-2.0+.html"
-  },
-  "GNU Library General Public License, Version 2": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "250",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/LGPL-2.0.txt",
-    "spdx_abbrev": "LGPL-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/LGPL-2.0.html#licenseText",
-    "spdx_name": "GNU Library General Public License v2 only",
-    "url": "http://www.gnu.org/licenses/old-licenses/lgpl-2.0-standalone.html"
   },
   "GPL for Computer Programs of the Public Administration": {
     "approved": "no",
@@ -2803,6 +2407,17 @@
     "spdx_license_url": "https://spdx.org/licenses/Glulxe.html#licenseText",
     "spdx_name": "Glulxe License",
     "url": "https://fedoraproject.org/wiki/Licensing/Glulxe"
+  },
+  "H2 License, Version 1.0": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "255",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://repository.jboss.org/licenses/h2.txt"
   },
   "HP Software License Terms": {
     "approved": "no",
@@ -2870,17 +2485,6 @@
     "spdx_name": "Historic Permission Notice and Disclaimer",
     "url": "http://opensource.org/licenses/historical.php"
   },
-  "Historical Permission Notice and Disclaimer": {
-    "approved": "yes",
-    "fedora_abbrev": "MIT",
-    "fedora_name": "Historical Permission Notice and Disclaimer",
-    "id": "260",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/HPND.txt",
-    "spdx_abbrev": "HPND",
-    "spdx_license_url": "https://spdx.org/licenses/HPND.html#licenseText",
-    "spdx_name": "Historic Permission Notice and Disclaimer",
-    "url": "http://opensource.org/licenses/historical.php"
-  },
   "IBM PowerPC Initialization and Boot Software": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -2891,17 +2495,6 @@
     "spdx_license_url": "https://spdx.org/licenses/IBM-pibs.html#licenseText",
     "spdx_name": "IBM PowerPC Initialization and Boot Software",
     "url": "http://git.denx.de/?p=u-boot.git;a=blob;f=arch/powerpc/cpu/ppc4xx/miiphy.c;h=297155fdafa064b955e53e9832de93bfb0cfb85b;hb=9fab4bf4cc077c21e43941866f3f2c196f28670d"
-  },
-  "IBM Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "IBM",
-    "fedora_name": "IBM Public License",
-    "id": "264",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/IPL-1.0.txt",
-    "spdx_abbrev": "IPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/IPL-1.0.html#licenseText",
-    "spdx_name": "IBM Public License v1.0",
-    "url": "http://www.opensource.org/licenses/IPL-1.0"
   },
   "IBM Public License v1.0": {
     "approved": "yes",
@@ -2925,7 +2518,18 @@
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/IBM_Sample_Code_License"
   },
-  "ICU License - ICU 1.8.1 to ICU 57.1": {
+  "ICU License (ICU 58 and later)": {
+    "approved": "unknown",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "267",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://source.icu-project.org/repos/icu/trunk/icu4j/main/shared/licenses/LICENSE"
+  },
+  "ICU License": {
     "approved": "unknown",
     "fedora_abbrev": "",
     "fedora_name": "",
@@ -2937,9 +2541,9 @@
     "url": "http://source.icu-project.org/repos/icu/tags/release-57-1/icu4j/main/shared/licenses/LICENSE"
   },
   "IPA Font License": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "IPA",
+    "fedora_name": "IPA Font License",
     "id": "278",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/IPA.txt",
     "spdx_abbrev": "IPA",
@@ -2952,17 +2556,6 @@
     "fedora_abbrev": "ISC",
     "fedora_name": "ISC License (Bind, DHCP Server)",
     "id": "279",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/ISC.txt",
-    "spdx_abbrev": "ISC",
-    "spdx_license_url": "https://spdx.org/licenses/ISC.html#licenseText",
-    "spdx_name": "ISC License",
-    "url": "http://www.isc.org/downloads/software-support-policy/isc-license/"
-  },
-  "ISC License (Bind, DHCP Server)": {
-    "approved": "yes",
-    "fedora_abbrev": "ISC",
-    "fedora_name": "ISC License (Bind, DHCP Server)",
-    "id": "280",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/ISC.txt",
     "spdx_abbrev": "ISC",
     "spdx_license_url": "https://spdx.org/licenses/ISC.html#licenseText",
@@ -3001,6 +2594,39 @@
     "spdx_license_url": "https://spdx.org/licenses/IJG.html#licenseText",
     "spdx_name": "Independent JPEG Group License",
     "url": "https://fedoraproject.org/wiki/Licensing/IJG"
+  },
+  "Indiana University Extreme! Lab Software License 1.1.1": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "559",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Indiana_Extreme_License_1.1.1.txt",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://enterprise.dejacode.com/licenses/public/indiana-extreme/?_list_filters=q%3Dindiana%2Bextreme#license-text"
+  },
+  "Indiana University Extreme! Lab Software License Version 1.1.1": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "584",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Indiana_Extreme_License_1.1.1.txt",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://enterprise.dejacode.com/licenses/public/indiana-extreme/?_list_filters=q%3Dindiana%2Bextreme#license-text"
+  },
+  "indiana-extreme": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "585",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Indiana_Extreme_License_1.1.1.txt",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://enterprise.dejacode.com/licenses/public/indiana-extreme/?_list_filters=q%3Dindiana%2Bextreme#license-text"
   },
   "Info-ZIP License": {
     "approved": "unknown",
@@ -3046,17 +2672,6 @@
     "spdx_name": "Intel Open Source License",
     "url": "http://opensource.org/licenses/Intel"
   },
-  "Interbase Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "Interbase",
-    "fedora_name": "Interbase Public License",
-    "id": "276",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Interbase-1.0.txt",
-    "spdx_abbrev": "Interbase-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/Interbase-1.0.html#licenseText",
-    "spdx_name": "Interbase Public License v1.0",
-    "url": "https://web.archive.org/web/20060319014854/http://info.borland.com/devsupport/interbase/opensource/IPL.html"
-  },
   "Interbase Public License v1.0": {
     "approved": "yes",
     "fedora_abbrev": "Interbase",
@@ -3067,6 +2682,17 @@
     "spdx_license_url": "https://spdx.org/licenses/Interbase-1.0.html#licenseText",
     "spdx_name": "Interbase Public License v1.0",
     "url": "https://web.archive.org/web/20060319014854/http://info.borland.com/devsupport/interbase/opensource/IPL.html"
+  },
+  "JDOM License": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "284",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://repository.jboss.org/licenses/jdom-1.0.txt"
   },
   "JPython License (old)": {
     "approved": "yes",
@@ -3155,28 +2781,6 @@
     "spdx_license_url": "",
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/LOSLA"
-  },
-  "LGPL 2.1": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "583",
-    "license_text_url": "http://repository.jboss.org/licenses/lgpl-2.1.txt",
-    "spdx_abbrev": "LGPL-2.1",
-    "spdx_license_url": "https://spdx.org/licenses/LGPL-2.1.html#licenseText",
-    "spdx_name": "GNU Lesser General Public License v2.1 only",
-    "url": "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"
-  },
-  "LaTeX Project Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "LPPL",
-    "fedora_name": "LaTeX Project Public License",
-    "id": "290",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/LPPL-1.3a.txt",
-    "spdx_abbrev": "LPPL-1.3a",
-    "spdx_license_url": "https://spdx.org/licenses/LPPL-1.3a.html#licenseText",
-    "spdx_name": "LaTeX Project Public License v1.3a",
-    "url": "http://www.latex-project.org/lppl/lppl-1-3a.txt"
   },
   "LaTeX Project Public License v1.0": {
     "approved": "unknown",
@@ -3464,17 +3068,6 @@
     "spdx_name": "",
     "url": "http://opensource.org/licenses/mitrepl.php"
   },
-  "MPL 1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "MPLv1.1",
-    "fedora_name": "Mozilla Public License v1.1",
-    "id": "582",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/MPL-1.1.txt",
-    "spdx_abbrev": "MPL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/MPL-1.1.html#licenseText",
-    "spdx_name": "Mozilla Public License 1.1",
-    "url": "http://www.mozilla.org/MPL/MPL-1.1.html"
-  },
   "MSNTP License": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -3596,7 +3189,7 @@
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/Microsoft_Shared_Source_License"
   },
-  "MirOS License": {
+  "MirOS Licence": {
     "approved": "yes",
     "fedora_abbrev": "MirOS",
     "fedora_name": "MirOS License",
@@ -3662,50 +3255,6 @@
     "spdx_name": "Mozilla Public License 2.0 (no copyleft exception)",
     "url": "http://www.mozilla.org/MPL/2.0/"
   },
-  "Mozilla Public License v1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "MPLv1.0",
-    "fedora_name": "Mozilla Public License v1.0",
-    "id": "338",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/MPL-1.0.txt",
-    "spdx_abbrev": "MPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/MPL-1.0.html#licenseText",
-    "spdx_name": "Mozilla Public License 1.0",
-    "url": "http://opensource.org/licenses/mozilla1.0.php"
-  },
-  "Mozilla Public License v1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "MPLv1.1",
-    "fedora_name": "Mozilla Public License v1.1",
-    "id": "339",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/MPL-1.1.txt",
-    "spdx_abbrev": "MPL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/MPL-1.1.html#licenseText",
-    "spdx_name": "Mozilla Public License 1.1",
-    "url": "http://www.mozilla.org/MPL/MPL-1.1.html"
-  },
-  "Mozilla Public License v2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "MPLv2.0",
-    "fedora_name": "Mozilla Public License v2.0",
-    "id": "340",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/MPL-2.0.txt",
-    "spdx_abbrev": "MPL-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/MPL-2.0.html#licenseText",
-    "spdx_name": "Mozilla Public License 2.0",
-    "url": "https://fedoraproject.org/wiki/Licensing/MPLv2.0"
-  },
-  "Mozilla Public License, Version 1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "MPLv1.1",
-    "fedora_name": "Mozilla Public License v1.1",
-    "id": "341",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/MPL-1.1.txt",
-    "spdx_abbrev": "MPL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/MPL-1.1.html#licenseText",
-    "spdx_name": "Mozilla Public License 1.1",
-    "url": "http://www.mozilla.org/MPL/MPL-1.1.html"
-  },
   "Multics License": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -3761,29 +3310,17 @@
     "spdx_name": "NASA Open Source Agreement 1.3",
     "url": "http://ti.arc.nasa.gov/opensource/nosa/"
   },
-  "NASA Open Source Agreement v1.3": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "NASA Open Source Agreement v1.3",
-    "id": "351",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/NASA-1.3.txt",
-    "spdx_abbrev": "NASA-1.3",
-    "spdx_license_url": "https://spdx.org/licenses/NASA-1.3.html#licenseText",
-    "spdx_name": "NASA Open Source Agreement 1.3",
-    "url": "http://ti.arc.nasa.gov/opensource/nosa/"
-  },
-  "NCSA/University of Illinois Open Source License": {
+  "University of Illinois/NCSA Open Source License": {
     "approved": "yes",
     "fedora_abbrev": "NCSA",
     "fedora_name": "NCSA/University of Illinois Open Source License",
-    "id": "353",
+    "id": "524",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/NCSA.txt",
     "spdx_abbrev": "NCSA",
     "spdx_license_url": "https://spdx.org/licenses/NCSA.html#licenseText",
     "spdx_name": "University of Illinois/NCSA Open Source License",
     "url": "http://otm.illinois.edu/uiuc_openSource"
   },
-
   "NRL License": {
     "approved": "yes",
     "fedora_abbrev": "BSD with advertising",
@@ -3882,17 +3419,6 @@
     "spdx_license_url": "https://spdx.org/licenses/NOSL.html#licenseText",
     "spdx_name": "Netizen Open Source License",
     "url": "http://bits.netizen.com.au/licenses/NOSL/nosl.txt"
-  },
-  "Netscape Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "Netscape",
-    "fedora_name": "Netscape Public License",
-    "id": "359",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/NPL-1.0.txt",
-    "spdx_abbrev": "NPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/NPL-1.0.html#licenseText",
-    "spdx_name": "Netscape Public License v1.0",
-    "url": "http://www.mozilla.org/MPL/NPL/1.0/"
   },
   "Netscape Public License v1.0": {
     "approved": "yes",
@@ -4014,17 +3540,6 @@
     "spdx_license_url": "https://spdx.org/licenses/Nunit.html#licenseText",
     "spdx_name": "Nunit License",
     "url": "https://fedoraproject.org/wiki/Licensing/Nunit"
-  },
-  "OCLC Public Research License 2.0": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "OCLC Public Research License 2.0",
-    "id": "374",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/OCLC-2.0.txt",
-    "spdx_abbrev": "OCLC-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/OCLC-2.0.html#licenseText",
-    "spdx_name": "OCLC Research Public License 2.0",
-    "url": "http://www.oclc.org/research/activities/software/license/v2final.htm"
   },
   "OCLC Research Public License 2.0": {
     "approved": "no",
@@ -4334,17 +3849,6 @@
     "spdx_name": "",
     "url": "http://www.opengroup.org/openmotif/license/"
   },
-  "Open Public License": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "Open Public License",
-    "id": "402",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/OPL-1.0.txt",
-    "spdx_abbrev": "OPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/OPL-1.0.html#licenseText",
-    "spdx_name": "Open Public License v1.0",
-    "url": "https://fedoraproject.org/wiki/Licensing/Open_Public_License"
-  },
   "Open Public License v1.0": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -4588,17 +4092,6 @@
     "spdx_name": "",
     "url": ""
   },
-  "Public Domain, per Creative Commons CC0": {
-    "approved": "yes",
-    "fedora_abbrev": "CC0",
-    "fedora_name": "Creative Commons Zero 1.0 Universal",
-    "id": "581",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/CC0-1.0.txt",
-    "spdx_abbrev": "CC0-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/CC0-1.0.html#licenseText",
-    "spdx_name": "Creative Commons Zero v1.0 Universal",
-    "url": "http://creativecommons.org/publicdomain/zero/1.0/legalcode"
-  },
   "Python License": {
     "approved": "yes",
     "fedora_abbrev": "Python",
@@ -4841,17 +4334,6 @@
     "spdx_name": "",
     "url": "http://oss.sgi.com/projects/FreeB/"
   },
-  "SGI Free Software License B 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "MIT",
-    "fedora_name": "SGI Free Software License B 2.0",
-    "id": "461",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/SGI-B-2.0.txt",
-    "spdx_abbrev": "SGI-B-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/SGI-B-2.0.html#licenseText",
-    "spdx_name": "SGI Free Software License B v2.0",
-    "url": "http://oss.sgi.com/projects/FreeB/SGIFreeSWLicB.2.0.pdf"
-  },
   "SGI Free Software License B v1.0": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -4908,9 +4390,9 @@
     "url": "http://scripts.sil.org/cms/scripts/page.php?item_id=OFL10_web"
   },
   "SIL Open Font License 1.1": {
-    "approved": "unknown",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "approved": "yes",
+    "fedora_abbrev": "OFL",
+    "fedora_name": "SIL Open Font License 1.1",
     "id": "467",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/OFL-1.1.txt",
     "spdx_abbrev": "OFL-1.1",
@@ -5061,17 +4543,6 @@
     "spdx_name": "Sleepycat License",
     "url": "https://fedoraproject.org/wiki/Licensing/Sleepycat"
   },
-  "Sleepycat Software Product License": {
-    "approved": "yes",
-    "fedora_abbrev": "Sleepycat",
-    "fedora_name": "Sleepycat Software Product License",
-    "id": "471",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Sleepycat.txt",
-    "spdx_abbrev": "Sleepycat",
-    "spdx_license_url": "https://spdx.org/licenses/Sleepycat.html#licenseText",
-    "spdx_name": "Sleepycat License",
-    "url": "https://fedoraproject.org/wiki/Licensing/Sleepycat"
-  },
   "Spencer License 86": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -5171,17 +4642,6 @@
     "spdx_name": "",
     "url": "http://www.sun.com/software/communitysource/"
   },
-  "Sun Industry Standards Source License": {
-    "approved": "yes",
-    "fedora_abbrev": "SISSL",
-    "fedora_name": "Sun Industry Standards Source License",
-    "id": "484",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/SISSL.txt",
-    "spdx_abbrev": "SISSL",
-    "spdx_license_url": "https://spdx.org/licenses/SISSL.html#licenseText",
-    "spdx_name": "Sun Industry Standards Source License v1.1",
-    "url": "http://www.openoffice.org/licenses/sissl_license.html"
-  },
   "Sun Industry Standards Source License v1.1": {
     "approved": "yes",
     "fedora_abbrev": "SISSL",
@@ -5203,17 +4663,6 @@
     "spdx_license_url": "https://spdx.org/licenses/SISSL-1.2.html#licenseText",
     "spdx_name": "Sun Industry Standards Source License v1.2",
     "url": "http://gridscheduler.sourceforge.net/Gridengine_SISSL_license.html"
-  },
-  "Sun Public License": {
-    "approved": "yes",
-    "fedora_abbrev": "SPL",
-    "fedora_name": "Sun Public License",
-    "id": "487",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/SPL-1.0.txt",
-    "spdx_abbrev": "SPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/SPL-1.0.html#licenseText",
-    "spdx_name": "Sun Public License v1.0",
-    "url": "https://fedoraproject.org/wiki/Licensing/Sun_Public_License"
   },
   "Sun Public License v1.0": {
     "approved": "yes",
@@ -5358,38 +4807,71 @@
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/TTWL"
   },
-  "The Apache License, Version 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "578",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "The Apache Software License, Version 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "576",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
-  "The MIT License": {
+  "The Antlr 2.7.7 License": {
     "approved": "yes",
     "fedora_abbrev": "",
     "fedora_name": "",
-    "id": "504",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/MIT.txt",
-    "spdx_abbrev": "MIT",
-    "spdx_license_url": "https://spdx.org/licenses/MIT.html#licenseText",
-    "spdx_name": "MIT License",
-    "url": "http://www.opensource.org/licenses/MIT"
+    "id": "498",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/rhoar/licenses/ANTLR_2_7_7_LICENSE.txt",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.antlr2.org/download/antlr-2.7.7.tar.gz"
+  },
+  "The Asm BSD License": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "499",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://asm.ow2.org/license.html"
+  },
+  "The BSD License": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "500",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://repository.jboss.org/licenses/bsd.txt"
+  },
+  "The Dom4j License": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "501",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://raw.githubusercontent.com/dom4j/dom4j/master/LICENSE"
+  },
+  "The JSoup MIT License": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "503",
+    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/rhoar/licenses/jsoup-license.txt",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://jsoup.org/license.html"
+  },
+  "The Jaxen License": {
+    "approved": "yes",
+    "fedora_abbrev": "",
+    "fedora_name": "",
+    "id": "502",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.jaxen.org/license.html"
   },
   "The Unlicense": {
     "approved": "yes",
@@ -5567,17 +5049,6 @@
     "spdx_name": "Universal Permissive License v1.0",
     "url": "http://opensource.org/licenses/UPL"
   },
-  "University of Illinois/NCSA Open Source License": {
-    "approved": "yes",
-    "fedora_abbrev": "NCSA",
-    "fedora_name": "NCSA/University of Illinois Open Source License",
-    "id": "524",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/NCSA.txt",
-    "spdx_abbrev": "NCSA",
-    "spdx_license_url": "https://spdx.org/licenses/NCSA.html#licenseText",
-    "spdx_name": "University of Illinois/NCSA Open Source License",
-    "url": "http://otm.illinois.edu/uiuc_openSource"
-  },
   "University of Utah Public License": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -5599,17 +5070,6 @@
     "spdx_license_url": "",
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing:UofWFreeFork?rd=Licensing/UofWFreeFork"
-  },
-  "Unlicense": {
-    "approved": "yes",
-    "fedora_abbrev": "Unlicense",
-    "fedora_name": "Unlicense",
-    "id": "527",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Unlicense.txt",
-    "spdx_abbrev": "Unlicense",
-    "spdx_license_url": "https://spdx.org/licenses/Unlicense.html#licenseText",
-    "spdx_name": "The Unlicense",
-    "url": "http://unlicense.org/"
   },
   "VOSTROM Public License for Open Source": {
     "approved": "yes",
@@ -5644,17 +5104,6 @@
     "spdx_name": "",
     "url": "https://fedoraproject.org/wiki/Licensing/Vita_Nuova_Liberal_Source_License"
   },
-  "Vovida Software License v. 1.0": {
-    "approved": "yes",
-    "fedora_abbrev": "VSL",
-    "fedora_name": "Vovida Software License v. 1.0",
-    "id": "532",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/VSL-1.0.txt",
-    "spdx_abbrev": "VSL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/VSL-1.0.html#licenseText",
-    "spdx_name": "Vovida Software License v1.0",
-    "url": "http://opensource.org/licenses/vovidapl.php"
-  },
   "Vovida Software License v1.0": {
     "approved": "yes",
     "fedora_abbrev": "VSL",
@@ -5666,28 +5115,6 @@
     "spdx_name": "Vovida Software License v1.0",
     "url": "http://opensource.org/licenses/vovidapl.php"
   },
-  "W3C Document License": {
-    "approved": "no",
-    "fedora_abbrev": "W3C",
-    "fedora_name": "W3C Documentation License",
-    "id": "561",
-    "license_text_url": "",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
-    "spdx_name": "",
-    "url": "http://www.w3.org/Consortium/Legal/copyright-documents"
-  },
-  "W3C Software Notice and Document License (2002-12-31)": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "560",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/W3C.txt",
-    "spdx_abbrev": "W3C",
-    "spdx_license_url": "https://spdx.org/licenses/W3C.html#licenseText",
-    "spdx_name": "W3C Software Notice and License (2002-12-31)",
-    "url": "http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231.html"
-  },
   "W3C Software Notice and Document License (2015-05-13)": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -5698,17 +5125,6 @@
     "spdx_license_url": "https://spdx.org/licenses/W3C-20150513.html#licenseText",
     "spdx_name": "W3C Software Notice and Document License (2015-05-13)",
     "url": "https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document"
-  },
-  "W3C Software Notice and License": {
-    "approved": "yes",
-    "fedora_abbrev": "W3C",
-    "fedora_name": "W3C Software Notice and License",
-    "id": "535",
-    "license_text_url": "",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
-    "spdx_name": "",
-    "url": "https://www.w3.org/Consortium/Legal/2002/copyright-software-20021231"
   },
   "W3C Software Notice and License (1998-07-20)": {
     "approved": "unknown",
@@ -5723,8 +5139,8 @@
   },
   "W3C Software Notice and License (2002-12-31)": {
     "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
+    "fedora_abbrev": "W3C",
+    "fedora_name": "W3C Software Notice and License",
     "id": "537",
     "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/W3C.txt",
     "spdx_abbrev": "W3C",
@@ -5820,28 +5236,6 @@
     "spdx_name": "Xerox License",
     "url": "https://fedoraproject.org/wiki/Licensing/Xerox"
   },
-  "Yahoo Public License 1.0": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "Yahoo Public License 1.0",
-    "id": "548",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/YPL-1.0.txt",
-    "spdx_abbrev": "YPL-1.0",
-    "spdx_license_url": "https://spdx.org/licenses/YPL-1.0.html#licenseText",
-    "spdx_name": "Yahoo! Public License v1.0",
-    "url": "http://www.zimbra.com/license/yahoo_public_license_1.0.html"
-  },
-  "Yahoo Public License v 1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "YPLv1.1",
-    "fedora_name": "Yahoo Public License v 1.1",
-    "id": "550",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/YPL-1.1.txt",
-    "spdx_abbrev": "YPL-1.1",
-    "spdx_license_url": "https://spdx.org/licenses/YPL-1.1.html#licenseText",
-    "spdx_name": "Yahoo! Public License v1.1",
-    "url": "http://www.zimbra.com/license/yahoo_public_license_1.1.html"
-  },
   "Yahoo! Public License v1.0": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -5885,17 +5279,6 @@
     "spdx_license_url": "https://spdx.org/licenses/Zend-2.0.html#licenseText",
     "spdx_name": "Zend License v2.0",
     "url": "http://www.zend.com/license/2_00.txt"
-  },
-  "Zimbra Public License 1.3": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "Zimbra Public License 1.3",
-    "id": "554",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Zimbra-1.3.txt",
-    "spdx_abbrev": "Zimbra-1.3",
-    "spdx_license_url": "https://spdx.org/licenses/Zimbra-1.3.html#licenseText",
-    "spdx_name": "Zimbra Public License v1.3",
-    "url": "http://www.zimbra.com/license/zimbra-public-license-1-3.html"
   },
   "Zimbra Public License v1.3": {
     "approved": "no",
@@ -5963,39 +5346,6 @@
     "spdx_name": "",
     "url": "http://old.zope.org/Resources/License/ZPL-1.1"
   },
-  "Zope Public License v 2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ZPLv2.0",
-    "fedora_name": "Zope Public License v 2.0",
-    "id": "564",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/ZPL-2.0.txt",
-    "spdx_abbrev": "ZPL-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/ZPL-2.0.html#licenseText",
-    "spdx_name": "Zope Public License 2.0",
-    "url": "http://old.zope.org/Resources/License/ZPL-2.0"
-  },
-  "Zope Public License v 2.1": {
-    "approved": "yes",
-    "fedora_abbrev": "ZPLv2.1",
-    "fedora_name": "Zope Public License v 2.1",
-    "id": "565",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/ZPL-2.1.txt",
-    "spdx_abbrev": "ZPL-2.1",
-    "spdx_license_url": "https://spdx.org/licenses/ZPL-2.1.html#licenseText",
-    "spdx_name": "Zope Public License 2.1",
-    "url": "http://old.zope.org/Resources/License/ZPL-2.1"
-  },
-  "apache-2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "ASL 2.0",
-    "fedora_name": "Apache Software License 2.0",
-    "id": "577",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Apache-2.0.txt",
-    "spdx_abbrev": "Apache-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/Apache-2.0.html#licenseText",
-    "spdx_name": "Apache License 2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  },
   "bzip2 and libbzip2 License v1.0.5": {
     "approved": "unknown",
     "fedora_abbrev": "",
@@ -6051,17 +5401,6 @@
     "spdx_name": "dvipdfm License",
     "url": "https://fedoraproject.org/wiki/Licensing/dvipdfm"
   },
-  "eCos License v2.0": {
-    "approved": "yes",
-    "fedora_abbrev": "eCos",
-    "fedora_name": "eCos License v2.0",
-    "id": "179",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/depreciate_eCos-2.0.txt",
-    "spdx_abbrev": "eCos-2.0",
-    "spdx_license_url": "https://spdx.org/licenses/eCos-2.0.html",
-    "spdx_name": "eCos license version 2.0",
-    "url": "http://www.gnu.org/licenses/ecos-license.html"
-  },
   "eCos Public License, v1.1": {
     "approved": "no",
     "fedora_abbrev": "",
@@ -6116,17 +5455,6 @@
     "spdx_license_url": "https://spdx.org/licenses/MIT-feh.html#licenseText",
     "spdx_name": "feh License",
     "url": "https://fedoraproject.org/wiki/Licensing/MIT#feh"
-  },
-  "gSOAP Public License": {
-    "approved": "no",
-    "fedora_abbrev": "",
-    "fedora_name": "gSOAP Public License",
-    "id": "253",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/gSOAP-1.3b.txt",
-    "spdx_abbrev": "gSOAP-1.3b",
-    "spdx_license_url": "https://spdx.org/licenses/gSOAP-1.3b.html#licenseText",
-    "spdx_name": "gSOAP Public License v1.3b",
-    "url": "http://www.cs.fsu.edu/~engelen/license.html"
   },
   "gSOAP Public License v1.3b": {
     "approved": "no",
@@ -6348,17 +5676,6 @@
     "spdx_name": "zlib License",
     "url": "http://www.gzip.org/zlib/zlib_license.html"
   },
-  "zlib/libpng License": {
-    "approved": "yes",
-    "fedora_abbrev": "zlib",
-    "fedora_name": "zlib/libpng License",
-    "id": "557",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Zlib.txt",
-    "spdx_abbrev": "Zlib",
-    "spdx_license_url": "https://spdx.org/licenses/Zlib.html#licenseText",
-    "spdx_name": "zlib License",
-    "url": "http://www.gzip.org/zlib/zlib_license.html"
-  },
   "zlib/libpng License with Acknowledgement": {
     "approved": "yes",
     "fedora_abbrev": "zlib with acknowledgement",
@@ -6369,5 +5686,543 @@
     "spdx_license_url": "https://spdx.org/licenses/zlib-acknowledgement.html#licenseText",
     "spdx_name": "zlib/libpng License with Acknowledgement",
     "url": "https://fedoraproject.org/wiki/Licensing/ZlibWithAcknowledgement"
+  },
+  "CP/M License": {
+    "approved": "yes",
+    "fedora_abbrev": "CPM",
+    "fedora_name": "CP/M License",
+    "id": "590",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/CPM"
+  },
+  "Fraunhofer FDK AAC License": {
+    "approved": "yes",
+    "fedora_abbrev": "FDK-AAC",
+    "fedora_name": "Fraunhofer FDK AAC License",
+    "id": "591",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/FDK-AAC"
+  },
+  "SCRIP License": {
+    "approved": "yes",
+    "fedora_abbrev": "SCRIP",
+    "fedora_name": "SCRIP License",
+    "id": "593",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/SCRIP"
+  },
+  "Apple's Common Documentation License, Version 1.0": {
+    "approved": "yes",
+    "fedora_abbrev": "CDL",
+    "fedora_name": "Apple's Common Documentation License, Version 1.0",
+    "id": "596",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Common_Documentation_License"
+  },
+  "FreeBSD Documentation License": {
+    "approved": "yes",
+    "fedora_abbrev": "FBSDDL",
+    "fedora_name": "FreeBSD Documentation License",
+    "id": "599",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.freebsd.org/copyright/freebsd-doc-license.html"
+  },
+  "IEEE and Open Group Documentation License": {
+    "approved": "yes",
+    "fedora_abbrev": "IEEE",
+    "fedora_name": "IEEE and Open Group Documentation License",
+    "id": "601",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/IEEEDocLicense"
+  },
+  "Linux Documentation Project License": {
+    "approved": "yes",
+    "fedora_abbrev": "LDPL",
+    "fedora_name": "Linux Documentation Project License",
+    "id": "602",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://tldp.org/COPYRIGHT.html"
+  },
+  "Old FSF Documentation License": {
+    "approved": "yes",
+    "fedora_abbrev": "OFSFDL",
+    "fedora_name": "Old FSF Documentation License",
+    "id": "603",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/OldFSFDocLicense"
+  },
+  "Open Publication License, v1.0": {
+    "approved": "yes",
+    "fedora_abbrev": "Open Publication",
+    "fedora_name": "Open Publication License, v1.0",
+    "id": "604",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://opencontent.org/openpub/"
+  },
+  "Public Use License, v1.0": {
+    "approved": "yes",
+    "fedora_abbrev": "Public Use",
+    "fedora_name": "Public Use License, v1.0",
+    "id": "605",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/PublicUseLicense"
+  },
+  "Verbatim License": {
+    "approved": "yes",
+    "fedora_abbrev": "Verbatim",
+    "fedora_name": "Verbatim License",
+    "id": "606",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/VerbatimLicense"
+  },
+  "Open Content License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "Open Content License",
+    "id": "607",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://opencontent.org/opl.shtml"
+  },
+  "Open Directory License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "Open Directory License",
+    "id": "608",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://dmoz.org/license.html"
+  },
+  "W3C Documentation License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "W3C Documentation License",
+    "id": "609",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.w3.org/Consortium/Legal/copyright-documents"
+  },
+  "Design Science License": {
+    "approved": "yes",
+    "fedora_abbrev": "DSL",
+    "fedora_name": "Design Science License",
+    "id": "611",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.fsf.org/licensing/licenses/dsl.html"
+  },
+  "Distributed Management Task Force License": {
+    "approved": "yes",
+    "fedora_abbrev": "DMTF",
+    "fedora_name": "Distributed Management Task Force License",
+    "id": "612",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/DMTF"
+  },
+  "EFF Open Audio License v1": {
+    "approved": "yes",
+    "fedora_abbrev": "OAL",
+    "fedora_name": "EFF Open Audio License v1",
+    "id": "613",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/OpenAudioLicense"
+  },
+  "Ethymonics Free Music License": {
+    "approved": "yes",
+    "fedora_abbrev": "EFML",
+    "fedora_name": "Ethymonics Free Music License",
+    "id": "614",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Ethymonics_Free_Music_License"
+  },
+  "Free Art License": {
+    "approved": "yes",
+    "fedora_abbrev": "Free Art",
+    "fedora_name": "Free Art License",
+    "id": "615",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://artlibre.org/licence/lalgb.html"
+  },
+  "GeoGratis Licence Agreement": {
+    "approved": "yes",
+    "fedora_abbrev": "GeoGratis",
+    "fedora_name": "GeoGratis Licence Agreement",
+    "id": "616",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://geogratis.cgdi.gc.ca/geogratis/en/licence.jsp"
+  },
+  "LinuxTag Green OpenMusic License": {
+    "approved": "yes",
+    "fedora_abbrev": "Green OpenMusic",
+    "fedora_name": "LinuxTag Green OpenMusic License",
+    "id": "617",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://openmusic.linuxtag.org/green.html"
+  },
+  "Open Data License (GeoLite Country and GeoLite City databases)": {
+    "approved": "yes",
+    "fedora_abbrev": "BSD with advertising",
+    "fedora_name": "Open Data License (GeoLite Country and GeoLite City databases)",
+    "id": "618",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/BSD#OpenData_Variant"
+  },
+  "CAcert Non-Related Persons Disclaimer and License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "CAcert Non-Related Persons Disclaimer and License",
+    "id": "619",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.cacert.org/policy/NRPDisclaimerAndLicence.php"
+  },
+  "Creative Commons Sampling Plus 1.0": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "Creative Commons Sampling Plus 1.0",
+    "id": "623",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://creativecommons.org/licenses/sampling+/1.0/legalcode"
+  },
+  "LinuxTag Yellow OpenMusic License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "LinuxTag Yellow OpenMusic License",
+    "id": "624",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://openmusic.linuxtag.org/yellow.html"
+  },
+  "Adobe/TUG Utopia license agreement": {
+    "approved": "yes",
+    "fedora_abbrev": "Utopia",
+    "fedora_name": "Adobe/TUG Utopia license agreement",
+    "id": "625",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://tug.org/fonts/utopia/LICENSE-utopia.txt"
+  },
+  "AMS Bluesky Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "AMS",
+    "fedora_name": "AMS Bluesky Font License",
+    "id": "626",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/AMS"
+  },
+  "Arphic Public License": {
+    "approved": "yes",
+    "fedora_abbrev": "Arphic",
+    "fedora_name": "Arphic Public License",
+    "id": "627",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://ftp.gnu.org/gnu/non-gnu/chinese-fonts-truetype/LICENSE"
+  },
+  "Baekmuk License": {
+    "approved": "yes",
+    "fedora_abbrev": "Baekmuk",
+    "fedora_name": "Baekmuk License",
+    "id": "628",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Baekmuk"
+  },
+  "Bitstream Vera Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "Bitstream Vera",
+    "fedora_name": "Bitstream Vera Font License",
+    "id": "629",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://www.gnome.org/fonts/#Final_Bitstream_Vera_Fonts"
+  },
+  "Charter License": {
+    "approved": "yes",
+    "fedora_abbrev": "Charter",
+    "fedora_name": "Charter License",
+    "id": "630",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Charter"
+  },
+  "DoubleStroke Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "DoubleStroke",
+    "fedora_name": "DoubleStroke Font License",
+    "id": "631",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Fonts/DoubleStroke"
+  },
+  "ec Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "ec",
+    "fedora_name": "ec Font License",
+    "id": "632",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Fonts/ec"
+  },
+  "Elvish Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "Elvish",
+    "fedora_name": "Elvish Font License",
+    "id": "633",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Elvish"
+  },
+  "GUST Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "LPPL",
+    "fedora_name": "GUST Font License",
+    "id": "634",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "http://tug.org/fonts/licenses/GUST-FONT-LICENSE.txt"
+  },
+  "Hack Open Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "HOFL",
+    "fedora_name": "Hack Open Font License",
+    "id": "635",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/HackOpenFontLicense"
+  },
+  "Hershey Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "Hershey",
+    "fedora_name": "Hershey Font License",
+    "id": "636",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/HersheyFontLicense"
+  },
+  "Liberation Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "Liberation",
+    "fedora_name": "Liberation Font License",
+    "id": "638",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/LiberationFontLicense"
+  },
+  "Lucida Legal Notice": {
+    "approved": "yes",
+    "fedora_abbrev": "Lucida",
+    "fedora_name": "Lucida Legal Notice",
+    "id": "639",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Lucida"
+  },
+  "MgOpen Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "MgOpen",
+    "fedora_name": "MgOpen Font License",
+    "id": "640",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Fonts/MgOpen"
+  },
+  "mplus Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "mplus",
+    "fedora_name": "mplus Font License",
+    "id": "641",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/mplus"
+  },
+  "ParaType Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "PTFL",
+    "fedora_name": "ParaType Font License",
+    "id": "642",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Fonts/ParaType_Font_License"
+  },
+  "Punknova Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "Punknova",
+    "fedora_name": "Punknova Font License",
+    "id": "643",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Fonts/Punknova"
+  },
+  "STIX Fonts User License": {
+    "approved": "yes",
+    "fedora_abbrev": "STIX",
+    "fedora_name": "STIX Fonts User License",
+    "id": "644",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/STIXFontsUserLicense"
+  },
+  "Wadalab Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "Wadalab",
+    "fedora_name": "Wadalab Font License",
+    "id": "645",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/Wadalab"
+  },
+  "XANO Mincho Font License": {
+    "approved": "yes",
+    "fedora_abbrev": "XANO",
+    "fedora_name": "XANO Mincho Font License",
+    "id": "646",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/MinchoFontLicense"
+  },
+  "DIP SIPA Font License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "DIP SIPA Font License",
+    "id": "647",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/DIP_SIPA_Font_License"
+  },
+  "Larabie Fonts License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "Larabie Fonts License",
+    "id": "648",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/LarabieFontsLicense"
+  },
+  "Literat Font License": {
+    "approved": "no",
+    "fedora_abbrev": "",
+    "fedora_name": "Literat Font License",
+    "id": "649",
+    "license_text_url": "",
+    "spdx_abbrev": "",
+    "spdx_license_url": "",
+    "spdx_name": "",
+    "url": "https://fedoraproject.org/wiki/Licensing/LiteratFontLicense"
   }
 }

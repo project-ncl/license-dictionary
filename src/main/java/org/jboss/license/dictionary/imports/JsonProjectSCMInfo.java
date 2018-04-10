@@ -15,24 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.license.dictionary.endpoint;
+package org.jboss.license.dictionary.imports;
 
-import java.util.Objects;
-import java.util.stream.Stream;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
 
-import javax.ws.rs.core.Response;
+import lombok.Data;
+import lombok.ToString;
 
-public class AbstractEndpoint {
+@Data
+@ToString(includeFieldNames = true)
+public class JsonProjectSCMInfo {
 
-    public AbstractEndpoint() {
+    private String name;
+    private String type;
+    private String url;
+    private String revision;
+
+    public JsonProjectSCMInfo() {
+
     }
 
-    protected <T> Response paginated(T content, int totalCount, int offset) {
-        return Response.ok().header("totalCount", totalCount).header("offset", offset).entity(content).build();
-    }
-
-    protected long nonNullCount(Object... args) {
-        return Stream.of(args).filter(Objects::nonNull).count();
+    public ProjectVersionRest toProjectVersionRest() {
+        return ProjectVersionRest.Builder.newBuilder().scmRevision(revision).scmUrl(url).build();
     }
 
 }

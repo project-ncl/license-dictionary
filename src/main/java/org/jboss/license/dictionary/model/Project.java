@@ -20,15 +20,22 @@ package org.jboss.license.dictionary.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -39,14 +46,27 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "Project")
-@Table(name = "project", indexes = { @Index(name = Project.IDX_NAME_PROJECT_ECOSYSTEM_KEY, columnList = "ecosystem,key") })
+@Table(name = "project", indexes = {
+        @Index(name = Project.IDX_NAME_PROJECT_ECOSYSTEM_KEY, columnList = "project_ecosystem_id,key") }, uniqueConstraints = {
+                @UniqueConstraint(name = Project.UC_NAME_PROJECT_ECOSYSTEM_KEY, columnNames = { "project_ecosystem_id",
+                        "key" }) })
+@NamedQueries({
+        @NamedQuery(name = Project.QUERY_FIND_BY_ECOSYSTEM_KEY_UNORDERED, query = "SELECT p FROM Project p WHERE p.projectEcosystem.name = :ecosystem AND p.key = :key"),
+        @NamedQuery(name = Project.QUERY_FIND_BY_ECOSYSTEM_UNORDERED, query = "SELECT p FROM Project p WHERE p.projectEcosystem.name = :ecosystem"),
+        @NamedQuery(name = Project.QUERY_FIND_ALL_UNORDERED, query = "SELECT p FROM Project p") })
 
 @ToString(exclude = { "projectVersions" })
 @EqualsAndHashCode(exclude = { "projectVersions" })
 public class Project {
 
+    public static final String QUERY_FIND_ALL_UNORDERED = "Project.findAllUnordered";
+    public static final String QUERY_FIND_BY_ECOSYSTEM_KEY_UNORDERED = "Project.findByEcosystemKeyUnordered";
+    public static final String QUERY_FIND_BY_ECOSYSTEM_UNORDERED = "Project.findByEcosystemUnordered";
+
     public static final String SEQUENCE_NAME = "project_id_seq";
     public static final String IDX_NAME_PROJECT_ECOSYSTEM_KEY = "idx_project_ecosyskey";
+    public static final String FK_NAME_PROJECT_PROJECT_ECOSYSTEM = "fk_project_projectecosystem";
+    public static final String UC_NAME_PROJECT_ECOSYSTEM_KEY = "uc_project_ecosyskey";
 
     @Id
     @GeneratedValue(generator = SEQUENCE_NAME)
@@ -54,14 +74,15 @@ public class Project {
             @Parameter(name = "sequence_name", value = SEQUENCE_NAME), @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1") })
     @Getter
+    @Setter
     private Integer id;
 
     @NotNull
-    @Size(max = 10)
-    @Column(name = "ecosystem", length = 10)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+    @JoinColumn(name = "project_ecosystem_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_PROJECT_ECOSYSTEM))
     @Getter
     @Setter
-    private String ecosystem;
+    private ProjectEcosystem projectEcosystem;
 
     @NotNull
     @Column(name = "key")
@@ -86,7 +107,7 @@ public class Project {
     public static class Builder {
 
         private Integer id;
-        private String ecosystem;
+        private ProjectEcosystem projectEcosystem;
         private String key;
         private Set<ProjectVersion> projectVersions;
 
@@ -102,8 +123,8 @@ public class Project {
             return this;
         }
 
-        public Builder ecosystem(String ecosystem) {
-            this.ecosystem = ecosystem;
+        public Builder ecosystem(ProjectEcosystem ecosystem) {
+            this.projectEcosystem = ecosystem;
             return this;
         }
 
@@ -120,7 +141,7 @@ public class Project {
         public Project build() {
             Project project = new Project();
             project.id = this.id;
-            project.setEcosystem(ecosystem);
+            project.setProjectEcosystem(projectEcosystem);
             project.setKey(key);
             project.setProjectVersions(projectVersions);
 
