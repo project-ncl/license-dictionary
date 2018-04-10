@@ -11,6 +11,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.jboss.license.dictionary.api.LicenseHintTypeRest;
+import org.jboss.license.dictionary.api.LicenseRest;
+import org.jboss.license.dictionary.api.ProjectEcosystemRest;
+import org.jboss.license.dictionary.api.ProjectRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseCheckRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseHintRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
 import org.jboss.license.dictionary.imports.JsonProjectLicense;
 import org.jboss.license.dictionary.imports.JsonProjectLicenseDeterminationHint;
 import org.jboss.license.dictionary.imports.JsonProjectSCMInfo;
@@ -24,15 +32,6 @@ import org.jboss.license.dictionary.model.ProjectVersionLicense;
 import org.jboss.license.dictionary.model.ProjectVersionLicenseCheck;
 import org.jboss.license.dictionary.model.ProjectVersionLicenseHint;
 import org.jboss.logging.Logger;
-
-import api.LicenseHintTypeRest;
-import api.LicenseRest;
-import api.ProjectEcosystemRest;
-import api.ProjectRest;
-import api.ProjectVersionLicenseCheckRest;
-import api.ProjectVersionLicenseHintRest;
-import api.ProjectVersionLicenseRest;
-import api.ProjectVersionRest;
 
 @ApplicationScoped
 public class ProjectLicenseStore {

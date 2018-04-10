@@ -15,11 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class ProjectRest {
 
     @Getter
@@ -35,40 +39,6 @@ public class ProjectRest {
     private String key;
 
     public ProjectRest() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        ProjectRest projectRest = (ProjectRest) o;
-
-        if (id != null ? !id.equals(projectRest.id) : projectRest.id != null)
-            return false;
-        if (projectEcosystem != null ? !projectEcosystem.equals(projectRest.projectEcosystem)
-                : projectRest.projectEcosystem != null)
-            return false;
-        if (key != null ? !key.equals(projectRest.key) : projectRest.key != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (projectEcosystem != null ? projectEcosystem.hashCode() : 0);
-        result = 31 * result + (key != null ? key.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectRest{" + "id=" + id + ", projectEcosystem='" + projectEcosystem.getName() + '\'' + ", key='" + key + '\''
-                + '}';
     }
 
     public static class Builder {

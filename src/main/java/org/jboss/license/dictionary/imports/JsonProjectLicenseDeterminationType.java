@@ -17,7 +17,8 @@
  */
 package org.jboss.license.dictionary.imports;
 
-import api.LicenseDeterminationTypeRest;
+import org.jboss.license.dictionary.api.LicenseDeterminationTypeRest;
+
 import lombok.Data;
 import lombok.ToString;
 

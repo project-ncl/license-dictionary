@@ -15,11 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class ProjectVersionRest {
 
     @Getter
@@ -43,46 +47,6 @@ public class ProjectVersionRest {
     private ProjectRest project;
 
     public ProjectVersionRest() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        ProjectVersionRest projectVersionRest = (ProjectVersionRest) o;
-
-        if (id != null ? !id.equals(projectVersionRest.id) : projectVersionRest.id != null)
-            return false;
-        if (scmUrl != null ? !scmUrl.equals(projectVersionRest.scmUrl) : projectVersionRest.scmUrl != null)
-            return false;
-        if (scmRevision != null ? !scmRevision.equals(projectVersionRest.scmRevision) : projectVersionRest.scmRevision != null)
-            return false;
-        if (version != null ? !version.equals(projectVersionRest.version) : projectVersionRest.version != null)
-            return false;
-        if (project != null ? !project.equals(projectVersionRest.project) : projectVersionRest.project != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (scmUrl != null ? scmUrl.hashCode() : 0);
-        result = 31 * result + (scmRevision != null ? scmRevision.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (project != null ? project.hashCode() : 0);
-
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectVersionRest{" + "id=" + id + ", scmUrl='" + scmUrl + '\'' + ", scmRevision='" + scmRevision + '\''
-                + ", version='" + version + '\'' + ", project='" + project + '\'' + '}';
     }
 
     public static class Builder {

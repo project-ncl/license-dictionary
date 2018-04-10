@@ -47,6 +47,17 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.license.dictionary.LicenseStore;
+import org.jboss.license.dictionary.api.LicenseAliasRest;
+import org.jboss.license.dictionary.api.LicenseApprovalStatusRest;
+import org.jboss.license.dictionary.api.LicenseDeterminationTypeRest;
+import org.jboss.license.dictionary.api.LicenseHintTypeRest;
+import org.jboss.license.dictionary.api.LicenseRest;
+import org.jboss.license.dictionary.api.ProjectEcosystemRest;
+import org.jboss.license.dictionary.api.ProjectRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseCheckRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseHintRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
 import org.jboss.license.dictionary.config.KeycloakConfig;
 import org.jboss.license.dictionary.endpoint.ImportEndpoint;
 import org.jboss.license.dictionary.endpoint.LicenseDeterminationEndpoint;
@@ -87,18 +98,6 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import api.LicenseAliasRest;
-import api.LicenseApprovalStatusRest;
-import api.LicenseDeterminationTypeRest;
-import api.LicenseHintTypeRest;
-import api.LicenseRest;
-import api.ProjectEcosystemRest;
-import api.ProjectRest;
-import api.ProjectVersionLicenseCheckRest;
-import api.ProjectVersionLicenseHintRest;
-import api.ProjectVersionLicenseRest;
-import api.ProjectVersionRest;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>

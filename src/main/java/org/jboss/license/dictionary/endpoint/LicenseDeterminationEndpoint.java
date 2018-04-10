@@ -35,10 +35,9 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.api.LicenseDeterminationTypeRest;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
-
-import api.LicenseDeterminationTypeRest;
 
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>

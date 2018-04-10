@@ -48,13 +48,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 import org.modelmapper.ValidationException;
 import org.modelmapper.spi.ErrorMessage;
-
-import api.LicenseRest;
 
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>

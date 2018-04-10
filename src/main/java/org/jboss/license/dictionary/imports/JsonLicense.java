@@ -21,12 +21,12 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.license.dictionary.api.LicenseApprovalStatusRest;
+import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.model.License;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import api.LicenseApprovalStatusRest;
-import api.LicenseRest;
 import lombok.Data;
 
 /**

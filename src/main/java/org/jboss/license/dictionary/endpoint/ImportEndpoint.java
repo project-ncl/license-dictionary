@@ -35,6 +35,8 @@ import javax.ws.rs.core.MediaType;
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.ProjectLicenseStore;
 import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.api.LicenseAliasRest;
+import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.imports.JsonLicense;
 import org.jboss.license.dictionary.imports.JsonProjectLicense;
 import org.jboss.license.dictionary.utils.BadRequestException;
@@ -42,9 +44,6 @@ import org.jboss.logging.Logger;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
-import api.LicenseAliasRest;
-import api.LicenseRest;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>

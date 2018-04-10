@@ -15,11 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class ProjectVersionLicenseRest {
 
     @Getter
@@ -39,44 +43,6 @@ public class ProjectVersionLicenseRest {
     private ProjectVersionLicenseCheckRest projectVersionLicenseCheck;
 
     public ProjectVersionLicenseRest() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        ProjectVersionLicenseRest projectVersionLicenseRest = (ProjectVersionLicenseRest) o;
-
-        if (id != null ? !id.equals(projectVersionLicenseRest.id) : projectVersionLicenseRest.id != null)
-            return false;
-        if (scope != null ? !scope.equals(projectVersionLicenseRest.scope) : projectVersionLicenseRest.scope != null)
-            return false;
-        if (license != null ? !license.equals(projectVersionLicenseRest.license) : projectVersionLicenseRest.license != null)
-            return false;
-        if (projectVersionLicenseCheck != null
-                ? !projectVersionLicenseCheck.equals(projectVersionLicenseRest.projectVersionLicenseCheck)
-                : projectVersionLicenseRest.projectVersionLicenseCheck != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (scope != null ? scope.hashCode() : 0);
-        result = 31 * result + (license != null ? license.hashCode() : 0);
-        result = 31 * result + (projectVersionLicenseCheck != null ? projectVersionLicenseCheck.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectVersionLicenseRest{" + "id=" + id + ", scope='" + scope + '\'' + ", license='" + license + '\''
-                + ", projectVersionLicenseCheck='" + projectVersionLicenseCheck + '\'' + '}';
     }
 
     public static class Builder {

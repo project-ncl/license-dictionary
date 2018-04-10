@@ -20,16 +20,15 @@ package org.jboss.license.dictionary.utils;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.jboss.license.dictionary.api.LicenseRest;
+import org.jboss.license.dictionary.api.ProjectRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseCheckRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseHintRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
 import org.jboss.license.dictionary.model.License;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-
-import api.LicenseRest;
-import api.ProjectRest;
-import api.ProjectVersionLicenseCheckRest;
-import api.ProjectVersionLicenseHintRest;
-import api.ProjectVersionLicenseRest;
-import api.ProjectVersionRest;
 
 /**
  * mstodo: Header

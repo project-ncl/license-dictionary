@@ -38,10 +38,9 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.ProjectLicenseStore;
 import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.api.ProjectEcosystemRest;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
-
-import api.ProjectEcosystemRest;
 
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>

@@ -36,18 +36,17 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.jboss.license.dictionary.api.LicenseAliasRest;
+import org.jboss.license.dictionary.api.LicenseApprovalStatusRest;
+import org.jboss.license.dictionary.api.LicenseDeterminationTypeRest;
+import org.jboss.license.dictionary.api.LicenseHintTypeRest;
+import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.model.License;
 import org.jboss.license.dictionary.model.LicenseAlias;
 import org.jboss.license.dictionary.model.LicenseApprovalStatus;
 import org.jboss.license.dictionary.model.LicenseDeterminationType;
 import org.jboss.license.dictionary.model.LicenseHintType;
 import org.jboss.logging.Logger;
-
-import api.LicenseAliasRest;
-import api.LicenseApprovalStatusRest;
-import api.LicenseDeterminationTypeRest;
-import api.LicenseHintTypeRest;
-import api.LicenseRest;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>

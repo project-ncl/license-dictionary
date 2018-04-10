@@ -15,11 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class ProjectVersionLicenseHintRest {
 
     @Setter
@@ -39,44 +43,6 @@ public class ProjectVersionLicenseHintRest {
     private LicenseHintTypeRest licenseHintType;
 
     public ProjectVersionLicenseHintRest() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        ProjectVersionLicenseHintRest projectVersionLicenseHintRest = (ProjectVersionLicenseHintRest) o;
-
-        if (id != null ? !id.equals(projectVersionLicenseHintRest.id) : projectVersionLicenseHintRest.id != null)
-            return false;
-        if (value != null ? !value.equals(projectVersionLicenseHintRest.value) : projectVersionLicenseHintRest.value != null)
-            return false;
-        if (projectVersionLicense != null ? !projectVersionLicense.equals(projectVersionLicenseHintRest.projectVersionLicense)
-                : projectVersionLicenseHintRest.projectVersionLicense != null)
-            return false;
-        if (licenseHintType != null ? !licenseHintType.equals(projectVersionLicenseHintRest.licenseHintType)
-                : projectVersionLicenseHintRest.licenseHintType != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (projectVersionLicense != null ? projectVersionLicense.hashCode() : 0);
-        result = 31 * result + (licenseHintType != null ? licenseHintType.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ProjectVersionLicenseHintRest{" + "id=" + id + ", value='" + value + '\'' + ", projectVersionLicense='"
-                + projectVersionLicense + '\'' + ", licenseHintType='" + licenseHintType + '\'' + '}';
     }
 
     public static class Builder {

@@ -15,11 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package api;
+package org.jboss.license.dictionary.api;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 public class LicenseDeterminationTypeRest {
 
     @Getter
@@ -35,40 +39,6 @@ public class LicenseDeterminationTypeRest {
     private String description;
 
     public LicenseDeterminationTypeRest() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        LicenseDeterminationTypeRest licenseDeterminationTypeRest = (LicenseDeterminationTypeRest) o;
-
-        if (id != null ? !id.equals(licenseDeterminationTypeRest.id) : licenseDeterminationTypeRest.id != null)
-            return false;
-        if (name != null ? !name.equals(licenseDeterminationTypeRest.name) : licenseDeterminationTypeRest.name != null)
-            return false;
-        if (description != null ? !description.equals(licenseDeterminationTypeRest.description)
-                : licenseDeterminationTypeRest.description != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "LicenseDeterminationTypeRest{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\''
-                + '}';
     }
 
     public static class Builder {

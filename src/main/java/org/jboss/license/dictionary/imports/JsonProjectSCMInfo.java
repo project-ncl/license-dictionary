@@ -17,7 +17,8 @@
  */
 package org.jboss.license.dictionary.imports;
 
-import api.ProjectVersionRest;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
+
 import lombok.Data;
 import lombok.ToString;
 

@@ -42,12 +42,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.ProjectLicenseStore;
 import org.jboss.license.dictionary.RestApplication;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseHintRest;
+import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
-
-import api.ProjectVersionLicenseHintRest;
-import api.ProjectVersionLicenseRest;
 
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
