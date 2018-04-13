@@ -1025,7 +1025,7 @@ public class LicenseResourceTest {
             projectVersionLicenseCheckRest1 = (ProjectVersionLicenseCheckRest) response1.getEntity();
             assertThat(projectVersionLicenseCheckRest1.getId()).isNotNull();
 
-            Response response2 = projectEndpoint.createNewProjectVersionLicenseCheck(null, projVersFromList.getId(),
+            Response response2 = projectEndpoint.createNewProjectVersionLicenseCheck(pncProject.getId(), projVersFromList.getId(),
                     projectVersionLicenseCheckRest2, getUriInfo());
             projectVersionLicenseCheckRest2 = (ProjectVersionLicenseCheckRest) response2.getEntity();
             assertThat(projectVersionLicenseCheckRest2.getId()).isNotNull();

@@ -55,10 +55,17 @@ import org.jboss.logging.Logger;
 import org.modelmapper.ValidationException;
 import org.modelmapper.spi.ErrorMessage;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
  *         Date: 16/02/18
  */
+@Api(tags = { "License" })
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_ENDPOINT)
@@ -69,11 +76,19 @@ public class LicenseEndpoint extends AbstractEndpoint {
     @Inject
     private LicenseStore licenseStore;
 
+    @ApiOperation(value = "Get licenses by Fedora name or SPDX name or code or alias, OR by generic search string", notes = "Finds licenses matching specifically Fedora, SPDX, alias, code OR any of them by providing a generic search string", response = LicenseRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "More than one among Fedora name, SPDX name, code or alias provided, or search term provided with Fedora name, SPDX name, code or alias"),
+            @ApiResponse(code = 404, message = "License not found with Fedora name, SPDX name, code or alias provided") })
     @GET
-    public Response getLicenses(@QueryParam("fedoraName") String fedoraName, @QueryParam("spdxName") String spdxName,
-            @QueryParam("code") String code, @QueryParam("nameAlias") String nameAlias,
-            @QueryParam("searchTerm") String searchTerm, @QueryParam("count") Integer resultCount,
-            @QueryParam("offset") Integer offset) {
+    public Response getLicenses(
+            @ApiParam(value = "License Fedora name", required = false) @QueryParam("fedoraName") String fedoraName,
+            @ApiParam(value = "License Spdx name", required = false) @QueryParam("spdxName") String spdxName,
+            @ApiParam(value = "License code name", required = false) @QueryParam("code") String code,
+            @ApiParam(value = "License alias name", required = false) @QueryParam("nameAlias") String nameAlias,
+            @ApiParam(value = "Generic seach term", required = false) @QueryParam("searchTerm") String searchTerm,
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
         log.debugf(
                 "Finding licenses with fedoraName '%s', spdxName '%s', code '%s', alias '%s', searchTerm '%s', numResults '%d', offset '%d'",
@@ -129,11 +144,19 @@ public class LicenseEndpoint extends AbstractEndpoint {
         }
     }
 
+    @ApiOperation(value = "Update license by id", response = LicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "License id not provided"),
+            @ApiResponse(code = 404, message = "License to update not found") })
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response updateLicense(@PathParam("id") Integer id, LicenseRest license) {
+    public Response updateLicense(@ApiParam(value = "License id", required = true) @PathParam("id") Integer id,
+            LicenseRest license) {
         log.debugf("Updating license with %d with entity %s", id, license);
+
+        if (id == null) {
+            throw new BadRequestException("License id must be provided");
+        }
 
         Optional<LicenseRest> maybeLicense = licenseStore.getLicenseById(id);
         LicenseRest licenseData = maybeLicense.orElseThrow(() -> new NotFoundException("No license found for id " + id));
@@ -143,10 +166,16 @@ public class LicenseEndpoint extends AbstractEndpoint {
         return Response.ok().entity(licenseData).build();
     }
 
+    @ApiOperation(value = "Delete license by id", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "License id not provided") })
     @DELETE
     @Path("/{id}")
-    public Response deleteLicense(@PathParam("id") Integer id) {
+    public Response deleteLicense(@ApiParam(value = "License id", required = true) @PathParam("id") Integer id) {
         log.debugf("Deleting license with %d", id);
+
+        if (id == null) {
+            throw new BadRequestException("License id must be provided");
+        }
 
         if (!licenseStore.deleteLicense(id)) {
             throw new NotFoundException("No license found for id " + id);
@@ -154,6 +183,8 @@ public class LicenseEndpoint extends AbstractEndpoint {
         return Response.ok().build();
     }
 
+    @ApiOperation(value = "Create a new license", response = LicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "License successfully created") })
     @POST
     @Transactional
     public Response createNewLicense(LicenseRest license, @Context UriInfo uriInfo) {
@@ -166,10 +197,17 @@ public class LicenseEndpoint extends AbstractEndpoint {
         return Response.created(uriBuilder.build(license.getId())).entity(license).build();
     }
 
+    @ApiOperation(value = "Get a license by id", response = LicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "License id not provided"),
+            @ApiResponse(code = 404, message = "License not found") })
     @GET
     @Path("/{id}")
-    public Response getSpecificLicense(@PathParam("id") Integer id) {
+    public Response getSpecificLicense(@ApiParam(value = "License id", required = true) @PathParam("id") Integer id) {
         log.debugf("Get license with %d", id);
+
+        if (id == null) {
+            throw new BadRequestException("License id must be provided");
+        }
 
         LicenseRest entity = licenseStore.getLicenseById(id)
                 .orElseThrow(() -> new NotFoundException("No license found for id " + id));

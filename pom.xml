@@ -60,6 +60,12 @@
     </dependency>
 
     <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-jaxrs</artifactId>
+      <scope>provided</scope>
+      <version>1.5.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
@@ -75,10 +81,6 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jpa</artifactId>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>org.wildfly.swarm</groupId>-->
-    <!--<artifactId>flyway</artifactId>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>swagger</artifactId>

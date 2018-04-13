@@ -39,13 +39,21 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.api.LicenseHintTypeRest;
+import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
  *         Date: 16/02/18
  */
+@Api(tags = { "License_Hint" })
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path(RestApplication.REST_VERS_1 + RestApplication.LICENSE_HINT_ENDPOINT)
@@ -56,6 +64,7 @@ public class LicenseHintEndpoint extends AbstractEndpoint {
     @Inject
     private LicenseStore licenseStore;
 
+    @ApiOperation(value = "Get all license hint type", response = LicenseHintTypeRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @GET
     public Response getAllLicenseHintType() {
         log.debug("Get all license hint type");
@@ -64,10 +73,18 @@ public class LicenseHintEndpoint extends AbstractEndpoint {
         return paginated(results, results.size(), 0);
     }
 
+    @ApiOperation(value = "Get a license hint type by id", response = LicenseHintTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "License hint type id not provided"),
+            @ApiResponse(code = 404, message = "License hint type not found") })
     @GET
     @Path("/{id}")
-    public Response getSpecificLicenseHintType(@PathParam("id") Integer id) {
+    public Response getSpecificLicenseHintType(
+            @ApiParam(value = "License hint type id", required = true) @PathParam("id") Integer id) {
         log.debugf("Get license hint type with %d", id);
+
+        if (id == null) {
+            throw new BadRequestException("License hint type id must be provided");
+        }
 
         LicenseHintTypeRest entity = licenseStore.getLicenseHintTypeById(id)
                 .orElseThrow(() -> new NotFoundException("No license hint type found for id " + id));
@@ -75,10 +92,17 @@ public class LicenseHintEndpoint extends AbstractEndpoint {
         return Response.ok().entity(entity).build();
     }
 
+    @ApiOperation(value = "Get a license hint type by name", response = LicenseHintTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "License hint type name not provided"),
+            @ApiResponse(code = 404, message = "License hint type not found") })
     @GET
-    public Response getLicenseHintTypeByName(@QueryParam("name") String name) {
-
+    public Response getLicenseHintTypeByName(
+            @ApiParam(value = "License hint type name", required = true) @QueryParam("name") String name) {
         log.debugf("Finding license hint with name '%s'", name);
+
+        if (name == null) {
+            throw new BadRequestException("License hint type name must be provided");
+        }
 
         LicenseHintTypeRest entity = licenseStore.getLicenseHintTypeByName(name)
                 .orElseThrow(() -> new NotFoundException("No license hint found for name '" + name + "'"));
@@ -86,6 +110,8 @@ public class LicenseHintEndpoint extends AbstractEndpoint {
         return Response.ok().entity(fullMapper.map(entity, LicenseHintTypeRest.class)).build();
     }
 
+    @ApiOperation(value = "Create a new license hint type", response = LicenseHintTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "License hint type successfully created") })
     @POST
     @Transactional
     public Response createNewLicenseHintType(LicenseHintTypeRest licenseHintTypeRest, @Context UriInfo uriInfo) {
