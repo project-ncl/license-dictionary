@@ -28,10 +28,14 @@ import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.config.KeycloakConfig;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
  *         Date: 11/21/17
  */
+@Api(tags = { "Configuration" })
 @Path(RestApplication.REST_VERS_1 + RestApplication.CONFIG_ENDPOINT)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -49,6 +53,7 @@ public class ConfigEndpoint {
     @ConfigurationValue("keycloak.uiClientId")
     private String keycloakClientId;
 
+    @ApiOperation(value = "Get the keycloak configuration file", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @GET
     @Path("keycloak-config")
     public KeycloakConfig getKeycloakConfig() {

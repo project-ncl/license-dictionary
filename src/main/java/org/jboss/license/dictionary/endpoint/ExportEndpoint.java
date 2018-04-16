@@ -21,9 +21,14 @@ import org.jboss.license.dictionary.LicenseStore;
 import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.imports.JsonLicense;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,19 +38,21 @@ import java.util.Map;
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
  *         Date: 11/21/17
  */
+@Api(tags = { "Export" })
 @Path(RestApplication.REST_VERS_1 + RestApplication.EXPORT_ENDPOINT)
 public class ExportEndpoint {
 
     @Inject
     private LicenseStore store;
 
+    @ApiOperation(value = "Get the license json file", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @GET
     @Path("/licenses")
     public Map<String, JsonLicense> exportLicenses() {
         Map<String, JsonLicense> resultMap = new HashMap<>();
 
-        store.getAllLicense().forEach(
-                license -> license.getAliasNames().forEach(alias -> resultMap.put(alias, JsonLicense.fromLicenseRest(license))));
+        store.getAllLicense().forEach(license -> license.getAliasNames()
+                .forEach(alias -> resultMap.put(alias, JsonLicense.fromLicenseRest(license))));
 
         return resultMap;
     }

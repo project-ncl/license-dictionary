@@ -45,10 +45,14 @@ import org.jboss.logging.Logger;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
  *         Date: 11/13/17
  */
+@Api(tags = { "Import" })
 @Path(RestApplication.REST_VERS_1 + RestApplication.IMPORT_ENDPOINT)
 public class ImportEndpoint {
 
@@ -60,6 +64,7 @@ public class ImportEndpoint {
     @Inject
     private ProjectLicenseStore projectLicenseStore;
 
+    @ApiOperation(value = "Import the license json file", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @Path(RestApplication.IMPORT_ENDPOINT_IMPORT_LICENSE_API)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
@@ -89,6 +94,7 @@ public class ImportEndpoint {
         store.replaceAllLicensesWith(licensesByName.asMap());
     }
 
+    @ApiOperation(value = "Import the license alias json file", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @Path(RestApplication.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
@@ -120,6 +126,7 @@ public class ImportEndpoint {
         store.replaceAllLicenseAliasesWith(licensesAliasByName);
     }
 
+    @ApiOperation(value = "Import the project icense json file", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @Path(RestApplication.IMPORT_ENDPOINT_IMPORT_PROJECT_LICENSE_API)
     @Consumes(MediaType.APPLICATION_JSON)
     @POST

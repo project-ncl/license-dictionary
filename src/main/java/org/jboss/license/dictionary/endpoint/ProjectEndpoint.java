@@ -55,10 +55,17 @@ import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
  *         Date: 16/02/18
  */
+@Api(tags = { "Project" })
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path(RestApplication.REST_VERS_1 + RestApplication.PROJECT_ENDPOINT)
@@ -69,6 +76,8 @@ public class ProjectEndpoint extends AbstractEndpoint {
     @Inject
     private ProjectLicenseStore projectLicenseStore;
 
+    @ApiOperation(value = "Create a new project", response = ProjectRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project successfully created") })
     @POST
     @Transactional
     public Response createNewProject(ProjectRest project, @Context UriInfo uriInfo) {
@@ -80,11 +89,19 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.created(uriBuilder.build(project.getId())).entity(project).build();
     }
 
+    @ApiOperation(value = "Update project by id", response = ProjectRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id not provided"),
+            @ApiResponse(code = 404, message = "Project to update not found") })
     @PUT
     @Path("/{projectId}")
     @Transactional
-    public Response updateProject(@PathParam("projectId") Integer id, ProjectRest project) {
+    public Response updateProject(@ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer id,
+            ProjectRest project) {
         log.debugf("Updating project with %d with entity %s", id, project);
+
+        if (id == null) {
+            throw new BadRequestException("Project id must be provided");
+        }
 
         Optional<ProjectRest> maybeProject = projectLicenseStore.getProjectById(id);
         ProjectRest projectData = maybeProject.orElseThrow(() -> new NotFoundException("No project found for id " + id));
@@ -94,10 +111,16 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.ok().entity(projectData).build();
     }
 
+    @ApiOperation(value = "Delete project by id", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id not provided") })
     @DELETE
     @Path("/{projectId}")
-    public Response deleteProject(@PathParam("projectId") Integer id) {
+    public Response deleteProject(@ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer id) {
         log.debugf("Deleting project with %d", id);
+
+        if (id == null) {
+            throw new BadRequestException("Project id must be provided");
+        }
 
         if (!projectLicenseStore.deleteProject(id)) {
             throw new NotFoundException("No project found for id " + id);
@@ -105,10 +128,17 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.ok().build();
     }
 
+    @ApiOperation(value = "Get a project by id", response = ProjectRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id not provided"),
+            @ApiResponse(code = 404, message = "Project not found") })
     @GET
     @Path("/{projectId}")
-    public Response getSpecificProject(@PathParam("projectId") Integer id) {
+    public Response getSpecificProject(@ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer id) {
         log.debugf("Get project with %d", id);
+
+        if (id == null) {
+            throw new BadRequestException("Project id must be provided");
+        }
 
         ProjectRest entity = projectLicenseStore.getProjectById(id)
                 .orElseThrow(() -> new NotFoundException("No project found for id " + id));
@@ -116,10 +146,21 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.ok().entity(fullMapper.map(entity, ProjectRest.class)).build();
     }
 
+    @ApiOperation(value = "Get a project by ecosystem and key", response = ProjectRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project ecosystem name or project key not provided"),
+            @ApiResponse(code = 404, message = "Project not found") })
     @GET
-    public Response getProjectByEcosystemKey(@QueryParam("ecosystem") String ecosystemName, @QueryParam("key") String key) {
-
+    public Response getProjectByEcosystemKey(
+            @ApiParam(value = "Project ecosystem name", required = true) @QueryParam("ecosystem") String ecosystemName,
+            @ApiParam(value = "Project key", required = true) @QueryParam("key") String key) {
         log.debugf("Finding project with ecosystem %s, key %s", ecosystemName, key);
+
+        if (ecosystemName == null) {
+            throw new BadRequestException("Project ecosystem name must be provided");
+        }
+        if (key == null) {
+            throw new BadRequestException("Project key must be provided");
+        }
 
         ProjectRest entity = projectLicenseStore.getProjectByEcosystemKey(ecosystemName, key).orElseThrow(
                 () -> new NotFoundException("No project found for ecosystem '" + ecosystemName + "', key '" + key + "'"));
@@ -127,8 +168,11 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.ok().entity(fullMapper.map(entity, ProjectRest.class)).build();
     }
 
+    @ApiOperation(value = "Get all projects", response = ProjectRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @GET
-    public Response getAllProject(@QueryParam("count") Integer resultCount, @QueryParam("offset") Integer offset) {
+    public Response getAllProject(
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
         log.debugf("Finding all project with maxResults %d, offset %d", resultCount, offset);
 
@@ -145,11 +189,18 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return paginated(resultList, totalCount, offset);
     }
 
+    @ApiOperation(value = "Get all projects by ecosystem", response = ProjectRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project ecosystem name not provided") })
     @GET
-    public Response getAllProjectByEcosystem(@QueryParam("ecosystem") String ecosystemName,
-            @QueryParam("count") Integer resultCount, @QueryParam("offset") Integer offset) {
-
+    public Response getAllProjectByEcosystem(
+            @ApiParam(value = "Project ecosystem name", required = true) @QueryParam("ecosystem") String ecosystemName,
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
         log.debugf("Finding project with ecosystem %s, maxResults %d, offset %d", ecosystemName, resultCount, offset);
+
+        if (ecosystemName == null) {
+            throw new BadRequestException("Project ecosystem name must be provided");
+        }
 
         List<ProjectRest> results = projectLicenseStore.getAllProjectByEcosystem(ecosystemName);
 
@@ -163,15 +214,19 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return paginated(resultList, totalCount, offset);
     }
 
+    @ApiOperation(value = "Create a new project version", response = ProjectVersionRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project version successfully created"),
+            @ApiResponse(code = 400, message = "Project id not provided") })
     @POST
     @Path("/{projectId}/version")
     @Transactional
-    public Response createNewProjectVersion(@PathParam("projectId") Integer projectId, ProjectVersionRest projectVersion,
-            @Context UriInfo uriInfo) {
+    public Response createNewProjectVersion(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            ProjectVersionRest projectVersion, @Context UriInfo uriInfo) {
         log.debugf("Creating new project version %s for project %d", projectVersion, projectId);
 
         if (projectId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project id must be provided");
         }
 
         if (projectVersion.getProject() == null) {
@@ -188,14 +243,21 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.created(uriBuilder.build(projectVersion.getId())).entity(projectVersion).build();
     }
 
+    @ApiOperation(value = "Get a project version by project id and project version id", response = ProjectVersionRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id or project version id not provided"),
+            @ApiResponse(code = 404, message = "Project version not found") })
     @GET
     @Path("/{projectId}/version/{projVersId}")
-    public Response getSpecificProjectVersion(@PathParam("projectId") Integer projectId,
-            @PathParam("projVersId") Integer projVersId) {
+    public Response getSpecificProjectVersion(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            @ApiParam(value = "Project version id", required = true) @PathParam("projVersId") Integer projVersId) {
         log.debugf("Get project version with %d", projVersId);
 
         if (projectId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project id must be provided");
+        }
+        if (projVersId == null) {
+            throw new BadRequestException("Project version id must be provided");
         }
 
         ProjectVersionRest entity = projectLicenseStore.getProjectVersionById(projVersId)
@@ -204,15 +266,18 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.ok().entity(fullMapper.map(entity, ProjectVersionRest.class)).build();
     }
 
+    @ApiOperation(value = "Get all project versions by project id", response = ProjectVersionRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id not provided") })
     @GET
     @Path("/{projectId}/version")
-    public Response getAllProjectVersion(@PathParam("projectId") Integer projectId, @QueryParam("count") Integer resultCount,
-            @QueryParam("offset") Integer offset) {
-
+    public Response getAllProjectVersion(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
         log.debugf("Finding all project version of project %d with maxResults %d, offset %d", projectId, resultCount, offset);
 
         if (projectId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project id must be provided");
         }
 
         List<ProjectVersionRest> results = projectLicenseStore.getAllProjectVersionByProjectId(projectId);
@@ -228,15 +293,22 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return paginated(resultList, totalCount, offset);
     }
 
+    @ApiOperation(value = "Get a project version by project id and version name", response = ProjectVersionRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id or version name not provided"),
+            @ApiResponse(code = 404, message = "Project version not found") })
     @GET
     @Path("/{projectId}/version")
-    public Response getProjectVersionByProjectIdVersion(@PathParam("projectId") Integer projectId,
-            @QueryParam("name") String name) {
+    public Response getProjectVersionByProjectIdVersion(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            @ApiParam(value = "Project version name", required = true) @QueryParam("name") String name) {
 
         log.debugf("Finding project version of project %d with name %s", projectId, name);
 
         if (projectId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project id must be provided");
+        }
+        if (name == null) {
+            throw new BadRequestException("Project version name must be provided");
         }
 
         ProjectVersionRest entity = projectLicenseStore.getProjectVersionByVersionProjectId(name, projectId).orElseThrow(
@@ -245,20 +317,26 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return Response.ok().entity(fullMapper.map(entity, ProjectVersionRest.class)).build();
     }
 
+    @ApiOperation(value = "Get all project version license checks by project id and project version id", response = ProjectVersionLicenseCheck.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project id or project version id not provided") })
     @GET
     @Path("/{projectId}/version/{projVersId}/check")
-    public Response getAllProjectVersionLicenseCheckByProjVersId(@PathParam("projectId") Integer projectId,
-            @PathParam("projVersId") Integer projVersId, @QueryParam("detTypeId") Integer licDeterminationTypeId,
-            @QueryParam("count") Integer resultCount, @QueryParam("offset") Integer offset) {
+    public Response getAllProjectVersionLicenseCheckByProjVersId(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            @ApiParam(value = "Project version id", required = true) @PathParam("projVersId") Integer projVersId,
+            @ApiParam(value = "License determination type id", required = false) @QueryParam("detTypeId") Integer licDeterminationTypeId,
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
         log.debugf("Get all project version license check with project id %d and project version %d", projectId, projVersId);
 
         if (projectId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project id must be provided");
         }
         if (projVersId == null) {
-            throw new BadRequestException("The project version id was not specified");
+            throw new BadRequestException("Project version id must be provided");
         }
+
         List<ProjectVersionLicenseCheckRest> results = null;
         if (licDeterminationTypeId == null) {
             results = projectLicenseStore.getAllProjectVersionLicenseCheckByProjVersId(projVersId);
@@ -278,17 +356,24 @@ public class ProjectEndpoint extends AbstractEndpoint {
         return paginated(resultList, totalCount, offset);
     }
 
+    @ApiOperation(value = "Create a new project version license check", response = ProjectVersionLicenseCheckRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project version license check successfully created"),
+            @ApiResponse(code = 400, message = "Project id or project version id not provided, or project version id specified does not exist") })
     @POST
     @Path("/{projectId}/version/{projVersId}/check")
     @Transactional
-    public Response createNewProjectVersionLicenseCheck(@PathParam("projectId") Integer projectId,
-            @PathParam("projVersId") Integer projVersId, ProjectVersionLicenseCheckRest projectVersionLicenseCheck,
-            @Context UriInfo uriInfo) {
+    public Response createNewProjectVersionLicenseCheck(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            @ApiParam(value = "Project version id", required = true) @PathParam("projVersId") Integer projVersId,
+            ProjectVersionLicenseCheckRest projectVersionLicenseCheck, @Context UriInfo uriInfo) {
         log.debugf("Creating new project version license check %s for project %d and project version %d",
                 projectVersionLicenseCheck, projectId, projVersId);
 
+        if (projectId == null) {
+            throw new BadRequestException("Project id must be provided");
+        }
         if (projVersId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project version id must be provided");
         }
 
         if (projectVersionLicenseCheck.getProjectVersion() == null) {
@@ -307,23 +392,30 @@ public class ProjectEndpoint extends AbstractEndpoint {
                 .build();
     }
 
+    @ApiOperation(value = "Get all project version license by project id and project version id and project version license check id", response = ProjectVersionLicenseRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Project id or project version id or project version license check id not provided") })
     @GET
     @Path("/{projectId}/version/{projVersId}/check/{projVersLicCheckId}/license")
-    public Response getAllProjectVersionLicenseByProjVersLicCheckId(@PathParam("projectId") Integer projectId,
-            @PathParam("projVersId") Integer projVersId, @PathParam("projVersLicCheckId") Integer projVersLicCheckId,
-            @QueryParam("licId") Integer licenseId, @QueryParam("scope ") String scope,
-            @QueryParam("count") Integer resultCount, @QueryParam("offset") Integer offset) {
+    public Response getAllProjectVersionLicenseByProjVersLicCheckId(
+            @ApiParam(value = "Project id", required = true) @PathParam("projectId") Integer projectId,
+            @ApiParam(value = "Project version id", required = true) @PathParam("projVersId") Integer projVersId,
+            @ApiParam(value = "Project version license check id", required = true) @PathParam("projVersLicCheckId") Integer projVersLicCheckId,
+            @ApiParam(value = "License id", required = false) @QueryParam("licId") Integer licenseId,
+            @ApiParam(value = "Scope", required = false) @QueryParam("scope") String scope,
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
         log.debugf("Get all project version license with project version %d and check id %d", projVersId, projVersLicCheckId);
 
         if (projectId == null) {
-            throw new BadRequestException("The project id was not specified");
+            throw new BadRequestException("Project id must be provided");
         }
         if (projVersId == null) {
-            throw new BadRequestException("The project version id was not specified");
+            throw new BadRequestException("Project version id must be provided");
         }
         if (projVersLicCheckId == null) {
-            throw new BadRequestException("The project version license check id was not specified");
+            throw new BadRequestException("Project version license check id must be provided");
         }
 
         List<ProjectVersionLicenseRest> results = null;

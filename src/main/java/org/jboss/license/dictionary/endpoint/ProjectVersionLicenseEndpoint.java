@@ -48,10 +48,17 @@ import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
  *         Date: 16/02/18
  */
+@Api(tags = { "Project_Version_License" })
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path(RestApplication.REST_VERS_1 + RestApplication.PROJECT_VERSION_LICENSE_ENDPOINT)
@@ -62,10 +69,18 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
     @Inject
     private ProjectLicenseStore projectLicenseStore;
 
+    @ApiOperation(value = "Get project version license by id", response = ProjectVersionLicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project version license id not provided"),
+            @ApiResponse(code = 404, message = "Project version license not found") })
     @GET
     @Path("/{id}")
-    public Response getSpecificProjectVersionLicense(@PathParam("id") Integer id) {
+    public Response getSpecificProjectVersionLicense(
+            @ApiParam(value = "Project version license id", required = true) @PathParam("id") Integer id) {
         log.debugf("Get project version license with %d", id);
+
+        if (id == null) {
+            throw new BadRequestException("Project version license id must be provided");
+        }
 
         ProjectVersionLicenseRest entity = projectLicenseStore.getProjectVersionLicenseById(id)
                 .orElseThrow(() -> new NotFoundException("No project version license found for id " + id));
@@ -73,6 +88,8 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
         return Response.ok().entity(fullMapper.map(entity, ProjectVersionLicenseRest.class)).build();
     }
 
+    @ApiOperation(value = "Create a new project version license", response = ProjectVersionLicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project version license successfully created") })
     @POST
     @Transactional
     public Response createNewProjectVersionLicense(ProjectVersionLicenseRest projectVersionLicenseRest,
@@ -85,14 +102,22 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
         return Response.created(uriBuilder.build(projectVersionLicenseRest.getId())).entity(projectVersionLicenseRest).build();
     }
 
+    @ApiOperation(value = "Get all project version licenses", response = ProjectVersionLicenseRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Project ecosystem name or project key or project version name not provided"),
+            @ApiResponse(code = 404, message = "Project version licenses not found") })
     @GET
-    public Response getAllProjectVersionLicense(@QueryParam("ecosystem") String ecosystem,
-            @QueryParam("projectKey") String projectKey, @QueryParam("version") String version,
-            @QueryParam("scope") String scope, @QueryParam("count") Integer resultCount, @QueryParam("offset") Integer offset) {
+    public Response getAllProjectVersionLicense(
+            @ApiParam(value = "Project ecosystem name", required = true) @QueryParam("ecosystem") String ecosystem,
+            @ApiParam(value = "Project key", required = true) @QueryParam("key") String key,
+            @ApiParam(value = "Project version name", required = true) @QueryParam("version") String version,
+            @ApiParam(value = "Scope", required = false) @QueryParam("scope") String scope,
+            @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
+            @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
         log.debugf(
                 "Finding project version license with ecosystem %s, projectKey %s, version %s, scope %s, numResults %d, offset %d",
-                ecosystem, projectKey, version, scope, resultCount, offset);
+                ecosystem, key, version, scope, resultCount, offset);
 
         if (offset == null) {
             offset = 0;
@@ -100,30 +125,30 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
 
         List<ProjectVersionLicenseRest> results = null;
 
-        long singleResultIndicatorCount = nonNullCount(ecosystem, projectKey, version);
+        long singleResultIndicatorCount = nonNullCount(ecosystem, key, version);
         if (singleResultIndicatorCount > 0) {
 
             if (ecosystem == null) {
-                throw new BadRequestException("The ecosystem was not specified");
+                throw new BadRequestException("Project ecosystem name must be provided");
             }
-            if (projectKey == null) {
-                throw new BadRequestException("The project identifier was not specified");
+            if (key == null) {
+                throw new BadRequestException("Project key must be provided");
             }
             if (version == null) {
-                throw new BadRequestException("The project version name was not specified");
+                throw new BadRequestException("Project version name must be provided");
             }
 
             if (scope == null || scope.isEmpty()) {
                 results = listOrNotFound(
-                        projectLicenseStore.getProjectVersionLicenseByEcosystemProjKeyVersion(ecosystem, projectKey, version),
-                        "No project version license were found for ecosystem %s, projectKey %s, version %s ", ecosystem,
-                        projectKey, version);
+                        projectLicenseStore.getProjectVersionLicenseByEcosystemProjKeyVersion(ecosystem, key, version),
+                        "No project version license were found for ecosystem %s, projectKey %s, version %s ", ecosystem, key,
+                        version);
             } else {
                 results = listOrNotFound(
-                        projectLicenseStore.getProjectVersionLicenseByEcosystemProjKeyVersionScope(ecosystem, projectKey,
-                                version, scope),
+                        projectLicenseStore.getProjectVersionLicenseByEcosystemProjKeyVersionScope(ecosystem, key, version,
+                                scope),
                         "No project version license were found for ecosystem %s, projectKey %s, version %s, scope %s",
-                        ecosystem, projectKey, version, scope);
+                        ecosystem, key, version, scope);
             }
 
         } else {
@@ -141,10 +166,14 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
         return paginated(resultList, totalCount, offset);
     }
 
+    @ApiOperation(value = "Get all project version license hints by project version license id and license hint id and value", response = ProjectVersionLicenseHintRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project version license id not provided") })
     @GET
     @Path("/{projVersLicId}/hint")
-    public Response getAllProjectVersionLicenseHint(@PathParam("projVersLicId") Integer projVersLicId,
-            @QueryParam("hintId") Integer hintTypeId, @QueryParam("value") String value) {
+    public Response getAllProjectVersionLicenseHint(
+            @ApiParam(value = "Project version license id", required = true) @PathParam("projVersLicId") Integer projVersLicId,
+            @ApiParam(value = "License hint type id", required = false) @QueryParam("hintId") Integer hintTypeId,
+            @ApiParam(value = "License hint value", required = false) @QueryParam("value") String value) {
 
         log.debugf("Finding all project version license hint of project version license %d with hintTypeId %d, value %s",
                 projVersLicId, hintTypeId, value);
@@ -152,7 +181,7 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
         List<ProjectVersionLicenseHintRest> results = null;
 
         if (projVersLicId == null) {
-            throw new BadRequestException("The project version license id was not specified");
+            throw new BadRequestException("Project version license id must be provided");
         }
 
         if (hintTypeId == null) {
@@ -170,16 +199,20 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
         return paginated(resultList, resultNumber, 0);
     }
 
+    @ApiOperation(value = "Create a new project version license hint", response = ProjectVersionLicenseHintRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project version license hint successfully created"),
+            @ApiResponse(code = 400, message = "Project version license id not provided or not existing") })
     @POST
     @Path("/{projVersLicId}/hint")
     @Transactional
-    public Response createNewProjectVersionLicenseHint(@PathParam("projVersLicId") Integer projVersLicId,
+    public Response createNewProjectVersionLicenseHint(
+            @ApiParam(value = "Project version license id", required = true) @PathParam("projVersLicId") Integer projVersLicId,
             ProjectVersionLicenseHintRest projectVersionLicenseHintRest, @Context UriInfo uriInfo) {
         log.debugf("Creating new project version license hint %s for project version id %d", projectVersionLicenseHintRest,
                 projVersLicId);
 
         if (projVersLicId == null) {
-            throw new BadRequestException("The project version license id was not specified");
+            throw new BadRequestException("Project version license id must be provided");
         }
 
         if (projectVersionLicenseHintRest.getProjectVersionLicense() == null) {

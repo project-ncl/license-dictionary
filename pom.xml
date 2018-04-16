@@ -60,12 +60,26 @@
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs</artifactId>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-jaxrs</artifactId>
+      <scope>provided</scope>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>swagger-webapp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>swagger</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -74,14 +88,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jpa</artifactId>
-    </dependency>
-    <!--<dependency>-->
-    <!--<groupId>org.wildfly.swarm</groupId>-->
-    <!--<artifactId>flyway</artifactId>-->
-    <!--</dependency>-->
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>swagger</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
