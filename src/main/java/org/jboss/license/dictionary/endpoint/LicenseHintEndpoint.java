@@ -17,9 +17,8 @@
  */
 package org.jboss.license.dictionary.endpoint;
 
-import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -64,13 +63,22 @@ public class LicenseHintEndpoint extends AbstractEndpoint {
     @Inject
     private LicenseStore licenseStore;
 
-    @ApiOperation(value = "Get all license hint type", response = LicenseHintTypeRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all license hint types", response = LicenseHintTypeRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Error processing RSQL query parameter") })
     @GET
-    public Response getAllLicenseHintType() {
-        log.debug("Get all license hint type");
+    public Response getAllLicenseHintType(
+            @ApiParam(value = "RSQL-type search query (e.g. name=='license file')", required = false) @QueryParam("query") String query) {
+        log.debugf("Get all license hint type with rsql search '%s'", query);
 
-        List<LicenseHintTypeRest> results = licenseStore.getAllLicenseHintType();
-        return paginated(results, results.size(), 0);
+        try {
+
+            List<LicenseHintTypeRest> results = licenseStore.getAllLicenseHintType(Optional.ofNullable(query));
+            return paginated(results, results.size(), 0);
+
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Error processing RSQL query parameter");
+        }
+
     }
 
     @ApiOperation(value = "Get a license hint type by id", response = LicenseHintTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
@@ -92,31 +100,17 @@ public class LicenseHintEndpoint extends AbstractEndpoint {
         return Response.ok().entity(entity).build();
     }
 
-    @ApiOperation(value = "Get a license hint type by name", response = LicenseHintTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 400, message = "License hint type name not provided"),
-            @ApiResponse(code = 404, message = "License hint type not found") })
-    @GET
-    public Response getLicenseHintTypeByName(
-            @ApiParam(value = "License hint type name", required = true) @QueryParam("name") String name) {
-        log.debugf("Finding license hint with name '%s'", name);
-
-        if (name == null) {
-            throw new BadRequestException("License hint type name must be provided");
-        }
-
-        LicenseHintTypeRest entity = licenseStore.getLicenseHintTypeByName(name)
-                .orElseThrow(() -> new NotFoundException("No license hint found for name '" + name + "'"));
-
-        return Response.ok().entity(fullMapper.map(entity, LicenseHintTypeRest.class)).build();
-    }
-
     @ApiOperation(value = "Create a new license hint type", response = LicenseHintTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "License hint type successfully created") })
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "License hint type successfully created"),
+            @ApiResponse(code = 400, message = "License hint type id not null") })
     @POST
     @Transactional
     public Response createNewLicenseHintType(LicenseHintTypeRest licenseHintTypeRest, @Context UriInfo uriInfo) {
         log.debugf("Creating new license hint type %s", licenseHintTypeRest);
 
+        if (licenseHintTypeRest.getId() != null) {
+            throw new BadRequestException("License hint type id must be null");
+        }
         licenseHintTypeRest = licenseStore.saveLicenseHintType(licenseHintTypeRest);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");

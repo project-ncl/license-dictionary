@@ -18,6 +18,7 @@
 package org.jboss.license.dictionary.endpoint;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -27,6 +28,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -61,13 +63,21 @@ public class LicenseStatusEndpoint extends AbstractEndpoint {
     @Inject
     private LicenseStore licenseStore;
 
-    @ApiOperation(value = "Get all license approval status", response = LicenseApprovalStatusRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all license approval status types", response = LicenseApprovalStatusRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Error processing RSQL query parameter") })
     @GET
-    public Response getAllLicenseApprovalStatus() {
-        log.debug("Get all license approval status");
+    public Response getAllLicenseApprovalStatus(
+            @ApiParam(value = "RSQL-type search query (e.g. name=='APPROVED')", required = false) @QueryParam("query") String query) {
+        log.debugf("Get all license approval status with rsql search '%s'", query);
 
-        List<LicenseApprovalStatusRest> results = licenseStore.getAllLicenseApprovalStatus();
-        return paginated(results, results.size(), 0);
+        try {
+
+            List<LicenseApprovalStatusRest> results = licenseStore.getAllLicenseApprovalStatus(Optional.ofNullable(query));
+            return paginated(results, results.size(), 0);
+
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Error processing RSQL query parameter");
+        }
     }
 
     @ApiOperation(value = "Get a license approval status by id", response = LicenseApprovalStatusRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
@@ -90,13 +100,17 @@ public class LicenseStatusEndpoint extends AbstractEndpoint {
     }
 
     @ApiOperation(value = "Create a new license approval status", response = LicenseApprovalStatusRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "License approval status successfully created") })
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "License approval status successfully created"),
+            @ApiResponse(code = 400, message = "License approval status id not null") })
     @POST
     @Transactional
     public Response createNewLicenseApprovalStatus(LicenseApprovalStatusRest licenseApprovalStatusRest,
             @Context UriInfo uriInfo) {
         log.debugf("Creating new license approval status %s", licenseApprovalStatusRest);
 
+        if (licenseApprovalStatusRest.getId() != null) {
+            throw new BadRequestException("License approval status id must be null");
+        }
         licenseApprovalStatusRest = licenseStore.saveLicenseApprovalStatus(licenseApprovalStatusRest);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");

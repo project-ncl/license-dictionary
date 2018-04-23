@@ -124,7 +124,7 @@ public class License {
     @Setter
     private LicenseApprovalStatus licenseApprovalStatus;
 
-    @OneToMany(mappedBy = "license", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "license", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     @Setter
     private Set<LicenseAlias> aliases;

@@ -42,23 +42,12 @@ import lombok.ToString;
         @Index(name = ProjectVersionLicenseHint.IDX_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE, columnList = "project_version_license_id"),
         @Index(name = ProjectVersionLicenseHint.IDX_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE, columnList = "license_hint_type_id") })
 @NamedQueries({
-        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_BY_VALUE_PROJVERSLICID_LICHINTTYPE_UNORDERED, query = "SELECT DISTINCT pvlh FROM ProjectVersionLicenseHint pvlh "
-                + " JOIN FETCH pvlh.projectVersionLicense pvl JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
-                + " WHERE pvlh.value = :value "
-                + " AND pvlh.projectVersionLicense.id = :projVersLicenseId AND pvlh.licenseHintType.id = :licHintTypeId"),
-        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_BY_PROJVERSLICID_UNORDERED, query = "SELECT DISTINCT pvlh FROM ProjectVersionLicenseHint pvlh "
-                + " JOIN FETCH pvlh.projectVersionLicense pvl JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
-                + " WHERE pvlh.projectVersionLicense.id = :projVersLicenseId"),
-        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_BY_PROJVERSLICID_LICHINTTYPE_UNORDERED, query = "SELECT DISTINCT pvlh FROM ProjectVersionLicenseHint pvlh "
-                + " JOIN FETCH pvlh.projectVersionLicense pvl JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
-                + " WHERE pvlh.projectVersionLicense.id = :projVersLicenseId AND pvlh.licenseHintType.id = :licHintTypeId") })
+        @NamedQuery(name = ProjectVersionLicenseHint.QUERY_FIND_ALL_UNORDERED, query = "SELECT pvlh FROM ProjectVersionLicenseHint pvlh ") })
 @ToString
 @EqualsAndHashCode
 public class ProjectVersionLicenseHint {
 
-    public static final String QUERY_FIND_BY_VALUE_PROJVERSLICID_LICHINTTYPE_UNORDERED = "ProjectVersionLicenseHint.findByValueProjVersLicIdUnordered";
-    public static final String QUERY_FIND_BY_PROJVERSLICID_UNORDERED = "ProjectVersionLicenseHint.findByProjVersLicIdUnordered";
-    public static final String QUERY_FIND_BY_PROJVERSLICID_LICHINTTYPE_UNORDERED = "ProjectVersionLicenseHint.findByProjVersLicIdLicHintTypeUnordered";
+    public static final String QUERY_FIND_ALL_UNORDERED = "ProjectVersionLicenseHint.findAllUnordered";
 
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_HINT_PROJECT_VERSION_LICENSE = "idx_projverlichint_projverlic";
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_HINT_LICENSE_HINT_TYPE = "idx_projverlichint_lichinttype";

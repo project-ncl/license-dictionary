@@ -50,36 +50,13 @@ import lombok.ToString;
                 @UniqueConstraint(name = ProjectVersionLicense.UC_NAME_PROJECT_VERSION_LICENSE_PROJECT_VERSION_LICENSE_CHECK_SCOPE, columnNames = {
                         "proj_vers_license_check_id", "license_id", "scope" }) })
 @NamedQueries({
-        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_ALL_UNORDERED, query = "SELECT pvl FROM ProjectVersionLicense pvl"),
-        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_BY_PROJVERSLICCHECKID_UNORDERED, query = "SELECT DISTINCT pvl FROM ProjectVersionLicense pvl "
-                + "JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
-                + "WHERE pvl.projectVersionLicenseCheck.id = :projVersLicCheckId"),
-        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_BY_LICENSEID_PROJVERSLICCHECKID_UNORDERED, query = "SELECT pvl FROM ProjectVersionLicense pvl "
-                + "WHERE pvl.license.id = :licenseId AND pvl.projectVersionLicenseCheck.id = :projVersLicCheckId"),
-        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_BY_SCOPE_LICENSEID_PROJVERSLICCHECKID_UNORDERED, query = "SELECT pvl FROM ProjectVersionLicense pvl "
-                + "WHERE pvl.scope = :scope AND pvl.license.id = :licenseId "
-                + "AND pvl.projectVersionLicenseCheck.id = :projVersLicCheckId"),
-        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_BY_ECOSYSTEM_PROJKEY_VERSION_UNORDERED, query = "SELECT DISTINCT pvl FROM ProjectVersionLicense pvl "
-                + "JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
-                + "JOIN FETCH pvl.projectVersionLicenseCheck pvlc JOIN FETCH pvlc.projectVersion pv "
-                + "JOIN FETCH pv.project p "
-                + "WHERE p.projectEcosystem.name = :ecosystem AND p.key = :key AND pv.version = :vers"),
-        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_BY_ECOSYSTEM_PROJKEY_VERSION_SCOPE_UNORDERED, query = "SELECT DISTINCT pvl FROM ProjectVersionLicense pvl "
-                + "JOIN FETCH pvl.license l JOIN FETCH l.aliases aliases "
-                + "JOIN FETCH pvl.projectVersionLicenseCheck pvlc JOIN FETCH pvlc.projectVersion pv "
-                + "JOIN FETCH pv.project p "
-                + "WHERE p.projectEcosystem.name = :ecosystem AND p.key = :key AND pv.version = :vers AND pvl.scope = :scope") })
+        @NamedQuery(name = ProjectVersionLicense.QUERY_FIND_ALL_UNORDERED, query = "SELECT pvl FROM ProjectVersionLicense pvl") })
 
 @ToString(exclude = { "projectVersionLicenseHints" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class ProjectVersionLicense {
 
     public static final String QUERY_FIND_ALL_UNORDERED = "ProjectVersionLicense.findAllUnordered";
-    public static final String QUERY_FIND_BY_PROJVERSLICCHECKID_UNORDERED = "ProjectVersionLicense.findByProjVersLicCheckIdUnordered";
-    public static final String QUERY_FIND_BY_SCOPE_LICENSEID_PROJVERSLICCHECKID_UNORDERED = "ProjectVersionLicense.findByLicIdProjVersLicCheckIdUnordered";
-    public static final String QUERY_FIND_BY_LICENSEID_PROJVERSLICCHECKID_UNORDERED = "ProjectVersionLicense.findByScopeLicIdProjVersLicCheckIdUnordered";
-    public static final String QUERY_FIND_BY_ECOSYSTEM_PROJKEY_VERSION_UNORDERED = "ProjectVersionLicense.findByEcosystemProjKeyVersionUnordered";
-    public static final String QUERY_FIND_BY_ECOSYSTEM_PROJKEY_VERSION_SCOPE_UNORDERED = "ProjectVersionLicense.findByEcosystemProjKeyVersionScopeUnordered";
 
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_LICENSE = "idx_projverlic_lic";
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_PROJECT_VERSION_LICENSE_CHECK = "idx_projverlic_projverlicchk";

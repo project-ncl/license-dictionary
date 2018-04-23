@@ -45,15 +45,13 @@ import lombok.ToString;
 @Table(name = "license_hint_type", indexes = {
         @Index(name = LicenseHintType.IDX_NAME_LICENSE_HINT_TYPE_NAME, columnList = "name") }, uniqueConstraints = {
                 @UniqueConstraint(name = LicenseHintType.UC_NAME_LICENSE_HINT_TYPE_NAME, columnNames = { "name" }) })
-@NamedQueries({ @NamedQuery(name = LicenseHintType.QUERY_FIND_ALL_UNORDERED, query = "SELECT lht FROM LicenseHintType lht"),
-        @NamedQuery(name = LicenseHintType.QUERY_FIND_BY_NAME_UNORDERED, query = "SELECT lht FROM LicenseHintType lht WHERE lht.name = :name") })
+@NamedQueries({ @NamedQuery(name = LicenseHintType.QUERY_FIND_ALL_UNORDERED, query = "SELECT lht FROM LicenseHintType lht") })
 
 @ToString(exclude = { "projectVersionLicenseHints" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseHints" })
 public class LicenseHintType {
 
     public static final String QUERY_FIND_ALL_UNORDERED = "LicenseHintType.findAllUnordered";
-    public static final String QUERY_FIND_BY_NAME_UNORDERED = "LicenseHintType.findByNameUnordered";
 
     public static final String IDX_NAME_LICENSE_HINT_TYPE_NAME = "idx_license_hint_type_name";
     public static final String SEQUENCE_NAME = "license_hinttype_id_seq";

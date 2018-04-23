@@ -50,18 +50,13 @@ import lombok.ToString;
         @Index(name = Project.IDX_NAME_PROJECT_ECOSYSTEM_KEY, columnList = "project_ecosystem_id,key") }, uniqueConstraints = {
                 @UniqueConstraint(name = Project.UC_NAME_PROJECT_ECOSYSTEM_KEY, columnNames = { "project_ecosystem_id",
                         "key" }) })
-@NamedQueries({
-        @NamedQuery(name = Project.QUERY_FIND_BY_ECOSYSTEM_KEY_UNORDERED, query = "SELECT p FROM Project p WHERE p.projectEcosystem.name = :ecosystem AND p.key = :key"),
-        @NamedQuery(name = Project.QUERY_FIND_BY_ECOSYSTEM_UNORDERED, query = "SELECT p FROM Project p WHERE p.projectEcosystem.name = :ecosystem"),
-        @NamedQuery(name = Project.QUERY_FIND_ALL_UNORDERED, query = "SELECT p FROM Project p") })
+@NamedQueries({ @NamedQuery(name = Project.QUERY_FIND_ALL_UNORDERED, query = "SELECT p FROM Project p") })
 
 @ToString(exclude = { "projectVersions" })
 @EqualsAndHashCode(exclude = { "projectVersions" })
 public class Project {
 
     public static final String QUERY_FIND_ALL_UNORDERED = "Project.findAllUnordered";
-    public static final String QUERY_FIND_BY_ECOSYSTEM_KEY_UNORDERED = "Project.findByEcosystemKeyUnordered";
-    public static final String QUERY_FIND_BY_ECOSYSTEM_UNORDERED = "Project.findByEcosystemUnordered";
 
     public static final String SEQUENCE_NAME = "project_id_seq";
     public static final String IDX_NAME_PROJECT_ECOSYSTEM_KEY = "idx_project_ecosyskey";
@@ -78,7 +73,7 @@ public class Project {
     private Integer id;
 
     @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH })
     @JoinColumn(name = "project_ecosystem_id", nullable = false, foreignKey = @ForeignKey(name = FK_NAME_PROJECT_PROJECT_ECOSYSTEM))
     @Getter
     @Setter

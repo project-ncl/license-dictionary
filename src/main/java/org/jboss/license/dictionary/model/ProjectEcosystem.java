@@ -45,15 +45,13 @@ import lombok.ToString;
 @Table(name = "project_ecosystem", indexes = {
         @Index(name = ProjectEcosystem.IDX_NAME_PROJECT_ECOSYSTEM_NAME, columnList = "name") }, uniqueConstraints = {
                 @UniqueConstraint(name = ProjectEcosystem.UC_NAME_PROJECT_ECOSYSTEM_NAME, columnNames = { "name" }) })
-@NamedQueries({ @NamedQuery(name = ProjectEcosystem.QUERY_FIND_ALL_UNORDERED, query = "SELECT pe FROM ProjectEcosystem pe"),
-        @NamedQuery(name = ProjectEcosystem.QUERY_FIND_BY_NAME_UNORDERED, query = "SELECT pe FROM ProjectEcosystem pe WHERE pe.name = :name") })
+@NamedQueries({ @NamedQuery(name = ProjectEcosystem.QUERY_FIND_ALL_UNORDERED, query = "SELECT pe FROM ProjectEcosystem pe") })
 
 @ToString(exclude = { "projects" })
 @EqualsAndHashCode(exclude = { "projects" })
 public class ProjectEcosystem {
 
     public static final String QUERY_FIND_ALL_UNORDERED = "ProjectEcosystem.findAllUnordered";
-    public static final String QUERY_FIND_BY_NAME_UNORDERED = "ProjectEcosystem.findByNameUnordered";
 
     public static final String IDX_NAME_PROJECT_ECOSYSTEM_NAME = "idx_project_ecosystem_name";
     public static final String SEQUENCE_NAME = "project_ecosystem_id_seq";

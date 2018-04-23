@@ -49,13 +49,13 @@ import lombok.ToString;
         @Index(name = ProjectVersion.IDX_NAME_PROJECT_VERSION_PROJECT, columnList = "project_id") }, uniqueConstraints = {
                 @UniqueConstraint(name = ProjectVersion.UC_NAME_PROJECT_VERSION_PROJECT_VERSION, columnNames = { "project_id",
                         "vers" }) })
-@NamedQueries({
-        @NamedQuery(name = ProjectVersion.QUERY_FIND_BY_VERSION_PROJECT_ID_UNORDERED, query = "SELECT pv FROM ProjectVersion pv WHERE pv.version = :version AND pv.project.id = :projectId"),
-        @NamedQuery(name = ProjectVersion.QUERY_FIND_ALL_BY_PROJECT_ID_UNORDERED, query = "SELECT pv FROM ProjectVersion pv WHERE pv.project.id = :projectId") })
+@NamedQueries({ @NamedQuery(name = ProjectVersion.QUERY_FIND_ALL_UNORDERED, query = "SELECT pv FROM ProjectVersion pv") })
 
 @ToString(exclude = { "projectVersionLicenseChecks" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenseChecks" })
 public class ProjectVersion {
+
+    public static final String QUERY_FIND_ALL_UNORDERED = "ProjectVersion.findAllUnordered";
 
     public static final String QUERY_FIND_ALL_BY_PROJECT_ID_UNORDERED = "ProjectVersion.findAllByProjectIdUnordered";
     public static final String QUERY_FIND_BY_VERSION_PROJECT_ID_UNORDERED = "ProjectVersion.findByVersionProjectIdUnordered";

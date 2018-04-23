@@ -17,9 +17,8 @@
  */
 package org.jboss.license.dictionary.endpoint;
 
-import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
-
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -65,12 +64,21 @@ public class ProjectEcosystemEndpoint extends AbstractEndpoint {
     private ProjectLicenseStore projectLicenseStore;
 
     @ApiOperation(value = "Get all project ecosystems", response = ProjectEcosystemRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Error processing RSQL query parameter") })
     @GET
-    public Response getAllProjectEcosystem() {
-        log.debug("Get all project ecosystems ...");
+    public Response getAllProjectEcosystem(
+            @ApiParam(value = "RSQL-type search query (e.g. name=='mvn')", required = false) @QueryParam("query") String query) {
+        log.debugf("Get all project ecosystems with rsql search '%s'", query);
 
-        List<ProjectEcosystemRest> results = projectLicenseStore.getAllProjectEcosystem();
-        return paginated(results, results.size(), 0);
+        try {
+
+            List<ProjectEcosystemRest> results = projectLicenseStore.getAllProjectEcosystem(Optional.ofNullable(query));
+            return paginated(results, results.size(), 0);
+
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Error processing RSQL query parameter");
+        }
+
     }
 
     @ApiOperation(value = "Get a project ecosystem by id", response = ProjectEcosystemRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
@@ -93,34 +101,20 @@ public class ProjectEcosystemEndpoint extends AbstractEndpoint {
     }
 
     @ApiOperation(value = "Create a new project ecosystem", response = ProjectEcosystemRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project ecosystem successfully created") })
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project ecosystem successfully created"),
+            @ApiResponse(code = 400, message = "Project ecosystem status id not null") })
     @POST
     @Transactional
     public Response createNewProjectEcosystem(ProjectEcosystemRest projectEcosystemRest, @Context UriInfo uriInfo) {
         log.debugf("Creating new project ecosystems %s", projectEcosystemRest);
 
+        if (projectEcosystemRest.getId() != null) {
+            throw new BadRequestException("Project ecosystem id must be null");
+        }
         projectEcosystemRest = projectLicenseStore.saveProjectEcosystem(projectEcosystemRest);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
         return Response.created(uriBuilder.build(projectEcosystemRest.getId())).entity(projectEcosystemRest).build();
-    }
-
-    @ApiOperation(value = "Get a project ecosystem by name", response = ProjectEcosystemRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project ecosystem name not provided"),
-            @ApiResponse(code = 404, message = "Project ecosystem not found") })
-    @GET
-    public Response getProjectEcosystemByName(
-            @ApiParam(value = "Project ecosystem name", required = true) @QueryParam("name") String name) {
-        log.debugf("Finding ecosystem with name '%s'", name);
-
-        if (name == null) {
-            throw new BadRequestException("Project ecosystem name must be provided");
-        }
-
-        ProjectEcosystemRest entity = projectLicenseStore.getProjectEcosystemByName(name)
-                .orElseThrow(() -> new NotFoundException("No ecosystem found for name '" + name + "'"));
-
-        return Response.ok().entity(fullMapper.map(entity, ProjectEcosystemRest.class)).build();
     }
 
 }

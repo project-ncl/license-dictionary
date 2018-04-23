@@ -222,9 +222,11 @@ public class LicenseStore {
         log.info("finished loading imported entities");
     }
 
-    public List<LicenseApprovalStatusRest> getAllLicenseApprovalStatus() {
-        log.info("Get all license approval status ...");
-        return dbStore.getAllLicenseApprovalStatus().stream()
+    /* LICENSE APPROVAL STATUS */
+
+    public List<LicenseApprovalStatusRest> getAllLicenseApprovalStatus(Optional<String> rsqlSearch) {
+
+        return dbStore.getAllLicenseApprovalStatus(rsqlSearch).stream()
                 .map(entity -> fullMapper.map(entity, LicenseApprovalStatusRest.class)).collect(Collectors.toList());
     }
 
@@ -247,9 +249,11 @@ public class LicenseStore {
         return licenseApprovalStatusRest;
     }
 
-    public List<LicenseDeterminationTypeRest> getAllLicenseDeterminationType() {
-        log.info("Get all license determination type ...");
-        return dbStore.getAllLicenseDeterminationType().stream()
+    /* LICENSE DETERMINATION TYPE */
+
+    public List<LicenseDeterminationTypeRest> getAllLicenseDeterminationType(Optional<String> rsqlSearch) {
+
+        return dbStore.getAllLicenseDeterminationType(rsqlSearch).stream()
                 .map(entity -> fullMapper.map(entity, LicenseDeterminationTypeRest.class)).collect(Collectors.toList());
     }
 
@@ -273,10 +277,12 @@ public class LicenseStore {
         return licenseDeterminationTypeRest;
     }
 
-    public List<LicenseHintTypeRest> getAllLicenseHintType() {
-        log.info("Get all license hint type ...");
-        return dbStore.getAllLicenseHintType().stream().map(entity -> fullMapper.map(entity, LicenseHintTypeRest.class))
-                .collect(Collectors.toList());
+    /* LICENSE HINT TYPE */
+
+    public List<LicenseHintTypeRest> getAllLicenseHintType(Optional<String> rsqlSearch) {
+
+        return dbStore.getAllLicenseHintType(rsqlSearch).stream()
+                .map(entity -> fullMapper.map(entity, LicenseHintTypeRest.class)).collect(Collectors.toList());
     }
 
     public Optional<LicenseHintTypeRest> getLicenseHintTypeById(Integer licenseHintTypeId) {
@@ -296,17 +302,6 @@ public class LicenseStore {
 
         licenseHintTypeRest = fullMapper.map(entity, LicenseHintTypeRest.class);
         return licenseHintTypeRest;
-    }
-
-    public Optional<LicenseHintTypeRest> getLicenseHintTypeByName(String name) {
-        log.infof("Get license hint type by name %s", name);
-
-        LicenseHintType licenseHintType = dbStore.getLicenseHintTypeByName(name);
-        if (licenseHintType == null) {
-            return Optional.ofNullable(null);
-        }
-
-        return Optional.ofNullable(fullMapper.map(licenseHintType, LicenseHintTypeRest.class));
     }
 
     private Optional<LicenseRest> findSingle(Predicate<LicenseRest> predicate) {
