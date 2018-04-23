@@ -302,7 +302,7 @@ public class ProjectLicenseStore {
                     .getProjectVersionLicenseCheck();
             Project mappedProject = fullMapper.map(projVersLicenseCheckRest.getProjectVersion().getProject(), Project.class);
 
-            log.infof("### Finding already existing projects with ecosystem: %s and key: %s ",
+            log.debugf("### Finding already existing projects with ecosystem: %s and key: %s ",
                     mappedProject.getProjectEcosystem().getName(), mappedProject.getKey());
 
             String rsqlQuery = "projectEcosystem.name=='" + mappedProject.getProjectEcosystem().getName() + "';key=='"
@@ -312,7 +312,7 @@ public class ProjectLicenseStore {
 
             if (project == null) {
 
-                log.infof("### Finding already existing project ecosystems with name: %s ",
+                log.debugf("### Finding already existing project ecosystems with name: %s ",
                         mappedProject.getProjectEcosystem().getName());
 
                 String rsql2 = "name=='" + mappedProject.getProjectEcosystem().getName() + "'";
@@ -321,16 +321,16 @@ public class ProjectLicenseStore {
 
                 if (projectEcosystem == null) {
                     projectEcosystem = dbStore.saveProjectEcosystem(projectEcosystem);
-                    log.infof("# created project ecosystem: %s ", projectEcosystem);
+                    log.debugf("# created project ecosystem: %s ", projectEcosystem);
                 } else {
-                    log.infof("# retrieved project ecosystem: %s ", projectEcosystem);
+                    log.debugf("# retrieved project ecosystem: %s ", projectEcosystem);
                 }
                 mappedProject.setProjectEcosystem(projectEcosystem);
                 project = dbStore.saveProject(mappedProject);
 
-                log.infof("# created project: %s ", project);
+                log.debugf("# created project: %s ", project);
             } else {
-                log.infof("# retrieved project: %s ", project);
+                log.debugf("# retrieved project: %s ", project);
             }
 
             // Create or retrieve existing Project Version
@@ -338,7 +338,7 @@ public class ProjectLicenseStore {
                     ProjectVersion.class);
             mappedProjectVersion.setProject(project);
 
-            log.infof("### Finding already existing project versions with version: %s and project id: %d ",
+            log.debugf("### Finding already existing project versions with version: %s and project id: %d ",
                     mappedProjectVersion.getVersion(), mappedProjectVersion.getProject().getId());
 
             String rsqlQuery3 = "project.id==" + mappedProjectVersion.getProject().getId() + ";version=='"
@@ -351,16 +351,16 @@ public class ProjectLicenseStore {
             if (projectVersion == null) {
                 projectVersion = dbStore.saveProjectVersion(mappedProjectVersion);
 
-                log.infof("# created project version: %s ", projectVersion);
+                log.debugf("# created project version: %s ", projectVersion);
             } else {
-                log.infof("# retrieved project version: %s ", projectVersion);
+                log.debugf("# retrieved project version: %s ", projectVersion);
             }
 
             // Create or retrieve existing license determination type
             LicenseDeterminationType mappedLicenseDeterminationType = fullMapper
                     .map(projVersLicenseCheckRest.getLicenseDeterminationType(), LicenseDeterminationType.class);
 
-            log.infof("### Finding already existing license determination type with id: %d ",
+            log.debugf("### Finding already existing license determination type with id: %d ",
                     mappedLicenseDeterminationType.getId());
 
             LicenseDeterminationType licenseDeterminationType = dbStore
@@ -368,9 +368,9 @@ public class ProjectLicenseStore {
             if (licenseDeterminationType == null) {
                 licenseDeterminationType = dbStore.saveLicenseDeterminationType(mappedLicenseDeterminationType);
 
-                log.infof("# created license determination type: %s ", licenseDeterminationType);
+                log.debugf("# created license determination type: %s ", licenseDeterminationType);
             } else {
-                log.infof("# retrieved license determination type: %s ", licenseDeterminationType);
+                log.debugf("# retrieved license determination type: %s ", licenseDeterminationType);
             }
 
             // Create or retrieve existing project version license check
@@ -382,7 +382,7 @@ public class ProjectLicenseStore {
 
             ProjectVersionLicenseCheck projectVersionLicenseCheck = null;
 
-            log.infof(
+            log.debugf(
                     "### Finding already existing project version license checks with project version id: %d and license determination type id: %d ",
                     projectVersion.getId(), mappedLicenseDeterminationType.getId());
 
@@ -394,16 +394,16 @@ public class ProjectLicenseStore {
             if (projectVersionLicenseCheckList == null || projectVersionLicenseCheckList.isEmpty()) {
                 projectVersionLicenseCheck = dbStore.saveProjectVersionLicenseCheck(mappedProjectVersionLicenseCheck);
 
-                log.infof("# created project version license check: %s ", projectVersionLicenseCheck);
+                log.debugf("# created project version license check: %s ", projectVersionLicenseCheck);
             } else {
                 projectVersionLicenseCheck = projectVersionLicenseCheckList.get(0);
-                log.infof("# retrieved project version license check: %s ", projectVersionLicenseCheck);
+                log.debugf("# retrieved project version license check: %s ", projectVersionLicenseCheck);
             }
 
             // Create or retrieve existing project version license
             ProjectVersionLicense projectVersionLicense = null;
 
-            log.infof(
+            log.debugf(
                     "### Finding already existing project version license with scope: %s and license id: %d and project version license check id: %d ",
                     projectVersionLicenseHintRest.getProjectVersionLicense().getScope(), license.getId(),
                     projectVersionLicenseCheck.getId());
@@ -431,17 +431,17 @@ public class ProjectLicenseStore {
 
                 projectVersionLicense = dbStore.saveProjectVersionLicense(projectVersionLicense);
 
-                log.infof("# created project version license: %s ", projectVersionLicense);
+                log.debugf("# created project version license: %s ", projectVersionLicense);
             } else {
                 projectVersionLicense = projectVersionLicenseList.get(0);
-                log.infof("# retrieved project version license: %s ", projectVersionLicense);
+                log.debugf("# retrieved project version license: %s ", projectVersionLicense);
             }
 
             // Create or retrieve existing license determination type
             LicenseHintType mappedLicenseHintType = fullMapper.map(projectVersionLicenseHintRest.getLicenseHintType(),
                     LicenseHintType.class);
 
-            log.infof("### Finding already existing license hint type with name: %s ", mappedLicenseHintType.getName());
+            log.debugf("### Finding already existing license hint type with name: %s ", mappedLicenseHintType.getName());
             String rsqlQuery2 = "name=='" + mappedLicenseHintType.getName() + "'";
             List<LicenseHintType> licenseHintTypeList = dbStore.getAllLicenseHintType(Optional.of(rsqlQuery2));
             LicenseHintType licenseHintType = (licenseHintTypeList != null && !licenseHintTypeList.isEmpty())
@@ -450,15 +450,15 @@ public class ProjectLicenseStore {
             if (licenseHintType == null) {
                 licenseHintType = dbStore.saveLicenseHintType(mappedLicenseHintType);
 
-                log.infof("# created license hint type: %s ", licenseHintType);
+                log.debugf("# created license hint type: %s ", licenseHintType);
             } else {
-                log.infof("# retrieved license hint type: %s ", licenseHintType);
+                log.debugf("# retrieved license hint type: %s ", licenseHintType);
             }
 
             // Create or retrieve existing project version license hint
             ProjectVersionLicenseHint projectVersionLicenseHint = null;
 
-            log.infof(
+            log.debugf(
                     "### Finding already existing project version license hints with value: %s and project version license id: %d and license hint type id: %d ",
                     projectVersionLicenseHintRest.getValue(), projectVersionLicense.getId(), licenseHintType.getId());
 
@@ -473,11 +473,11 @@ public class ProjectLicenseStore {
                         .licenseHintType(licenseHintType).build();
                 projectVersionLicenseHint = dbStore.saveProjectVersionLicenseHint(projectVersionLicenseHint);
 
-                log.infof("# created project version license hint: %s ", projectVersionLicenseHint);
+                log.debugf("# created project version license hint: %s ", projectVersionLicenseHint);
             } else {
                 projectVersionLicenseHint = projectVersionLicenseHintList.get(0);
 
-                log.infof("# retrieved project version license hint: %s ", projectVersionLicenseHint);
+                log.debugf("# retrieved project version license hint: %s ", projectVersionLicenseHint);
             }
         }
     }
