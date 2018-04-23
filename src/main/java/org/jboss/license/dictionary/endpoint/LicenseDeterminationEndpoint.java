@@ -18,6 +18,7 @@
 package org.jboss.license.dictionary.endpoint;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -27,6 +28,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -61,13 +63,22 @@ public class LicenseDeterminationEndpoint extends AbstractEndpoint {
     @Inject
     private LicenseStore licenseStore;
 
-    @ApiOperation(value = "Get all license determination type", response = LicenseDeterminationTypeRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all license determination types", response = LicenseDeterminationTypeRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Error processing RSQL query parameter") })
     @GET
-    public Response getAllLicenseDeterminationType() {
-        log.debug("Get all license determination type");
+    public Response getAllLicenseDeterminationType(
+            @ApiParam(value = "RSQL-type search query (e.g. name=='License file only')", required = false) @QueryParam("query") String query) {
+        log.debugf("Get all license determination type with rsql search '%s'", query);
 
-        List<LicenseDeterminationTypeRest> results = licenseStore.getAllLicenseDeterminationType();
-        return paginated(results, results.size(), 0);
+        try {
+
+            List<LicenseDeterminationTypeRest> results = licenseStore
+                    .getAllLicenseDeterminationType(Optional.ofNullable(query));
+            return paginated(results, results.size(), 0);
+
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Error processing RSQL query parameter");
+        }
     }
 
     @ApiOperation(value = "Get a license determination type by id", response = LicenseDeterminationTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
@@ -90,13 +101,17 @@ public class LicenseDeterminationEndpoint extends AbstractEndpoint {
     }
 
     @ApiOperation(value = "Create a new license determination type", response = LicenseDeterminationTypeRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "License determination type successfully created") })
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "License determination type successfully created"),
+            @ApiResponse(code = 400, message = "License determination type id not null") })
     @POST
     @Transactional
     public Response createNewLicenseDeterminationType(LicenseDeterminationTypeRest licenseDeterminationTypeRest,
             @Context UriInfo uriInfo) {
         log.debugf("Creating new license determination type %s", licenseDeterminationTypeRest);
 
+        if (licenseDeterminationTypeRest.getId() != null) {
+            throw new BadRequestException("License determination type id must be null");
+        }
         licenseDeterminationTypeRest = licenseStore.saveLicenseDeterminationType(licenseDeterminationTypeRest);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");

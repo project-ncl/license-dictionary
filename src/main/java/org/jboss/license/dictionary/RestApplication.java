@@ -32,7 +32,10 @@ import org.jboss.license.dictionary.endpoint.LicenseHintEndpoint;
 import org.jboss.license.dictionary.endpoint.LicenseStatusEndpoint;
 import org.jboss.license.dictionary.endpoint.ProjectEcosystemEndpoint;
 import org.jboss.license.dictionary.endpoint.ProjectEndpoint;
+import org.jboss.license.dictionary.endpoint.ProjectVersionEndpoint;
+import org.jboss.license.dictionary.endpoint.ProjectVersionLicenseCheckEndpoint;
 import org.jboss.license.dictionary.endpoint.ProjectVersionLicenseEndpoint;
+import org.jboss.license.dictionary.endpoint.ProjectVersionLicenseHintEndpoint;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com <br>
@@ -57,8 +60,11 @@ public class RestApplication extends Application {
     public static final String LICENSE_ENDPOINT = "/license";
 
     public static final String PROJECT_ENDPOINT = "/project";
+    public static final String PROJECT_VERSION_ENDPOINT = "/project-version";
     public static final String PROJECT_ECOSYSTEM_ENDPOINT = "/project-ecosystem";
     public static final String PROJECT_VERSION_LICENSE_ENDPOINT = "/project-version-license";
+    public static final String PROJECT_VERSION_LICENSE_CHECK_ENDPOINT = "/project-version-license-check";
+    public static final String PROJECT_VERSION_LICENSE_HINT_ENDPOINT = "/project-version-license-hint";
 
     public static final String IMPORT_ENDPOINT_IMPORT_LICENSE_API = "/licenses";
     public static final String IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API = "/licenses-alias";
@@ -82,7 +88,10 @@ public class RestApplication extends Application {
         resources.add(LicenseDeterminationEndpoint.class);
         resources.add(LicenseHintEndpoint.class);
         resources.add(ProjectEndpoint.class);
+        resources.add(ProjectVersionEndpoint.class);
         resources.add(ProjectVersionLicenseEndpoint.class);
+        resources.add(ProjectVersionLicenseCheckEndpoint.class);
+        resources.add(ProjectVersionLicenseHintEndpoint.class);
         resources.add(ProjectEcosystemEndpoint.class);
     }
 }

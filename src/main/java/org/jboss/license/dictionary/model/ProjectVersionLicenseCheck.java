@@ -51,17 +51,13 @@ import lombok.ToString;
         @Index(name = ProjectVersionLicenseCheck.IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION, columnList = "project_version_id"),
         @Index(name = ProjectVersionLicenseCheck.IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE, columnList = "license_det_type_id") })
 @NamedQueries({
-        @NamedQuery(name = ProjectVersionLicenseCheck.QUERY_FIND_BY_PROJVERSID_UNORDERED, query = "SELECT pvlc FROM ProjectVersionLicenseCheck pvlc "
-                + "WHERE pvlc.projectVersion.id = :projVersId"),
-        @NamedQuery(name = ProjectVersionLicenseCheck.QUERY_FIND_BY_PROJVERSID_LICDETTYPE_UNORDERED, query = "SELECT pvlc FROM ProjectVersionLicenseCheck pvlc "
-                + "WHERE pvlc.projectVersion.id = :projVersId AND pvlc.licenseDeterminationType.id = :licDetTypeId") })
+        @NamedQuery(name = ProjectVersionLicenseCheck.QUERY_FIND_ALL_UNORDERED, query = "SELECT pvlc FROM ProjectVersionLicenseCheck pvlc ") })
 
 @ToString(exclude = { "projectVersionLicenses" })
 @EqualsAndHashCode(exclude = { "projectVersionLicenses" })
 public class ProjectVersionLicenseCheck {
 
-    public static final String QUERY_FIND_BY_PROJVERSID_UNORDERED = "ProjectVersionLicenseCheck.findByProjVersIdUnordered";
-    public static final String QUERY_FIND_BY_PROJVERSID_LICDETTYPE_UNORDERED = "ProjectVersionLicenseCheck.findByProjVersIdLicDetTypeUnordered";
+    public static final String QUERY_FIND_ALL_UNORDERED = "ProjectVersionLicenseCheck.findAllUnordered";
 
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_PROJECT_VERSION = "idx_projverlicchk_projver";
     public static final String IDX_NAME_PROJECT_VERSION_LICENSE_CHECK_LICENSE_DETERMINATION_TYPE = "idx_projverlicchk_licdettype";

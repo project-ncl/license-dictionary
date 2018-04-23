@@ -19,7 +19,7 @@ package org.jboss.license.dictionary.endpoint;
 
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
 import static org.jboss.license.dictionary.utils.Mappers.limitedMapper;
-import static org.jboss.license.dictionary.utils.Mappers.projectVersionLicenseRestListType;
+import static org.jboss.license.dictionary.utils.Mappers.projectVersionRestListType;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +41,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.license.dictionary.ProjectLicenseStore;
 import org.jboss.license.dictionary.RestApplication;
-import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
+import org.jboss.license.dictionary.api.ProjectVersionRest;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
 import org.jboss.logging.Logger;
@@ -56,58 +56,61 @@ import io.swagger.annotations.ApiResponses;
  * @author Andrea Vibelli, andrea.vibelli@gmail.com <br>
  *         Date: 16/02/18
  */
-@Api(tags = { "Project_Version_License" })
+@Api(tags = { "Project_Version" })
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path(RestApplication.REST_VERS_1 + RestApplication.PROJECT_VERSION_LICENSE_ENDPOINT)
-public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
+@Path(RestApplication.REST_VERS_1 + RestApplication.PROJECT_VERSION_ENDPOINT)
+public class ProjectVersionEndpoint extends AbstractEndpoint {
 
-    private static final Logger log = Logger.getLogger(ProjectVersionLicenseEndpoint.class);
+    private static final Logger log = Logger.getLogger(ProjectVersionEndpoint.class);
 
     @Inject
     private ProjectLicenseStore projectLicenseStore;
 
-    @ApiOperation(value = "Create a new project version license", response = ProjectVersionLicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project version license successfully created"),
-            @ApiResponse(code = 400, message = "Project version license id not null") })
+    @ApiOperation(value = "Create a new project version", response = ProjectVersionRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Project version successfully created"),
+            @ApiResponse(code = 400, message = "Project version id not null or project not valorized") })
     @POST
     @Transactional
-    public Response createNewProjectVersionLicense(ProjectVersionLicenseRest projectVersionLicenseRest,
-            @Context UriInfo uriInfo) {
-        log.debugf("Creating new project version license %s", projectVersionLicenseRest);
+    public Response createNewProjectVersion(ProjectVersionRest projectVersion, @Context UriInfo uriInfo) {
+        log.debugf("Creating new project version %s for project %d", projectVersion, projectVersion.getId());
 
-        if (projectVersionLicenseRest.getId() != null) {
-            throw new BadRequestException("Project version license id must be null");
+        if (projectVersion.getId() != null) {
+            throw new BadRequestException("Project version id must be null");
         }
-        projectVersionLicenseRest = projectLicenseStore.saveProjectVersionLicense(projectVersionLicenseRest);
+        if (projectVersion.getProject() == null || projectVersion.getProject().getId() == null) {
+            throw new BadRequestException("Project must be valorized");
+        }
+
+        projectVersion = projectLicenseStore.saveProjectVersion(projectVersion);
 
         UriBuilder uriBuilder = UriBuilder.fromUri(uriInfo.getRequestUri()).path("{id}");
-        return Response.created(uriBuilder.build(projectVersionLicenseRest.getId())).entity(projectVersionLicenseRest).build();
+        return Response.created(uriBuilder.build(projectVersion.getId())).entity(projectVersion).build();
     }
 
-    @ApiOperation(value = "Get project version license by id", response = ProjectVersionLicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project version license id not provided"),
-            @ApiResponse(code = 404, message = "Project version license not found") })
+    @ApiOperation(value = "Get a project version by id", response = ProjectVersionRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Project version id not provided"),
+            @ApiResponse(code = 404, message = "Project version not found") })
     @GET
     @Path("/{id}")
-    public Response getSpecificProjectVersionLicense(
-            @ApiParam(value = "Project version license id", required = true) @PathParam("id") Integer id) {
-        log.debugf("Get project version license with %d", id);
+    public Response getSpecificProjectVersion(
+            @ApiParam(value = "Project version id", required = true) @PathParam("id") Integer id) {
+        log.debugf("Get project version with %d", id);
 
         if (id == null) {
-            throw new BadRequestException("Project version license id must be provided");
+            throw new BadRequestException("Project version id must be provided");
         }
 
-        ProjectVersionLicenseRest entity = projectLicenseStore.getProjectVersionLicenseById(id)
-                .orElseThrow(() -> new NotFoundException("No project version license found for id " + id));
+        ProjectVersionRest entity = projectLicenseStore.getProjectVersionById(id)
+                .orElseThrow(() -> new NotFoundException("No project version found for id " + id));
 
-        return Response.ok().entity(fullMapper.map(entity, ProjectVersionLicenseRest.class)).build();
+        return Response.ok().entity(fullMapper.map(entity, ProjectVersionRest.class)).build();
     }
 
-    @ApiOperation(value = "Get all project version licenses", response = ProjectVersionLicenseRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all project versions", response = ProjectVersionRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = { @ApiResponse(code = 400, message = "Error processing RSQL query parameter") })
     @GET
-    public Response getAllProjectVersionLicense(
+    public Response getAllProjectVersion(
             @ApiParam(value = "RSQL-type search query (e.g. id==1;version=='1.2.3*')", required = false) @QueryParam("query") String query,
             @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
             @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
@@ -120,8 +123,7 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
 
         try {
 
-            List<ProjectVersionLicenseRest> results = projectLicenseStore
-                    .getAllProjectVersionLicense(Optional.ofNullable(query));
+            List<ProjectVersionRest> results = projectLicenseStore.getAllProjectVersion(Optional.ofNullable(query));
             int totalCount = results.size();
 
             if (resultCount != null) {
@@ -129,9 +131,8 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
                 results = results.subList(offset, results.size() < resultCount ? results.size() : resultCount);
             }
 
-            List<ProjectVersionLicenseRest> resultList = limitedMapper.map(results, projectVersionLicenseRestListType);
+            List<ProjectVersionRest> resultList = limitedMapper.map(results, projectVersionRestListType);
             return paginated(resultList, totalCount, offset);
-
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Error processing RSQL query parameter");
         }

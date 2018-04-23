@@ -19,10 +19,16 @@ package org.jboss.license.dictionary;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Predicate;
 
 import org.jboss.license.dictionary.model.License;
 import org.jboss.license.dictionary.model.LicenseAlias;
@@ -35,7 +41,14 @@ import org.jboss.license.dictionary.model.ProjectVersion;
 import org.jboss.license.dictionary.model.ProjectVersionLicense;
 import org.jboss.license.dictionary.model.ProjectVersionLicenseCheck;
 import org.jboss.license.dictionary.model.ProjectVersionLicenseHint;
+import org.jboss.license.dictionary.utils.rsql.CustomizedJpaPredicateVisitor;
+import org.jboss.license.dictionary.utils.rsql.CustomizedPredicateBuilder;
+import org.jboss.license.dictionary.utils.rsql.CustomizedPredicateBuilderStrategy;
 import org.jboss.logging.Logger;
+
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
+import cz.jirutka.rsql.parser.ast.RSQLVisitor;
 
 /**
  * mstodo: Header
@@ -50,6 +63,61 @@ public class LicenseDbStore {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    protected <T> CriteriaQuery<T> createCriteriaQuery(Class<T> type, String rsql) {
+        /**
+         * DUE TO A BUG IN RSQL LIBRARY (https://github.com/tennaito/rsql-jpa/pull/16), THAT GIVES
+         * 
+         * java.lang.ClassCastException: org.hibernate.jpa.criteria.path.SingularAttributePath cannot be cast to
+         * javax.persistence.criteria.From
+         * 
+         * WE NEED TO USE CUSTOMIZED FIXED VERSIONS OF JPA PREDICATE VISITOR, BUILDER and STRATEGY
+         * 
+         */
+
+        /*
+         * example without customizers:
+         * 
+         * CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+         * 
+         * CriteriaQuery<LicenseDeterminationType> query = builder.createQuery(LicenseDeterminationType.class);
+         * 
+         * From root = query.from(LicenseDeterminationType.class);
+         * 
+         * RSQLVisitor<Predicate, EntityManager> visitor = new
+         * CustomizedJpaPredicateVisitor<LicenseDeterminationType>().withRoot(root).withPredicateBuilder(new
+         * CustomizedPredicateBuilder()).withPredicateBuilderStrategy(new CustomizedPredicateBuilderStrategy());
+         * 
+         * Node rootNode = new RSQLParser().parse(rsql);
+         * 
+         * Predicate predicate = rootNode.accept(visitor, entityManager); query.where(predicate);
+         * 
+         * return entityManager.createQuery(query).getResultList();
+         */
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<T> query = builder.createQuery(type);
+        From root = query.from(type);
+
+        RSQLVisitor<Predicate, EntityManager> visitor = new CustomizedJpaPredicateVisitor<T>().withRoot(root)
+                .withPredicateBuilder(new CustomizedPredicateBuilder())
+                .withPredicateBuilderStrategy(new CustomizedPredicateBuilderStrategy());
+
+        Node rootNode = new RSQLParser().parse(rsql);
+
+        Predicate predicate = rootNode.accept(visitor, entityManager);
+        query.where(predicate);
+
+        return query;
+    }
+
+    protected boolean isNonEmptyRsqlString(Optional<String> rsql) {
+        if (!rsql.isPresent() || "".equalsIgnoreCase(rsql.get())) {
+            return false;
+        }
+        return true;
+    }
 
     /* LICENSE */
 
@@ -102,15 +170,23 @@ public class LicenseDbStore {
 
     /* LICENSE APPROVAL STATUS */
 
-    public LicenseApprovalStatus getLicenseApprovalStatusById(Integer id) {
-        log.debugf("Get licenseApprovalStatus by id:  %d", id);
-        return entityManager.find(LicenseApprovalStatus.class, id);
-    }
+    public List<LicenseApprovalStatus> getAllLicenseApprovalStatus(Optional<String> rsqlSearch) {
 
-    public List<LicenseApprovalStatus> getAllLicenseApprovalStatus() {
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all license approval status by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<LicenseApprovalStatus> query = createCriteriaQuery(LicenseApprovalStatus.class, rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
+        }
+
         log.debug("Get all license approval status ...");
         return entityManager.createNamedQuery(LicenseApprovalStatus.QUERY_FIND_ALL_UNORDERED, LicenseApprovalStatus.class)
                 .getResultList();
+    }
+
+    public LicenseApprovalStatus getLicenseApprovalStatusById(Integer id) {
+        log.debugf("Get licenseApprovalStatus by id:  %d", id);
+        return entityManager.find(LicenseApprovalStatus.class, id);
     }
 
     public LicenseApprovalStatus saveLicenseApprovalStatus(LicenseApprovalStatus licenseApprovalStatus) {
@@ -151,56 +227,42 @@ public class LicenseDbStore {
         return false;
     }
 
-    public Project getProjectByEcosystemKey(String ecosystemName, String key) {
-        log.debugf("Get project by ecosystem %s and key %s ...", ecosystemName, key);
-
-        List<Project> projects = entityManager.createNamedQuery(Project.QUERY_FIND_BY_ECOSYSTEM_KEY_UNORDERED, Project.class)
-                .setParameter("ecosystem", ecosystemName).setParameter("key", key).getResultList();
-        if (!projects.isEmpty()) {
-            return projects.get(0);
-        }
-        return null;
-    }
-
     public Project getProjectById(Integer id) {
         log.debugf("Get project by id:  %d", id);
         return entityManager.find(Project.class, id);
     }
 
-    public List<Project> getAllProject() {
+    public List<Project> getAllProject(Optional<String> rsqlSearch) {
+
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all license approval status by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<Project> query = createCriteriaQuery(Project.class, rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
+        }
+
         log.debug("Get all project ...");
         return entityManager.createNamedQuery(Project.QUERY_FIND_ALL_UNORDERED, Project.class).getResultList();
     }
 
-    public List<Project> getAllProjectByEcosystem(String ecosystemName) {
-        log.debugf("Get all project by ecosystem %s ...", ecosystemName);
-        return entityManager.createNamedQuery(Project.QUERY_FIND_BY_ECOSYSTEM_UNORDERED, Project.class)
-                .setParameter("ecosystem", ecosystemName).getResultList();
-    }
-
     /* PROJECT VERSION */
 
-    public ProjectVersion getProjectVersionByVersionProjectId(String version, Integer projectId) {
-        log.debugf("Get project version by version %s and projectId %d ...", version, projectId);
+    public List<ProjectVersion> getAllProjectVersion(Optional<String> rsqlSearch) {
 
-        List<ProjectVersion> projectVersions = entityManager
-                .createNamedQuery(ProjectVersion.QUERY_FIND_BY_VERSION_PROJECT_ID_UNORDERED, ProjectVersion.class)
-                .setParameter("version", version).setParameter("projectId", projectId).getResultList();
-        if (!projectVersions.isEmpty()) {
-            return projectVersions.get(0);
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all project versions by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<ProjectVersion> query = createCriteriaQuery(ProjectVersion.class, rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
         }
-        return null;
+
+        log.debug("Get all project versions ...");
+        return entityManager.createNamedQuery(ProjectVersion.QUERY_FIND_ALL_UNORDERED, ProjectVersion.class).getResultList();
     }
 
     public ProjectVersion getProjectVersionById(Integer id) {
         log.debugf("Get project version by id:  %d", id);
         return entityManager.find(ProjectVersion.class, id);
-    }
-
-    public List<ProjectVersion> getAllProjectVersionByProjectId(Integer projectId) {
-        log.debugf("Get all project versions by project id:  %d", projectId);
-        return entityManager.createNamedQuery(ProjectVersion.QUERY_FIND_ALL_BY_PROJECT_ID_UNORDERED, ProjectVersion.class)
-                .setParameter("projectId", projectId).getResultList();
     }
 
     public ProjectVersion saveProjectVersion(ProjectVersion projectVersion) {
@@ -211,15 +273,24 @@ public class LicenseDbStore {
 
     /* LICENSE DETERMINATION TYPE */
 
-    public LicenseDeterminationType getLicenseDeterminationTypeById(Integer id) {
-        log.debugf("Get license determination type by id %d ...", id);
-        return entityManager.find(LicenseDeterminationType.class, id);
-    }
+    public List<LicenseDeterminationType> getAllLicenseDeterminationType(Optional<String> rsqlSearch) {
 
-    public List<LicenseDeterminationType> getAllLicenseDeterminationType() {
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all determination type by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<LicenseDeterminationType> query = createCriteriaQuery(LicenseDeterminationType.class,
+                    rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
+        }
+
         log.debug("Get all license determination types ...");
         return entityManager.createNamedQuery(LicenseDeterminationType.QUERY_FIND_ALL_UNORDERED, LicenseDeterminationType.class)
                 .getResultList();
+    }
+
+    public LicenseDeterminationType getLicenseDeterminationTypeById(Integer id) {
+        log.debugf("Get license determination type by id %d ...", id);
+        return entityManager.find(LicenseDeterminationType.class, id);
     }
 
     public LicenseDeterminationType saveLicenseDeterminationType(LicenseDeterminationType licenseDeterminationType) {
@@ -228,21 +299,17 @@ public class LicenseDbStore {
         return licenseDeterminationType;
     }
 
-    /* LICENSE DETERMINATION HINT */
+    /* LICENSE HINT TYPE */
 
-    public LicenseHintType getLicenseHintTypeByName(String name) {
-        log.debugf("Get license hint type by name %s ...", name);
+    public List<LicenseHintType> getAllLicenseHintType(Optional<String> rsqlSearch) {
 
-        List<LicenseHintType> licenseHintTypes = entityManager
-                .createNamedQuery(LicenseHintType.QUERY_FIND_BY_NAME_UNORDERED, LicenseHintType.class)
-                .setParameter("name", name).getResultList();
-        if (!licenseHintTypes.isEmpty()) {
-            return licenseHintTypes.get(0);
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all license hint type by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<LicenseHintType> query = createCriteriaQuery(LicenseHintType.class, rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
         }
-        return null;
-    }
 
-    public List<LicenseHintType> getAllLicenseHintType() {
         log.debug("Get all license hint type ...");
         return entityManager.createNamedQuery(LicenseHintType.QUERY_FIND_ALL_UNORDERED, LicenseHintType.class).getResultList();
     }
@@ -260,15 +327,23 @@ public class LicenseDbStore {
 
     /* PROJECT ECOSYSTEM */
 
-    public ProjectEcosystem getProjectEcosystemById(Integer id) {
-        log.debugf("Get project ecosystem by id %d ...", id);
-        return entityManager.find(ProjectEcosystem.class, id);
-    }
+    public List<ProjectEcosystem> getAllProjectEcosystem(Optional<String> rsqlSearch) {
 
-    public List<ProjectEcosystem> getAllProjectEcosystem() {
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all project ecosystems by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<ProjectEcosystem> query = createCriteriaQuery(ProjectEcosystem.class, rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
+        }
+
         log.debug("Get all project ecosystems ...");
         return entityManager.createNamedQuery(ProjectEcosystem.QUERY_FIND_ALL_UNORDERED, ProjectEcosystem.class)
                 .getResultList();
+    }
+
+    public ProjectEcosystem getProjectEcosystemById(Integer id) {
+        log.debugf("Get project ecosystem by id %d ...", id);
+        return entityManager.find(ProjectEcosystem.class, id);
     }
 
     public ProjectEcosystem saveProjectEcosystem(ProjectEcosystem projectEcosystem) {
@@ -277,41 +352,27 @@ public class LicenseDbStore {
         return projectEcosystem;
     }
 
-    public ProjectEcosystem getProjectEcosystemByName(String name) {
-        log.debugf("Get project ecosystem by name %s ...", name);
-
-        List<ProjectEcosystem> projectEcosystems = entityManager
-                .createNamedQuery(ProjectEcosystem.QUERY_FIND_BY_NAME_UNORDERED, ProjectEcosystem.class)
-                .setParameter("name", name).getResultList();
-        if (!projectEcosystems.isEmpty()) {
-            return projectEcosystems.get(0);
-        }
-        return null;
-    }
-
     /* PROJECT VERSION LICENSE CHECK */
 
-    public List<ProjectVersionLicenseCheck> getAllProjectVersionLicenseCheckByProjVersId(Integer projectVersionId) {
-        log.debugf("Get project version license check by projectVersionId %d ...", projectVersionId);
+    public List<ProjectVersionLicenseCheck> getAllProjectVersionLicenseCheck(Optional<String> rsqlSearch) {
 
-        List<ProjectVersionLicenseCheck> projectVersionLicenseChecks = entityManager
-                .createNamedQuery(ProjectVersionLicenseCheck.QUERY_FIND_BY_PROJVERSID_UNORDERED,
-                        ProjectVersionLicenseCheck.class)
-                .setParameter("projVersId", projectVersionId).getResultList();
-        return projectVersionLicenseChecks;
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all project version license checks by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<ProjectVersionLicenseCheck> query = createCriteriaQuery(ProjectVersionLicenseCheck.class,
+                    rsqlSearch.get());
+            return entityManager.createQuery(query).getResultList();
+        }
+
+        log.debug("Get all project versions ...");
+        return entityManager
+                .createNamedQuery(ProjectVersionLicenseCheck.QUERY_FIND_ALL_UNORDERED, ProjectVersionLicenseCheck.class)
+                .getResultList();
     }
 
-    public List<ProjectVersionLicenseCheck> getAllProjectVersionLicenseCheckByProjVersIdLicDeteTypeId(Integer projectVersionId,
-            Integer licenseDeterminationTypeId) {
-        log.debugf("Get project version license check by projectVersionId %d and licenseDeterminationTypeId %d ...",
-                projectVersionId, licenseDeterminationTypeId);
-
-        List<ProjectVersionLicenseCheck> projectVersionLicenseChecks = entityManager
-                .createNamedQuery(ProjectVersionLicenseCheck.QUERY_FIND_BY_PROJVERSID_LICDETTYPE_UNORDERED,
-                        ProjectVersionLicenseCheck.class)
-                .setParameter("projVersId", projectVersionId).setParameter("licDetTypeId", licenseDeterminationTypeId)
-                .getResultList();
-        return projectVersionLicenseChecks;
+    public ProjectVersionLicenseCheck getProjectVersionLicenseCheckById(Integer id) {
+        log.debugf("Get project version license check by id:  %d", id);
+        return entityManager.find(ProjectVersionLicenseCheck.class, id);
     }
 
     public ProjectVersionLicenseCheck saveProjectVersionLicenseCheck(ProjectVersionLicenseCheck projectVersionLicenseCheck) {
@@ -327,68 +388,36 @@ public class LicenseDbStore {
         return entityManager.find(ProjectVersionLicense.class, id);
     }
 
-    public List<ProjectVersionLicense> getAllProjectVersionLicenseByProjVersLicCheckId(Integer projVersLicCheckId) {
-        log.debugf("Get all project version license with project version license check id %d ...", projVersLicCheckId);
+    public List<ProjectVersionLicense> getAllProjectVersionLicense(Optional<String> rsqlSearch) {
 
-        return entityManager
-                .createNamedQuery(ProjectVersionLicense.QUERY_FIND_BY_PROJVERSLICCHECKID_UNORDERED, ProjectVersionLicense.class)
-                .setParameter("projVersLicCheckId", projVersLicCheckId).getResultList();
-    }
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all project versions license by rsql %s ...", rsqlSearch.get());
 
-    public List<ProjectVersionLicense> getAllProjectVersionLicenseByLicIdProjVersLicCheckId(Integer licenseId,
-            Integer projVersLicCheckId) {
-        log.debugf("Get all project version license with license id %d and project version license check id %d ...", licenseId,
-                projVersLicCheckId);
-        return entityManager
-                .createNamedQuery(ProjectVersionLicense.QUERY_FIND_BY_LICENSEID_PROJVERSLICCHECKID_UNORDERED,
-                        ProjectVersionLicense.class)
-                .setParameter("licenseId", licenseId).setParameter("projVersLicCheckId", projVersLicCheckId).getResultList();
-    }
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<ProjectVersionLicense> query = builder.createQuery(ProjectVersionLicense.class);
+            From root = query.from(ProjectVersionLicense.class);
 
-    public List<ProjectVersionLicense> getAllProjectVersionLicenseByScopeLicIdProjVersLicCheckId(String scope, Integer licenseId,
-            Integer projVersLicCheckId) {
-        log.debugf("Get project version license with scope %s , license id %d and project version license check id %d ...", scope,
-                licenseId, projVersLicCheckId);
+            // To avoid a lazy init on aliases
+            Fetch<ProjectVersionLicense, License> wl = root.fetch("license");
+            wl.fetch("aliases");
 
-        return entityManager
-                .createNamedQuery(ProjectVersionLicense.QUERY_FIND_BY_SCOPE_LICENSEID_PROJVERSLICCHECKID_UNORDERED,
-                        ProjectVersionLicense.class)
-                .setParameter("scope", scope).setParameter("licenseId", licenseId)
-                .setParameter("projVersLicCheckId", projVersLicCheckId).getResultList();
-    }
+            RSQLVisitor<Predicate, EntityManager> visitor = new CustomizedJpaPredicateVisitor<ProjectVersionLicense>()
+                    .withRoot(root).withPredicateBuilder(new CustomizedPredicateBuilder())
+                    .withPredicateBuilderStrategy(new CustomizedPredicateBuilderStrategy());
 
-    public List<ProjectVersionLicense> getAllProjectVersionLicense() {
+            Node rootNode = new RSQLParser() // create RSQLParser with default and custom operators
+                    .parse(rsqlSearch.get()); // pass RQSL expression here (for example "field1 == value1 and field2 == value2")
+
+            Predicate predicate = rootNode.accept(visitor, entityManager);
+            query.where(predicate);
+            query.distinct(true);
+
+            return entityManager.createQuery(query).getResultList();
+        }
+
         log.debug("Get all project version license ...");
         return entityManager.createNamedQuery(ProjectVersionLicense.QUERY_FIND_ALL_UNORDERED, ProjectVersionLicense.class)
                 .getResultList();
-    }
-
-    public List<ProjectVersionLicense> getProjectVersionLicenseByEcosystemProjKeyVersion(String ecosystemName,
-            String projectKey, String version) {
-        log.debugf("Get project version license by ecosystem %s , projectName %s and version %s ...", ecosystemName, projectKey,
-                version);
-
-        List<ProjectVersionLicense> projectVersionLicenses = entityManager
-                .createNamedQuery(ProjectVersionLicense.QUERY_FIND_BY_ECOSYSTEM_PROJKEY_VERSION_UNORDERED,
-                        ProjectVersionLicense.class)
-                .setParameter("ecosystem", ecosystemName).setParameter("key", projectKey).setParameter("vers", version)
-                .getResultList();
-
-        return projectVersionLicenses;
-    }
-
-    public List<ProjectVersionLicense> getProjectVersionLicenseByEcosystemProjKeyVersionScope(String ecosystemName,
-            String projectKey, String version, String scope) {
-        log.debugf("Get project version license by ecosystem %s , projectName %s , version %s and scope %s ...", ecosystemName,
-                projectKey, version, scope);
-
-        List<ProjectVersionLicense> projectVersionLicenses = entityManager
-                .createNamedQuery(ProjectVersionLicense.QUERY_FIND_BY_ECOSYSTEM_PROJKEY_VERSION_SCOPE_UNORDERED,
-                        ProjectVersionLicense.class)
-                .setParameter("ecosystem", ecosystemName).setParameter("key", projectKey).setParameter("vers", version)
-                .setParameter("scope", scope).getResultList();
-
-        return projectVersionLicenses;
     }
 
     public ProjectVersionLicense saveProjectVersionLicense(ProjectVersionLicense projectVersionLicense) {
@@ -399,37 +428,42 @@ public class LicenseDbStore {
 
     /* PROJECT VERSION LICENSE HINT */
 
-    public List<ProjectVersionLicenseHint> getAllProjectVersionLicenseHintByProjVersLicId(Integer projectVersionLicenseId) {
-        log.debugf("Get all project version license hint by projectVersionLicenseId %d", projectVersionLicenseId);
+    public List<ProjectVersionLicenseHint> getAllProjectVersionLicenseHint(Optional<String> rsqlSearch) {
 
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all project versions license by rsql %s ...", rsqlSearch.get());
+
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<ProjectVersionLicenseHint> query = builder.createQuery(ProjectVersionLicenseHint.class);
+            From root = query.from(ProjectVersionLicenseHint.class);
+
+            // // To avoid a lazy init on aliases
+            // Fetch<ProjectVersionLicense, License> wl = root.fetch("license");
+            // wl.fetch("aliases");
+
+            RSQLVisitor<Predicate, EntityManager> visitor = new CustomizedJpaPredicateVisitor<ProjectVersionLicenseHint>()
+                    .withRoot(root).withPredicateBuilder(new CustomizedPredicateBuilder())
+                    .withPredicateBuilderStrategy(new CustomizedPredicateBuilderStrategy());
+
+            Node rootNode = new RSQLParser() // create RSQLParser with default and custom operators
+                    .parse(rsqlSearch.get()); // pass RQSL expression here (for example "field1 == value1 and field2 == value2")
+
+            Predicate predicate = rootNode.accept(visitor, entityManager);
+            query.where(predicate);
+            query.distinct(true);
+
+            return entityManager.createQuery(query).getResultList();
+        }
+
+        log.debug("Get all project versions ...");
         return entityManager
-                .createNamedQuery(ProjectVersionLicenseHint.QUERY_FIND_BY_PROJVERSLICID_UNORDERED,
-                        ProjectVersionLicenseHint.class)
-                .setParameter("projVersLicenseId", projectVersionLicenseId).getResultList();
-    }
-
-    public List<ProjectVersionLicenseHint> getAllProjectVersionLicenseHintByProjVersLicIdLicHintTypeId(
-            Integer projectVersionLicenseId, Integer licenseHintTypeId) {
-        log.debugf("Get all project version license hint by projectVersionLicenseId %d, licenseHintTypeId %d",
-                projectVersionLicenseId);
-
-        return entityManager
-                .createNamedQuery(ProjectVersionLicenseHint.QUERY_FIND_BY_PROJVERSLICID_LICHINTTYPE_UNORDERED,
-                        ProjectVersionLicenseHint.class)
-                .setParameter("projVersLicenseId", projectVersionLicenseId).setParameter("licHintTypeId", licenseHintTypeId)
+                .createNamedQuery(ProjectVersionLicenseHint.QUERY_FIND_ALL_UNORDERED, ProjectVersionLicenseHint.class)
                 .getResultList();
     }
 
-    public List<ProjectVersionLicenseHint> getAllProjectVersionLicenseHintByValueProjVersLicIdLicHintType(String value,
-            Integer projectVersionLicenseId, Integer licenseHintTypeId) {
-        log.debugf("Get project version license hint by value %s, projectVersionLicenseId %d, licenseHintTypeId %d ...", value,
-                projectVersionLicenseId, licenseHintTypeId);
-
-        return entityManager
-                .createNamedQuery(ProjectVersionLicenseHint.QUERY_FIND_BY_VALUE_PROJVERSLICID_LICHINTTYPE_UNORDERED,
-                        ProjectVersionLicenseHint.class)
-                .setParameter("value", value).setParameter("projVersLicenseId", projectVersionLicenseId)
-                .setParameter("licHintTypeId", licenseHintTypeId).getResultList();
+    public ProjectVersionLicenseHint getProjectVersionLicenseHintById(Integer id) {
+        log.debugf("Get project version license hint by id:  %d", id);
+        return entityManager.find(ProjectVersionLicenseHint.class, id);
     }
 
     public ProjectVersionLicenseHint saveProjectVersionLicenseHint(ProjectVersionLicenseHint projectVersionLicenseHint) {
