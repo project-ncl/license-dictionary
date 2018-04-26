@@ -113,13 +113,27 @@ public class LicenseDbStore {
     }
 
     protected boolean isNonEmptyRsqlString(Optional<String> rsql) {
-        if (!rsql.isPresent() || "".equalsIgnoreCase(rsql.get())) {
+        if (!rsql.isPresent() || "".equalsIgnoreCase(rsql.get().trim())) {
             return false;
         }
         return true;
     }
 
     /* LICENSE */
+
+    public List<License> getAllLicense(Optional<String> rsqlSearch) {
+
+        if (isNonEmptyRsqlString(rsqlSearch)) {
+            log.debugf("Get all license by rsql %s ...", rsqlSearch.get());
+
+            CriteriaQuery<License> query = createCriteriaQuery(License.class, rsqlSearch.get());
+            query.distinct(true);
+            return entityManager.createQuery(query).getResultList();
+        }
+
+        log.debug("Get all license ...");
+        return entityManager.createNamedQuery(License.QUERY_FIND_ALL_UNORDERED, License.class).getResultList();
+    }
 
     public License saveLicense(License license) {
         log.debugf("Saving license: %s", license);
@@ -138,11 +152,6 @@ public class LicenseDbStore {
         return entityManager.find(License.class, id);
     }
 
-    public List<License> getAllLicense() {
-        log.debug("Get all license ...");
-        return entityManager.createNamedQuery(License.QUERY_FIND_ALL_UNORDERED, License.class).getResultList();
-    }
-
     public boolean deleteLicense(Integer id) {
         log.debugf("Deleting license: %d", id);
         License entity = entityManager.find(License.class, id);
@@ -154,7 +163,7 @@ public class LicenseDbStore {
     }
 
     public void replaceAllLicensesWith(Map<String, License> licenseEntityByAlias) {
-        getAllLicense().forEach(entityManager::remove);
+        getAllLicense(Optional.ofNullable(null)).forEach(entityManager::remove);
         licenseEntityByAlias.keySet().stream().forEach(aliasName -> {
 
             License license = licenseEntityByAlias.get(aliasName);
