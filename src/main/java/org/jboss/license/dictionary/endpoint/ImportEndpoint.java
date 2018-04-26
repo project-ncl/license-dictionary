@@ -40,6 +40,7 @@ import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.imports.JsonLicense;
 import org.jboss.license.dictionary.imports.JsonProjectLicense;
 import org.jboss.license.dictionary.utils.BadRequestException;
+import org.jboss.license.dictionary.utils.QueryUtils;
 import org.jboss.logging.Logger;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -105,21 +106,30 @@ public class ImportEndpoint {
         rhAlias.forEach((alias, aliases) -> {
 
             try {
-                LicenseRest licenseRest = pickLicenseByName(alias);
-                List<LicenseAliasRest> licenseAliases = new ArrayList<LicenseAliasRest>();
-                Arrays.stream(aliases).forEach(al -> {
-                    licenseAliases
-                            .add(LicenseAliasRest.Builder.newBuilder().licenseId(licenseRest.getId()).aliasName(al).build());
-                });
-
-                if (!licensesAliasByName.containsKey(alias)) {
-                    licensesAliasByName.put(alias, licenseAliases);
+                if (alias.startsWith("#")) {
+                    log.debugf("skipping a commented alias", alias);
                 } else {
-                    log.info("## multiple version of alias " + alias);
-                }
 
+                    LicenseRest licenseRest = pickLicenseByName(alias);
+                    log.infof("LicenseRest --> pickLicenseByName found %s for alias %s, aliases %s", licenseRest, alias,
+                            aliases);
+
+                    List<LicenseAliasRest> licenseAliases = new ArrayList<LicenseAliasRest>();
+                    Arrays.stream(aliases).forEach(al -> {
+                        licenseAliases.add(
+                                LicenseAliasRest.Builder.newBuilder().licenseId(licenseRest.getId()).aliasName(al).build());
+                    });
+
+                    if (!licensesAliasByName.containsKey(alias)) {
+                        licensesAliasByName.put(alias, licenseAliases);
+                    } else {
+                        log.info("## multiple version of alias " + alias);
+                    }
+                }
             } catch (NoSuchElementException exc) {
                 log.infof("No license found with alias %s", alias);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
 
@@ -137,10 +147,26 @@ public class ImportEndpoint {
     }
 
     private LicenseRest pickLicenseByName(String alias) {
+
+        alias = QueryUtils.escapeReservedChars(alias);
+
+        // Look for Fedora Name
         Optional<LicenseRest> optionalLicenseRest = store.getLicenseForFedoraName(alias);
         if (!optionalLicenseRest.isPresent()) {
+            // Look for SPDX Name
             optionalLicenseRest = store.getLicenseForSpdxName(alias);
         }
+
+        // Look for aliasName (for licenses with empty Fedora and SPDX names)
+        if (!optionalLicenseRest.isPresent()) {
+            optionalLicenseRest = store.getLicenseForNameAlias(alias);
+        }
+
+        if (!optionalLicenseRest.isPresent()) {
+            log.infof("AliasName NOT FOUND!!! %s", alias);
+            return null;
+        }
+
         return optionalLicenseRest.get();
     }
 

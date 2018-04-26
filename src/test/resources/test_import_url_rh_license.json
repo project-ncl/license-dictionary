@@ -2606,28 +2606,6 @@
     "spdx_name": "",
     "url": "https://enterprise.dejacode.com/licenses/public/indiana-extreme/?_list_filters=q%3Dindiana%2Bextreme#license-text"
   },
-  "Indiana University Extreme! Lab Software License Version 1.1.1": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "584",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Indiana_Extreme_License_1.1.1.txt",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
-    "spdx_name": "",
-    "url": "https://enterprise.dejacode.com/licenses/public/indiana-extreme/?_list_filters=q%3Dindiana%2Bextreme#license-text"
-  },
-  "indiana-extreme": {
-    "approved": "yes",
-    "fedora_abbrev": "",
-    "fedora_name": "",
-    "id": "585",
-    "license_text_url": "http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/avibelli/licenses/Indiana_Extreme_License_1.1.1.txt",
-    "spdx_abbrev": "",
-    "spdx_license_url": "",
-    "spdx_name": "",
-    "url": "https://enterprise.dejacode.com/licenses/public/indiana-extreme/?_list_filters=q%3Dindiana%2Bextreme#license-text"
-  },
   "Info-ZIP License": {
     "approved": "unknown",
     "fedora_abbrev": "",
