@@ -112,13 +112,13 @@ public class CustomizedPredicateBuilder {
      */
     public static <T> Predicate createPredicate(LogicalNode logical, From root, Class<T> entity, EntityManager entityManager,
             BuilderTools misc) {
-        log.infof("Creating Predicate for logical node: %s", logical);
+        log.debugf("Creating Predicate for logical node: %s", logical);
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
         List<Predicate> predicates = new ArrayList<Predicate>();
 
-        log.infof("Creating Predicates from all children nodes.");
+        log.debugf("Creating Predicates from all children nodes.");
         for (Node node : logical.getChildren()) {
             predicates.add(createPredicate(node, root, entity, entityManager, misc));
         }
@@ -150,12 +150,12 @@ public class CustomizedPredicateBuilder {
             log.log(Level.FATAL, msg);
             throw new IllegalArgumentException(msg);
         }
-        log.infof("Creating Predicate for comparison node: %s", comparison);
+        log.debugf("Creating Predicate for comparison node: %s", comparison);
 
-        log.infof("Property graph path : %s", comparison.getSelector());
+        log.debugf("Property graph path : %s", comparison.getSelector());
         Expression propertyPath = findPropertyPath(comparison.getSelector(), startRoot, entityManager, misc);
 
-        log.infof("Cast all arguments to type %s.", propertyPath.getJavaType().getName());
+        log.debugf("Cast all arguments to type %s.", propertyPath.getJavaType().getName());
         List<Object> castedArguments = misc.getArgumentParser().parse(comparison.getArguments(), propertyPath.getJavaType());
 
         try {
@@ -213,7 +213,7 @@ public class CustomizedPredicateBuilder {
                         root = root.get(mappedProperty);
                     }
                 } else {
-                    log.infof("Create property path for type %s property %s.",
+                    log.debugf("Create property path for type %s property %s.",
                             new Object[] { classMetadata.getJavaType().getName(), mappedProperty });
                     root = root.get(mappedProperty);
 
@@ -241,7 +241,7 @@ public class CustomizedPredicateBuilder {
      */
     private static Predicate createPredicate(Expression propertyPath, ComparisonOperator operator, List<Object> arguments,
             EntityManager manager) {
-        log.infof("Creating predicate: propertyPath %s %s", new Object[] { operator, arguments });
+        log.debugf("Creating predicate: propertyPath %s %s", new Object[] { operator, arguments });
 
         if (ComparisonOperatorProxy.asEnum(operator) != null) {
             switch (ComparisonOperatorProxy.asEnum(operator)) {

@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * mstodo: Header
@@ -51,7 +52,7 @@ public class ExportEndpoint {
     public Map<String, JsonLicense> exportLicenses() {
         Map<String, JsonLicense> resultMap = new HashMap<>();
 
-        store.getAllLicense().forEach(license -> license.getAliasNames()
+        store.getAllLicense(Optional.ofNullable(null)).forEach(license -> license.getAliasNames()
                 .forEach(alias -> resultMap.put(alias, JsonLicense.fromLicenseRest(license))));
 
         return resultMap;
