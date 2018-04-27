@@ -27,14 +27,13 @@ import { NotificationService } from '../notification/notification.service';
 
 
 @Component({
-    selector: 'app-import',
-    templateUrl: './import.component.html',
+    selector: 'app-import-project-license',
+    templateUrl: './import.project-license.component.html',
     styleUrls: ['./import.component.css'],
     encapsulation: ViewEncapsulation.None
 })
-export class ImportComponent implements OnInit {
-    fileToUpload = null;
-    aliasFileToUpload = null;
+export class ImportProjectLicenseComponent implements OnInit {
+    projectLicenseFileToUpload = null;
 
     constructor(
         private http: HttpClient,
@@ -47,16 +46,12 @@ export class ImportComponent implements OnInit {
         this.authService.assureLoggedIn();
     }
 
-    updateFile($event) {
-        console.log("update file event: ", $event);
-        this.fileToUpload = $event.target.files[0];
-    }
-    updateAliasFile($event) {
-        console.log("update alias file event: ", $event);
-        this.aliasFileToUpload = $event.target.files[0];
+    updateProjectLicenseFile($event) {
+        console.log("update project license file event: ", $event);
+        this.projectLicenseFileToUpload = $event.target.files[0];
     }
 
-    importLicenses() {
+    importProjectLicenses() {
 
 
         let reader = new FileReader();
@@ -70,55 +65,21 @@ export class ImportComponent implements OnInit {
             upload(contents, component, loaderService, notificationService);
         };
 
-        if (this.fileToUpload) {
+        if (this.projectLicenseFileToUpload) {
             this.loaderService.show();
-            reader.readAsText(this.fileToUpload);
-        }
-    }
-
-    importLicensAliases() {
-
-
-        let reader = new FileReader();
-        let uploadAliases = this.uploadAliases;
-        let component = this;
-        let loaderService = this.loaderService;
-        let notificationService = this.notificationService;
-
-        reader.onloadend = function(file: any) {
-            let contents = file.target.result;
-            uploadAliases(contents, component, loaderService, notificationService);
-        };
-
-        if (this.aliasFileToUpload) {
-            this.loaderService.show();
-            reader.readAsText(this.aliasFileToUpload);
+            reader.readAsText(this.projectLicenseFileToUpload);
         }
     }
 
     upload(content, component, loaderService, notificationService) {
-        component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_API, content).subscribe(
+        component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_PROJECT_LICENSE_API, content).subscribe(
             () => {
-                notificationService.success('Successfully imported licenses !');
+                notificationService.success('Successfully imported project licenses !');
                 loaderService.hide();
             },
             error => {
                 console.log("error", error);
-                notificationService.success(`Failed to import licenses. ${error.message}, ${error.error}`);
-                loaderService.hide();
-            }
-        )
-    }
-
-    uploadAliases(content, component, loaderService, notificationService) {
-        component.http.post(RestConfigService.IMPORT_ENDPOINT_IMPORT_LICENSE_ALIAS_API, content).subscribe(
-            () => {
-                notificationService.success('Successfully imported license aliases !');
-                loaderService.hide();
-            },
-            error => {
-                console.log("error", error);
-                notificationService.success(`Failed to import license aliases. ${error.message}, ${error.error}`);
+                notificationService.success(`Failed to import project licenses. ${error.message}, ${error.error}`);
                 loaderService.hide();
             }
         )

@@ -34,15 +34,18 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/empty';
 
 import { NotificationService } from './notification/notification.service';
+import { LoaderService } from './loader/loader.service';
 
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
     
     notificationService: NotificationService;
+    loaderService: LoaderService;
 
     constructor(inj: Injector) {
         this.notificationService = inj.get(NotificationService);
+        this.loaderService = inj.get(LoaderService);
     }
     
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -56,11 +59,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     // A client-side or network error occurred. Handle it accordingly.
                     console.error('An error occurred:', err.error.message);
                     this.notificationService.error('An error occurred: '+ err.error.message);
+                    this.loaderService.hide();
                 } else {
                     // The backend returned an unsuccessful response code.
                     // The response body may contain clues as to what went wrong,
                     console.error(`Backend returned code ${err.status}, body was: ${err.error}`);
                     this.notificationService.error(`Backend returned code ${err.status}, body was: ${err.error}`);
+                    this.loaderService.hide();
                 }
 
                 // return an empty observable
