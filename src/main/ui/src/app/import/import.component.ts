@@ -57,7 +57,7 @@ export class ImportComponent implements OnInit {
     }
 
     importLicenses() {
-        this.loaderService.show();
+
 
         let reader = new FileReader();
         let upload = this.upload;
@@ -70,11 +70,14 @@ export class ImportComponent implements OnInit {
             upload(contents, component, loaderService, notificationService);
         };
 
-        reader.readAsText(this.fileToUpload);
+        if (this.fileToUpload) {
+            this.loaderService.show();
+            reader.readAsText(this.fileToUpload);
+        }
     }
 
     importLicensAliases() {
-        this.loaderService.show();
+
 
         let reader = new FileReader();
         let uploadAliases = this.uploadAliases;
@@ -87,7 +90,10 @@ export class ImportComponent implements OnInit {
             uploadAliases(contents, component, loaderService, notificationService);
         };
 
-        reader.readAsText(this.aliasFileToUpload);
+        if (this.aliasFileToUpload) {
+            this.loaderService.show();
+            reader.readAsText(this.aliasFileToUpload);
+        }
     }
 
     upload(content, component, loaderService, notificationService) {
