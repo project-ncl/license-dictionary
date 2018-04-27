@@ -19,6 +19,7 @@ package org.jboss.license.dictionary;
 
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,6 @@ import org.jboss.license.dictionary.api.LicenseDeterminationTypeRest;
 import org.jboss.license.dictionary.api.LicenseHintTypeRest;
 import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.model.License;
-import org.jboss.license.dictionary.model.LicenseAlias;
 import org.jboss.license.dictionary.model.LicenseApprovalStatus;
 import org.jboss.license.dictionary.model.LicenseDeterminationType;
 import org.jboss.license.dictionary.model.LicenseHintType;
@@ -85,9 +85,31 @@ public class LicenseStore {
         }
     }
 
+    public Optional<LicenseRest> getLicenseForFedoraAbbreviation(String name) {
+
+        String rsql = "fedoraAbbreviation=='" + QueryUtils.escapeReservedChars(name) + "'";
+        List<LicenseRest> results = getAllLicense(Optional.of(rsql));
+        if (results == null || results.isEmpty()) {
+            return Optional.ofNullable(null);
+        } else {
+            return Optional.of(results.get(0));
+        }
+    }
+
     public Optional<LicenseRest> getLicenseForSpdxName(String name) {
 
         String rsql = "spdxName=='" + QueryUtils.escapeReservedChars(name) + "'";
+        List<LicenseRest> results = getAllLicense(Optional.of(rsql));
+        if (results == null || results.isEmpty()) {
+            return Optional.ofNullable(null);
+        } else {
+            return Optional.of(results.get(0));
+        }
+    }
+
+    public Optional<LicenseRest> getLicenseForSpdxAbbreviation(String name) {
+
+        String rsql = "spdxAbbreviation=='" + QueryUtils.escapeReservedChars(name) + "'";
         List<LicenseRest> results = getAllLicense(Optional.of(rsql));
         if (results == null || results.isEmpty()) {
             return Optional.ofNullable(null);
@@ -160,29 +182,49 @@ public class LicenseStore {
     }
 
     @Transactional
-    public void replaceAllLicenseAliasesWith(Map<String, Collection<LicenseAliasRest>> licensesAliasByName) {
+    public void replaceAllLicenseAliasesWith(Map<LicenseRest, Collection<LicenseRest>> primaryVsSecondaryLicensesMap) {
         log.info("started replacing licens aliases with import data.");
 
-        licensesAliasByName.keySet().stream().forEach(key -> {
+        List<Integer> licenseIdsToDelete = new ArrayList<Integer>();
+        List<LicenseRest> licenseRestToPersist = new ArrayList<LicenseRest>();
 
-            Collection<LicenseAliasRest> licensesAliases = licensesAliasByName.get(key);
-            log.infof("analyzing licensesAliases %s", licensesAliases);
+        primaryVsSecondaryLicensesMap.keySet().stream().forEach(primaryLicenseRest -> {
 
-            Integer licenseId = licensesAliases.iterator().next().getLicenseId();
-            License license = dbStore.getLicenseById(licenseId);
-            if (license != null) {
-                license.getAliases().clear();
+            // License primaryLicense = dbStore.getLicenseById(primaryLicenseRest.getId());
 
-                licensesAliases.stream().forEach(alias -> {
-                    LicenseAlias licenseAlias = LicenseAlias.Builder.newBuilder().aliasName(alias.getAliasName())
-                            .license(license).build();
-                    license.addAlias(licenseAlias);
-                    dbStore.saveLicenseAlias(licenseAlias);
+            if (primaryLicenseRest != null) {
+
+                Collection<LicenseRest> secondaryLicenses = primaryVsSecondaryLicensesMap.get(primaryLicenseRest);
+                secondaryLicenses.stream().forEach(secLicense -> {
+                    List<String> aliases = secLicense.getAliasNames();
+
+                    // For each alias associated to the secondary licenses, add the alias to the primary license
+                    aliases.stream().forEach(alias -> {
+
+                        if (!primaryLicenseRest.getAliasNames().contains(alias)) {
+                            LicenseAliasRest licenseAliasRest = LicenseAliasRest.Builder.newBuilder().aliasName(alias)
+                                    .licenseId(primaryLicenseRest.getId()).build();
+
+                            primaryLicenseRest.addAlias(licenseAliasRest);
+                        }
+                    });
+                    if (secLicense.getId() != null) {
+                        licenseIdsToDelete.add(secLicense.getId());
+                    }
                 });
-                // dbStore.save(license);
-            } else {
-                log.infof("No license found for id: %d", licenseId);
+                licenseRestToPersist.add(primaryLicenseRest);
             }
+        });
+
+        // Delete the old duplicated licenses entries
+        licenseIdsToDelete.forEach(licId -> {
+            dbStore.deleteLicense(licId);
+        });
+
+        // Update the existing licenses with all the new aliases
+        licenseRestToPersist.forEach(licenseRest -> {
+            License license = fullMapper.map(licenseRest, License.class);
+            dbStore.updateLicense(license);
         });
     }
 

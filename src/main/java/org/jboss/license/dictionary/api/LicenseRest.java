@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jboss.license.dictionary.model.LicenseAlias;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -89,11 +87,8 @@ public class LicenseRest {
                 .map(alias -> alias.getAliasName()).collect(Collectors.toList());
     }
 
-    public void addAliases(Set<LicenseAlias> licenseAliases) {
-        licenseAliases.stream().forEach(licenseAlias -> {
-            aliases.add(LicenseAliasRest.Builder.newBuilder().id(licenseAlias.getId()).aliasName(licenseAlias.getAliasName())
-                    .licenseId(licenseAlias.getLicense().getId()).build());
-        });
+    public void addAlias(LicenseAliasRest licenseAliasesRest) {
+        aliases.add(licenseAliasesRest);
     }
 
     public void addAlias(Integer id, String licenseAlias, Integer licenseId) {

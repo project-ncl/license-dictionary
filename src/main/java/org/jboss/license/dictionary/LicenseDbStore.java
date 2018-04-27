@@ -104,6 +104,7 @@ public class LicenseDbStore {
                 .withPredicateBuilder(new CustomizedPredicateBuilder())
                 .withPredicateBuilderStrategy(new CustomizedPredicateBuilderStrategy());
 
+        log.debugf("### About to parse rsql %s ...", rsql);
         Node rootNode = new RSQLParser().parse(rsql);
 
         Predicate predicate = rootNode.accept(visitor, entityManager);

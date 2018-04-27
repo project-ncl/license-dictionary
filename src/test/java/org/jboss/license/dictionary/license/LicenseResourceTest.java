@@ -115,11 +115,11 @@ public class LicenseResourceTest {
     // public static final String MY_LICENSE_URL = "http://example.com/license/text.txt";
     // public static final String MY_LICENSE_NAME = "mylicense";
 
-    public static final String APACHE_20_FEDORA_ABBR = "ASL 2.0";
-    public static final String APACHE_20_FEDORA_NAME = "Apache Software License 2.0";
-    public static final String APACHE_20_SPDX_ABBR = "Apache-2.0";
-    public static final String APACHE_20_SPDX_NAME = "Apache License 2.0";
-    public static final String APACHE_20_URL = "http://www.apache.org/licenses/LICENSE-2.0";
+    public static final String TEST_APACHE_20_FEDORA_ABBR = "TEST_ASL 2.0";
+    public static final String TEST_APACHE_20_FEDORA_NAME = "TEST_Apache Software License 2.0";
+    public static final String TEST_APACHE_20_SPDX_ABBR = "TEST_Apache-2.0";
+    public static final String TEST_APACHE_20_SPDX_NAME = "TEST_Apache License 2.0";
+    public static final String TEST_APACHE_20_URL = "TEST_http://www.apache.org/licenses/LICENSE-2.0";
 
     @Inject
     private LicenseEndpoint licenseEndpoint;
@@ -217,22 +217,23 @@ public class LicenseResourceTest {
         LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusEndpoint
                 .getSpecificLicenseApprovalStatus(1).getEntity();
 
-        if (getLicenses(null, null, null, null, APACHE_20_FEDORA_NAME).isEmpty()) {
-            LicenseRest license = LicenseRest.Builder.newBuilder().code(APACHE_20_SPDX_ABBR).fedoraName(APACHE_20_FEDORA_NAME)
-                    .fedoraAbbreviation(APACHE_20_FEDORA_ABBR).spdxName(APACHE_20_SPDX_NAME)
-                    .spdxAbbreviation(APACHE_20_SPDX_ABBR).url(APACHE_20_URL).licenseApprovalStatus(APPROVED).build();
+        if (getLicenses(null, null, null, null, TEST_APACHE_20_FEDORA_NAME).isEmpty()) {
+            LicenseRest license = LicenseRest.Builder.newBuilder().code(TEST_APACHE_20_SPDX_ABBR)
+                    .fedoraName(TEST_APACHE_20_FEDORA_NAME).fedoraAbbreviation(TEST_APACHE_20_FEDORA_ABBR)
+                    .spdxName(TEST_APACHE_20_SPDX_NAME).spdxAbbreviation(TEST_APACHE_20_SPDX_ABBR).url(TEST_APACHE_20_URL)
+                    .licenseApprovalStatus(APPROVED).build();
 
             license = (LicenseRest) licenseEndpoint.createNewLicense(license, getUriInfo()).getEntity();
 
-            license.addAlias(null, "The Apache License, Version 2.0", license.getId());
-            license.addAlias(null, "apache-2.0", license.getId());
-            license.addAlias(null, "Apache License Version 2.0", license.getId());
-            license.addAlias(null, "Apache Software License, Version 2.0", license.getId());
-            license.addAlias(null, "Apache v2", license.getId());
-            license.addAlias(null, "The Apache Software License, Version 2.0", license.getId());
-            license.addAlias(null, "Apache License, Version 2.0", license.getId());
-            license.addAlias(null, "Apache-2.0", license.getId());
-            license.addAlias(null, "Apache Software License 2.0", license.getId());
+            license.addAlias(null, "TEST_The Apache License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_apache-2.0", license.getId());
+            license.addAlias(null, "TEST_Apache License Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache Software License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache v2", license.getId());
+            license.addAlias(null, "TEST_The Apache Software License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache-2.0", license.getId());
+            license.addAlias(null, "TEST_Apache Software License 2.0", license.getId());
 
             license = (LicenseRest) licenseEndpoint.updateLicense(license.getId(), license).getEntity();
         }
@@ -292,9 +293,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByFedoraName() {
         System.out.println("=== shouldGetLicenseByFedoraName");
 
-        LicenseRest mylicense = getLicenses(APACHE_20_FEDORA_NAME, null, null, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(TEST_APACHE_20_FEDORA_NAME, null, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -302,9 +303,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseBySpdxName() {
         System.out.println("=== shouldGetLicenseBySpdxName");
 
-        LicenseRest mylicense = getLicenses(null, APACHE_20_SPDX_NAME, null, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(null, TEST_APACHE_20_SPDX_NAME, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -312,9 +313,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByCode() {
         System.out.println("=== shouldGetLicenseByCode");
 
-        LicenseRest mylicense = getLicenses(null, null, APACHE_20_SPDX_ABBR, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, TEST_APACHE_20_SPDX_ABBR, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -322,9 +323,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByFedoraAbbreviation() {
         System.out.println("=== shouldGetLicenseByFedoraAbbreviation");
 
-        LicenseRest mylicense = getLicenses(null, null, null, null, APACHE_20_FEDORA_ABBR).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, null, null, TEST_APACHE_20_FEDORA_ABBR).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -332,9 +333,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseBySpdxAbbreviation() {
         System.out.println("=== shouldGetLicenseBySpdxAbbreviation");
 
-        LicenseRest mylicense = getLicenses(null, null, null, null, APACHE_20_SPDX_ABBR).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, null, null, TEST_APACHE_20_SPDX_ABBR).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -342,41 +343,41 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByAliases() {
         System.out.println("=== shouldGetLicenseByAliases");
 
-        LicenseRest mylicense = getLicenses(null, null, null, "The Apache License, Version 2.0", null).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, null, "TEST_The Apache License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "apache-2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_apache-2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache License Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache License Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache Software License, Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache Software License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache v2", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache v2", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "The Apache Software License, Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_The Apache Software License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache License, Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache-2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache-2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache Software License 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache Software License 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
     }
 
@@ -410,11 +411,11 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByExactSearchTerm() {
         System.out.println("=== shouldGetLicenseByExactSearchTerm");
 
-        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, APACHE_20_FEDORA_NAME);
+        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, TEST_APACHE_20_FEDORA_NAME);
         assertThat(licenses).hasSize(1);
         LicenseRest mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -422,13 +423,13 @@ public class LicenseResourceTest {
     public void shouldGetLicenseBySubstringSearchTerm() {
         System.out.println("=== shouldGetLicenseBySubstringSearchTerm");
 
-        String subString = "*" + APACHE_20_FEDORA_NAME.substring(1, APACHE_20_FEDORA_NAME.length() - 1) + "*";
+        String subString = "*" + TEST_APACHE_20_FEDORA_NAME.substring(1, TEST_APACHE_20_FEDORA_NAME.length() - 1) + "*";
 
         Collection<LicenseRest> licenses = getLicenses(null, null, null, null, subString);
         assertThat(licenses).hasSize(1);
         LicenseRest mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -462,7 +463,7 @@ public class LicenseResourceTest {
 
         LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusEndpoint
                 .getSpecificLicenseApprovalStatus(LicenseApprovalStatusRest.APPROVED.getId()).getEntity();
-        LicenseRest license = LicenseRest.Builder.newBuilder().fedoraName(APACHE_20_FEDORA_NAME).url("by-id.example.com")
+        LicenseRest license = LicenseRest.Builder.newBuilder().fedoraName(TEST_APACHE_20_FEDORA_NAME).url("by-id.example.com")
                 .code("licenseReadById").licenseApprovalStatus(APPROVED).build();
 
         try {
@@ -1229,7 +1230,7 @@ public class LicenseResourceTest {
         ProjectVersionLicenseCheckRest projectVersionLicenseCheckRest1 = projVersLicenseCheckRestList.get(0);
         ProjectVersionLicenseCheckRest projectVersionLicenseCheckRest2 = projVersLicenseCheckRestList.get(1);
 
-        String subString = "*" + APACHE_20_FEDORA_NAME.substring(1, APACHE_20_FEDORA_NAME.length() - 1) + "*";
+        String subString = "*" + TEST_APACHE_20_FEDORA_NAME.substring(1, TEST_APACHE_20_FEDORA_NAME.length() - 1) + "*";
 
         Collection<LicenseRest> licenses = getLicenses(null, null, null, null, subString);
         assertThat(licenses).hasSize(1);
