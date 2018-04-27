@@ -17,18 +17,14 @@
  */
 package org.jboss.license.dictionary.endpoint;
 
-import static java.util.Collections.singletonList;
 import static org.jboss.license.dictionary.utils.Mappers.fullMapper;
 import static org.jboss.license.dictionary.utils.Mappers.licenseRestListType;
 import static org.jboss.license.dictionary.utils.Mappers.limitedMapper;
-import static org.jboss.license.dictionary.utils.ResponseUtils.valueOrNotFound;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -51,6 +47,7 @@ import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.api.LicenseRest;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
+import org.jboss.license.dictionary.utils.QueryUtils;
 import org.jboss.logging.Logger;
 import org.modelmapper.ValidationException;
 import org.modelmapper.spi.ErrorMessage;
@@ -76,62 +73,39 @@ public class LicenseEndpoint extends AbstractEndpoint {
     @Inject
     private LicenseStore licenseStore;
 
-    @ApiOperation(value = "Get licenses by Fedora name or SPDX name or code or alias, OR by generic search string", notes = "Finds licenses matching specifically Fedora, SPDX, alias, code OR any of them by providing a generic search string", response = LicenseRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all license", response = LicenseRest.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "More than one among Fedora name, SPDX name, code or alias provided, or search term provided with Fedora name, SPDX name, code or alias"),
-            @ApiResponse(code = 404, message = "License not found with Fedora name, SPDX name, code or alias provided") })
+            @ApiResponse(code = 400, message = "Error processing RSQL query parameter, or both rsql and generic search provided") })
     @GET
-    public Response getLicenses(
-            @ApiParam(value = "License Fedora name", required = false) @QueryParam("fedoraName") String fedoraName,
-            @ApiParam(value = "License Spdx name", required = false) @QueryParam("spdxName") String spdxName,
-            @ApiParam(value = "License code name", required = false) @QueryParam("code") String code,
-            @ApiParam(value = "License alias name", required = false) @QueryParam("nameAlias") String nameAlias,
-            @ApiParam(value = "Generic seach term", required = false) @QueryParam("searchTerm") String searchTerm,
+    public Response getAllLicense(
+            @ApiParam(value = "RSQL-type search query (e.g. id==1;fedoraName=='The MIT*')", required = false) @QueryParam("query") String query,
+            @ApiParam(value = "Generic search query applied to fedoraAbbreviation, fedoraName, spdxAbbreviation, spdxName, code, aliases", required = false) @QueryParam("search") String search,
             @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
             @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
-        log.debugf(
-                "Finding licenses with fedoraName '%s', spdxName '%s', code '%s', alias '%s', searchTerm '%s', numResults '%d', offset '%d'",
-                fedoraName, spdxName, code, nameAlias, searchTerm, resultCount, offset);
+        log.debugf("Get all license with rsql search '%s' and '%s'", query, search);
 
         if (offset == null) {
             offset = 0;
         }
 
-        long singleResultIndicatorCount = nonNullCount(fedoraName, spdxName, code, nameAlias);
-        if (singleResultIndicatorCount > 1) {
-            throw new BadRequestException(
-                    "Not more than one query parameter " + "{fedoraName, spdxName, code, nameAlias} should be provided");
+        long queryParamIndicatorCount = nonNullCount(query, search);
+        if (queryParamIndicatorCount > 1) {
+            throw new BadRequestException("Either the rsql or the generic search query parameter can be provided");
         }
 
-        if (singleResultIndicatorCount > 0) {
-            if (searchTerm != null) {
-                throw new BadRequestException("searchTerm cannot be mixed "
-                        + "with neither of {fedoraName, spdxName, code, nameAlias} query parameters");
-            }
+        if (nonNullCount(search) == 1) {
+            String escapedSearch = QueryUtils.escapeReservedChars(search);
+            StringBuilder sb = new StringBuilder().append("fedoraName=='").append(escapedSearch)
+                    .append("',fedoraAbbreviation=='").append(escapedSearch).append("',spdxName=='")
+                    .append(escapedSearch + "',spdxAbbreviation=='" + escapedSearch + "',code=='" + escapedSearch)
+                    .append("',aliases.aliasName=='").append(escapedSearch).append("'");
+            query = sb.toString();
+        }
 
-            LicenseRest entity;
-            if (fedoraName != null) {
-                entity = valueOrNotFound(licenseStore.getLicenseForFedoraName(fedoraName),
-                        "No license was found for Fedora name %s", fedoraName);
-            } else if (spdxName != null) {
-                entity = valueOrNotFound(licenseStore.getLicenseForSpdxName(spdxName), "No license was found for SPDX name %s",
-                        spdxName);
-            } else if (nameAlias != null) {
-                entity = valueOrNotFound(licenseStore.getLicenseForNameAlias(nameAlias),
-                        "Could not find license for nameAlias %s", nameAlias);
-            } else {
-                entity = valueOrNotFound(licenseStore.getLicenseForCode(code), "Could not find license for code %s", code);
-            }
-            return paginated(singletonList(limitedMapper.map(entity, LicenseRest.class)), 1, 0);
-        } else {
-            List<LicenseRest> results;
-            if (searchTerm != null) {
-                results = licenseStore.findBySearchTerm(searchTerm).stream().collect(Collectors.toList());
-            } else {
-                results = licenseStore.getAllLicense();
-            }
+        try {
 
+            List<LicenseRest> results = licenseStore.getAllLicense(Optional.ofNullable(query));
             int totalCount = results.size();
 
             if (resultCount != null) {
@@ -141,6 +115,8 @@ public class LicenseEndpoint extends AbstractEndpoint {
 
             List<LicenseRest> resultList = limitedMapper.map(results, licenseRestListType);
             return paginated(resultList, totalCount, offset);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Error processing RSQL query parameter");
         }
     }
 
@@ -184,11 +160,16 @@ public class LicenseEndpoint extends AbstractEndpoint {
     }
 
     @ApiOperation(value = "Create a new license", response = LicenseRest.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "License successfully created") })
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "License successfully created"),
+            @ApiResponse(code = 400, message = "License id not null") })
     @POST
     @Transactional
     public Response createNewLicense(LicenseRest license, @Context UriInfo uriInfo) {
         log.debugf("Creating new license %s", license);
+
+        if (license.getId() != null) {
+            throw new BadRequestException("License id must be null");
+        }
 
         validate(license);
         license = licenseStore.saveLicense(license);
@@ -213,11 +194,6 @@ public class LicenseEndpoint extends AbstractEndpoint {
                 .orElseThrow(() -> new NotFoundException("No license found for id " + id));
 
         return Response.ok().entity(fullMapper.map(entity, LicenseRest.class)).build();
-    }
-
-    @PostConstruct
-    public void init() {
-        licenseStore.init();
     }
 
     private void validate(LicenseRest license) {

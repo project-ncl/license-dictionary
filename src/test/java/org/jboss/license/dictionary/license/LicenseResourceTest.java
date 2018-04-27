@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
@@ -88,6 +87,7 @@ import org.jboss.license.dictionary.model.ProjectVersionLicenseHint;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.ErrorDto;
 import org.jboss.license.dictionary.utils.NotFoundException;
+import org.jboss.license.dictionary.utils.QueryUtils;
 import org.jboss.license.dictionary.utils.rsql.CustomizedJpaPredicateVisitor;
 import org.jboss.license.dictionary.utils.rsql.CustomizedPredicateBuilder;
 import org.jboss.license.dictionary.utils.rsql.CustomizedPredicateBuilderStrategy;
@@ -115,11 +115,11 @@ public class LicenseResourceTest {
     // public static final String MY_LICENSE_URL = "http://example.com/license/text.txt";
     // public static final String MY_LICENSE_NAME = "mylicense";
 
-    public static final String APACHE_20_FEDORA_ABBR = "ASL 2.0";
-    public static final String APACHE_20_FEDORA_NAME = "Apache Software License 2.0";
-    public static final String APACHE_20_SPDX_ABBR = "Apache-2.0";
-    public static final String APACHE_20_SPDX_NAME = "Apache License 2.0";
-    public static final String APACHE_20_URL = "http://www.apache.org/licenses/LICENSE-2.0";
+    public static final String TEST_APACHE_20_FEDORA_ABBR = "TEST_ASL 2.0";
+    public static final String TEST_APACHE_20_FEDORA_NAME = "TEST_Apache Software License 2.0";
+    public static final String TEST_APACHE_20_SPDX_ABBR = "TEST_Apache-2.0";
+    public static final String TEST_APACHE_20_SPDX_NAME = "TEST_Apache License 2.0";
+    public static final String TEST_APACHE_20_URL = "TEST_http://www.apache.org/licenses/LICENSE-2.0";
 
     @Inject
     private LicenseEndpoint licenseEndpoint;
@@ -194,7 +194,8 @@ public class LicenseResourceTest {
                 .addPackage(ProjectEcosystemEndpoint.class.getPackage())
 
                 .addPackage(ErrorDto.class.getPackage()).addPackage(JsonLicense.class.getPackage())
-                .addPackage(BadRequestException.class.getPackage()).addAsResource("META-INF/import.sql", "META-INF/import.sql")
+                .addPackage(BadRequestException.class.getPackage()).addPackage(QueryUtils.class.getPackage())
+                .addAsResource("META-INF/import.sql", "META-INF/import.sql")
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml").addAsResource("project-test.yml")
                 .addAsResource("test_import_license_aliases.json").addAsResource("test_import_url_rh_license.json")
                 .addAsResource("test_project-licenses_full.json").addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -216,22 +217,23 @@ public class LicenseResourceTest {
         LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusEndpoint
                 .getSpecificLicenseApprovalStatus(1).getEntity();
 
-        if (getLicenses(null, null, null, null, APACHE_20_FEDORA_NAME).isEmpty()) {
-            LicenseRest license = LicenseRest.Builder.newBuilder().code(APACHE_20_SPDX_ABBR).fedoraName(APACHE_20_FEDORA_NAME)
-                    .fedoraAbbreviation(APACHE_20_FEDORA_ABBR).spdxName(APACHE_20_SPDX_NAME)
-                    .spdxAbbreviation(APACHE_20_SPDX_ABBR).url(APACHE_20_URL).licenseApprovalStatus(APPROVED).build();
+        if (getLicenses(null, null, null, null, TEST_APACHE_20_FEDORA_NAME).isEmpty()) {
+            LicenseRest license = LicenseRest.Builder.newBuilder().code(TEST_APACHE_20_SPDX_ABBR)
+                    .fedoraName(TEST_APACHE_20_FEDORA_NAME).fedoraAbbreviation(TEST_APACHE_20_FEDORA_ABBR)
+                    .spdxName(TEST_APACHE_20_SPDX_NAME).spdxAbbreviation(TEST_APACHE_20_SPDX_ABBR).url(TEST_APACHE_20_URL)
+                    .licenseApprovalStatus(APPROVED).build();
 
             license = (LicenseRest) licenseEndpoint.createNewLicense(license, getUriInfo()).getEntity();
 
-            license.addAlias(null, "The Apache License, Version 2.0", license.getId());
-            license.addAlias(null, "apache-2.0", license.getId());
-            license.addAlias(null, "Apache License Version 2.0", license.getId());
-            license.addAlias(null, "Apache Software License, Version 2.0", license.getId());
-            license.addAlias(null, "Apache v2", license.getId());
-            license.addAlias(null, "The Apache Software License, Version 2.0", license.getId());
-            license.addAlias(null, "Apache License, Version 2.0", license.getId());
-            license.addAlias(null, "Apache-2.0", license.getId());
-            license.addAlias(null, "Apache Software License 2.0", license.getId());
+            license.addAlias(null, "TEST_The Apache License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_apache-2.0", license.getId());
+            license.addAlias(null, "TEST_Apache License Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache Software License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache v2", license.getId());
+            license.addAlias(null, "TEST_The Apache Software License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache License, Version 2.0", license.getId());
+            license.addAlias(null, "TEST_Apache-2.0", license.getId());
+            license.addAlias(null, "TEST_Apache Software License 2.0", license.getId());
 
             license = (LicenseRest) licenseEndpoint.updateLicense(license.getId(), license).getEntity();
         }
@@ -291,9 +293,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByFedoraName() {
         System.out.println("=== shouldGetLicenseByFedoraName");
 
-        LicenseRest mylicense = getLicenses(APACHE_20_FEDORA_NAME, null, null, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(TEST_APACHE_20_FEDORA_NAME, null, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -301,9 +303,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseBySpdxName() {
         System.out.println("=== shouldGetLicenseBySpdxName");
 
-        LicenseRest mylicense = getLicenses(null, APACHE_20_SPDX_NAME, null, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(null, TEST_APACHE_20_SPDX_NAME, null, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -311,9 +313,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByCode() {
         System.out.println("=== shouldGetLicenseByCode");
 
-        LicenseRest mylicense = getLicenses(null, null, APACHE_20_SPDX_ABBR, null, null).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, TEST_APACHE_20_SPDX_ABBR, null, null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -321,9 +323,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByFedoraAbbreviation() {
         System.out.println("=== shouldGetLicenseByFedoraAbbreviation");
 
-        LicenseRest mylicense = getLicenses(null, null, null, null, APACHE_20_FEDORA_ABBR).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, null, null, TEST_APACHE_20_FEDORA_ABBR).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -331,9 +333,9 @@ public class LicenseResourceTest {
     public void shouldGetLicenseBySpdxAbbreviation() {
         System.out.println("=== shouldGetLicenseBySpdxAbbreviation");
 
-        LicenseRest mylicense = getLicenses(null, null, null, null, APACHE_20_SPDX_ABBR).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, null, null, TEST_APACHE_20_SPDX_ABBR).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -341,49 +343,67 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByAliases() {
         System.out.println("=== shouldGetLicenseByAliases");
 
-        LicenseRest mylicense = getLicenses(null, null, null, "The Apache License, Version 2.0", null).iterator().next();
+        LicenseRest mylicense = getLicenses(null, null, null, "TEST_The Apache License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "apache-2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_apache-2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache License Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache License Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache Software License, Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache Software License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache v2", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache v2", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "The Apache Software License, Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_The Apache Software License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache License, Version 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache License, Version 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache-2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache-2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
-        mylicense = getLicenses(null, null, null, "Apache Software License 2.0", null).iterator().next();
+        mylicense = getLicenses(null, null, null, "TEST_Apache Software License 2.0", null).iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
 
     }
 
     @SuppressWarnings("unchecked")
     private List<LicenseRest> getLicenses(String fedoraName, String spdxName, String code, String nameAlias,
             String searchTerm) {
-        return (List<LicenseRest>) licenseEndpoint.getLicenses(fedoraName, spdxName, code, nameAlias, searchTerm, null, null)
-                .getEntity();
+
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            return (List<LicenseRest>) licenseEndpoint.getAllLicense(null, searchTerm, null, null).getEntity();
+        }
+
+        String rsqlSearch = "";
+        if (fedoraName != null && !fedoraName.isEmpty()) {
+            rsqlSearch = "fedoraName=='" + QueryUtils.escapeReservedChars(fedoraName) + "'";
+        }
+        if (spdxName != null && !spdxName.isEmpty()) {
+            rsqlSearch = "spdxName=='" + QueryUtils.escapeReservedChars(spdxName) + "'";
+        }
+        if (code != null && !code.isEmpty()) {
+            rsqlSearch = "code=='" + QueryUtils.escapeReservedChars(code) + "'";
+        }
+        if (nameAlias != null && !nameAlias.isEmpty()) {
+            rsqlSearch = "aliases.aliasName=='" + QueryUtils.escapeReservedChars(nameAlias) + "'";
+        }
+
+        return (List<LicenseRest>) licenseEndpoint.getAllLicense(rsqlSearch, null, null, null).getEntity();
     }
 
     @Test
@@ -391,11 +411,11 @@ public class LicenseResourceTest {
     public void shouldGetLicenseByExactSearchTerm() {
         System.out.println("=== shouldGetLicenseByExactSearchTerm");
 
-        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, APACHE_20_FEDORA_NAME);
+        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, TEST_APACHE_20_FEDORA_NAME);
         assertThat(licenses).hasSize(1);
         LicenseRest mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -403,12 +423,13 @@ public class LicenseResourceTest {
     public void shouldGetLicenseBySubstringSearchTerm() {
         System.out.println("=== shouldGetLicenseBySubstringSearchTerm");
 
-        Collection<LicenseRest> licenses = getLicenses(null, null, null, null,
-                APACHE_20_FEDORA_NAME.substring(1, APACHE_20_FEDORA_NAME.length() - 1));
+        String subString = "*" + TEST_APACHE_20_FEDORA_NAME.substring(1, TEST_APACHE_20_FEDORA_NAME.length() - 1) + "*";
+
+        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, subString);
         assertThat(licenses).hasSize(1);
         LicenseRest mylicense = licenses.iterator().next();
         assertThat(mylicense).isNotNull();
-        assertThat(mylicense.getUrl()).isEqualTo(APACHE_20_URL);
+        assertThat(mylicense.getUrl()).isEqualTo(TEST_APACHE_20_URL);
     }
 
     @Test
@@ -442,7 +463,7 @@ public class LicenseResourceTest {
 
         LicenseApprovalStatusRest APPROVED = (LicenseApprovalStatusRest) licenseStatusEndpoint
                 .getSpecificLicenseApprovalStatus(LicenseApprovalStatusRest.APPROVED.getId()).getEntity();
-        LicenseRest license = LicenseRest.Builder.newBuilder().fedoraName(APACHE_20_FEDORA_NAME).url("by-id.example.com")
+        LicenseRest license = LicenseRest.Builder.newBuilder().fedoraName(TEST_APACHE_20_FEDORA_NAME).url("by-id.example.com")
                 .code("licenseReadById").licenseApprovalStatus(APPROVED).build();
 
         try {
@@ -555,10 +576,9 @@ public class LicenseResourceTest {
         LicenseRest updatedLicense = getLicenses(null, null, "code-33", null, null).iterator().next();
         assertThat(updatedLicense).isNotNull();
 
-        try {
-            getLicenses(null, null, "code-3", null, null).iterator().next();
+        List<LicenseRest> results = getLicenses(null, null, "code-3", null, null);
+        if (results != null && !results.isEmpty()) {
             fail("License with old code should not be found");
-        } catch (ClientErrorException e) {
         }
     }
 
@@ -707,7 +727,8 @@ public class LicenseResourceTest {
             LicenseHintTypeRest storedHintType = hintTypes.get(0);
 
             LicenseHintTypeRest hintType = ((List<LicenseHintTypeRest>) licenseHintEndpoint
-                    .getAllLicenseHintType("name=='" + storedHintType.getName() + "'").getEntity()).get(0);
+                    .getAllLicenseHintType("name=='" + QueryUtils.escapeReservedChars(storedHintType.getName()) + "'")
+                    .getEntity()).get(0);
             assertThat(storedHintType.getId()).isEqualTo(hintType.getId());
             assertThat(storedHintType.getName()).isEqualTo(hintType.getName());
         } catch (NotFoundException nfe) {
@@ -776,8 +797,8 @@ public class LicenseResourceTest {
         System.out.println("=== shouldGetProjectEcosystemByName");
 
         try {
-            Response res = projectEcosystemEndpoint
-                    .getAllProjectEcosystem("name=='" + ProjectEcosystemRest.MAVEN.getName() + "'");
+            Response res = projectEcosystemEndpoint.getAllProjectEcosystem(
+                    "name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName()) + "'");
             List<ProjectEcosystemRest> projectEcosystemRests = (List<ProjectEcosystemRest>) res.getEntity();
 
             assertThat((projectEcosystemRests.get(0)).getId()).isEqualTo(ProjectEcosystemRest.MAVEN.getId());
@@ -826,7 +847,7 @@ public class LicenseResourceTest {
         ProjectEcosystemRest NPM = (ProjectEcosystemRest) projectEcosystemEndpoint
                 .getSpecificProjectEcosystem(ProjectEcosystemRest.MAVEN.getId()).getEntity();
         try {
-            String rsqlQuery = "projectEcosystem.name=='" + NPM.getName() + "'";
+            String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(NPM.getName()) + "'";
             Response res = projectEndpoint.getAllProject(rsqlQuery, 10, 0);
             assertThat(((List<ProjectRest>) res.getEntity())).isNotNull();
             assertThat(((List<ProjectRest>) res.getEntity())).hasAtLeastOneElementOfType(ProjectRest.class);
@@ -908,7 +929,8 @@ public class LicenseResourceTest {
             fail("Could not update project with id " + projectRest.getId());
         }
 
-        String rsqlQuery = "projectEcosystem.name=='" + MAVEN.getName() + "';key=='groupId:artifactId-toBeUpdated'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(MAVEN.getName()) + "';key=='"
+                + QueryUtils.escapeReservedChars("groupId:artifactId-toBeUpdated") + "'";
         Response res = projectEndpoint.getAllProject(rsqlQuery, 10, 0);
         List<ProjectRest> projects = (List<ProjectRest>) res.getEntity();
         assertThat(projects).hasSize(0);
@@ -926,7 +948,8 @@ public class LicenseResourceTest {
 
         projectRest = (ProjectRest) projectEndpoint.createNewProject(projectRest, getUriInfo()).getEntity();
 
-        String rsqlQuery = "projectEcosystem.name=='" + NPM.getName() + "';key=='" + projectRest.getKey() + "'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(NPM.getName()) + "';key=='"
+                + QueryUtils.escapeReservedChars(projectRest.getKey()) + "'";
         Response res = projectEndpoint.getAllProject(rsqlQuery, 10, 0);
         List<ProjectRest> projects = (List<ProjectRest>) res.getEntity();
         assertThat(projects).hasSize(1);
@@ -969,7 +992,8 @@ public class LicenseResourceTest {
     public void shouldGetAllProjectVersion() {
         System.out.println("=== shouldGetAllProjectVersion");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -989,7 +1013,8 @@ public class LicenseResourceTest {
     public void shouldGetProjectVersionById() {
         System.out.println("=== shouldGetProjectVersionById");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1016,7 +1041,8 @@ public class LicenseResourceTest {
     public void shouldGetProjectVersionByVersionProjectId() {
         System.out.println("=== shouldGetProjectVersionByVersionProjectId");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1028,7 +1054,8 @@ public class LicenseResourceTest {
 
         ProjectVersionRest projVersFromList = projectVersionRest.get(0);
 
-        String rsqlQuery3 = "project.id==" + pncProject.getId() + ";version=='" + projVersFromList.getVersion() + "'";
+        String rsqlQuery3 = "project.id==" + pncProject.getId() + ";version=='"
+                + QueryUtils.escapeReservedChars(projVersFromList.getVersion()) + "'";
         Response res2 = projectVersionEndpoint.getAllProjectVersion(rsqlQuery3, 10, 0);
         ProjectVersionRest projVers = ((List<ProjectVersionRest>) res2.getEntity()).get(0);
 
@@ -1045,7 +1072,8 @@ public class LicenseResourceTest {
     public void shouldCreateProjectVersionLicenseCheck() {
         System.out.println("=== shouldCreateProjectVersionLicenseCheck");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1094,7 +1122,8 @@ public class LicenseResourceTest {
     public void shouldNotCreateProjectVersionLicenseCheckWithNotNullId() {
         System.out.println("=== shouldNotCreateProjectVersionLicenseCheckWithNotNullId");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1133,7 +1162,8 @@ public class LicenseResourceTest {
     public void shouldGetAllProjectVersionLicenseCheckByProjVersId() {
         System.out.println("=== shouldGetAllProjectVersionLicenseCheckByProjVersId");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1143,7 +1173,7 @@ public class LicenseResourceTest {
         ProjectVersionRest projVersFromList = projectVersionRest.get(0);
 
         String rsqlQuery3 = "project.id==" + projVersFromList.getProject().getId() + ";version=='"
-                + projVersFromList.getVersion() + "'";
+                + QueryUtils.escapeReservedChars(projVersFromList.getVersion()) + "'";
         Response res2 = projectVersionEndpoint.getAllProjectVersion(rsqlQuery3, 10, 0);
         ProjectVersionRest projVers = ((List<ProjectVersionRest>) res2.getEntity()).get(0);
 
@@ -1176,7 +1206,8 @@ public class LicenseResourceTest {
     public void shouldCreateProjectVersionLicense() {
         System.out.println("=== shouldCreateProjectVersionLicense");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1199,8 +1230,9 @@ public class LicenseResourceTest {
         ProjectVersionLicenseCheckRest projectVersionLicenseCheckRest1 = projVersLicenseCheckRestList.get(0);
         ProjectVersionLicenseCheckRest projectVersionLicenseCheckRest2 = projVersLicenseCheckRestList.get(1);
 
-        Collection<LicenseRest> licenses = getLicenses(null, null, null, null,
-                APACHE_20_FEDORA_NAME.substring(1, APACHE_20_FEDORA_NAME.length() - 1));
+        String subString = "*" + TEST_APACHE_20_FEDORA_NAME.substring(1, TEST_APACHE_20_FEDORA_NAME.length() - 1) + "*";
+
+        Collection<LicenseRest> licenses = getLicenses(null, null, null, null, subString);
         assertThat(licenses).hasSize(1);
         LicenseRest mylicense = licenses.iterator().next();
 
@@ -1232,7 +1264,8 @@ public class LicenseResourceTest {
     public void shouldGetAllProjectVersionLicense() {
         System.out.println("=== shouldGetAllProjectVersionLicense");
 
-        String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='org.jboss.pnc:parent'";
+        String rsqlQuery = "projectEcosystem.name=='" + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';key=='" + QueryUtils.escapeReservedChars("org.jboss.pnc:parent") + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest pncProject = projects.get(0);
 
@@ -1290,9 +1323,10 @@ public class LicenseResourceTest {
         String version = "1.4.0-SNAPSHOT";
 
         try {
-            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='" + ecosystem
-                    + "';projectVersionLicenseCheck.projectVersion.project.key=='" + projectKey
-                    + "';projectVersionLicenseCheck.projectVersion.version=='" + version + "'";
+            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
+                    + QueryUtils.escapeReservedChars(ecosystem) + "';projectVersionLicenseCheck.projectVersion.project.key=='"
+                    + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
+                    + QueryUtils.escapeReservedChars(version) + "'";
             Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
@@ -1330,9 +1364,11 @@ public class LicenseResourceTest {
 
         try {
             String scope = "org.jboss.pnc:rest-model";
-            String rsql = "scope=='" + scope + "';projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
-                    + ecosystem + "';projectVersionLicenseCheck.projectVersion.project.key=='" + projectKey
-                    + "';projectVersionLicenseCheck.projectVersion.version=='" + version + "'";
+            String rsql = "scope=='" + QueryUtils.escapeReservedChars(scope)
+                    + "';projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
+                    + QueryUtils.escapeReservedChars(ecosystem) + "';projectVersionLicenseCheck.projectVersion.project.key=='"
+                    + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
+                    + QueryUtils.escapeReservedChars(version) + "'";
 
             Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
 
@@ -1368,9 +1404,10 @@ public class LicenseResourceTest {
 
         try {
 
-            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='" + ecosystem
-                    + "';projectVersionLicenseCheck.projectVersion.project.key=='" + projectKey
-                    + "';projectVersionLicenseCheck.projectVersion.version=='" + version + "'";
+            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
+                    + QueryUtils.escapeReservedChars(ecosystem) + "';projectVersionLicenseCheck.projectVersion.project.key=='"
+                    + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
+                    + QueryUtils.escapeReservedChars(version) + "'";
 
             Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
 
@@ -1411,9 +1448,10 @@ public class LicenseResourceTest {
         String version = "1.4.0-SNAPSHOT";
 
         try {
-            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='" + ecosystem
-                    + "';projectVersionLicenseCheck.projectVersion.project.key=='" + projectKey
-                    + "';projectVersionLicenseCheck.projectVersion.version=='" + version + "'";
+            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
+                    + QueryUtils.escapeReservedChars(ecosystem) + "';projectVersionLicenseCheck.projectVersion.project.key=='"
+                    + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
+                    + QueryUtils.escapeReservedChars(version) + "'";
 
             Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
 
@@ -1474,9 +1512,10 @@ public class LicenseResourceTest {
         String version = "1.4.0-SNAPSHOT";
 
         try {
-            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='" + ecosystem
-                    + "';projectVersionLicenseCheck.projectVersion.project.key=='" + projectKey
-                    + "';projectVersionLicenseCheck.projectVersion.version=='" + version + "'";
+            String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
+                    + QueryUtils.escapeReservedChars(ecosystem) + "';projectVersionLicenseCheck.projectVersion.project.key=='"
+                    + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
+                    + QueryUtils.escapeReservedChars(version) + "'";
 
             Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
 
@@ -1520,7 +1559,7 @@ public class LicenseResourceTest {
             assertThat(licenseHintTypeRest1.getId()).isEqualTo(hintRest2.getLicenseHintType().getId());
 
             String rsql3 = "projectVersionLicense.id==" + projectVersionLicense2.getId() + ";licenseHintType.id=="
-                    + licenseHintTypeRest2.getId() + ";value=='LICENSE.TXT'";
+                    + licenseHintTypeRest2.getId() + ";value=='" + QueryUtils.escapeReservedChars("LICENSE.TXT") + "'";
 
             List<ProjectVersionLicenseHintRest> projectVersLicHintRestListByProjVerLicHintValue = (List<ProjectVersionLicenseHintRest>) projectVersionLicenseHintEndpoint
                     .getAllProjectVersionLicenseHint(rsql3, 100, 0).getEntity();
@@ -1587,7 +1626,7 @@ public class LicenseResourceTest {
     }
 
     @Test
-    @InSequence(1001)
+    @InSequence(1010)
     public void shouldImportLicenseAliasesFromJsonFile() {
         System.out.println("=== shouldImportLicenseAliasesFromJsonFile");
 
@@ -1615,6 +1654,7 @@ public class LicenseResourceTest {
         try {
             importEndpoint.importLicenseAliases(rhAlias);
         } catch (Exception e1) {
+            e1.printStackTrace();
             fail("Converted license alias list Map<String, String[] from json file could not be imported");
         }
 
@@ -1625,7 +1665,7 @@ public class LicenseResourceTest {
     }
 
     @Test
-    @InSequence(1002)
+    @InSequence(1020)
     public void shouldImportProjectLicenseFromJson() {
         System.out.println("=== shouldImportProjectLicenseFromJson");
 
@@ -1666,16 +1706,14 @@ public class LicenseResourceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @InSequence(1003)
+    @InSequence(1030)
     public void shouldHaveCorrectExpectedValuesAfterImport() {
         System.out.println("=== shouldHaveCorrectExpectedValuesAfterImport");
 
         String jaxbProjectKey = "com.sun.xml.bind.mvn:jaxb-parent";
         String jaxbProjectVersionName = "2.2.11";
 
-        // String rsqlQuery = "projectEcosystem.name=='" + ProjectEcosystemRest.MAVEN.getName() + "';key=='" + jaxbProjectKey
-        // + "'";
-        String rsqlQuery = "key=='" + jaxbProjectKey + "'";
+        String rsqlQuery = "key=='" + QueryUtils.escapeReservedChars(jaxbProjectKey) + "'";
         List<ProjectRest> projects = (List<ProjectRest>) projectEndpoint.getAllProject(rsqlQuery, 10, 0).getEntity();
         ProjectRest jaxbProject = projects.get(0);
 
@@ -1687,7 +1725,8 @@ public class LicenseResourceTest {
                 .getAllProjectVersion(rsqlQuery2, 1000, 0).getEntity();
 
         // Find specific project versions for the project jaxb
-        String rsqlQuery3 = "project.id==" + jaxbProject.getId() + ";version=='" + jaxbProjectVersionName + "'";
+        String rsqlQuery3 = "project.id==" + jaxbProject.getId() + ";version=='"
+                + QueryUtils.escapeReservedChars(jaxbProjectVersionName) + "'";
         Response res2 = projectVersionEndpoint.getAllProjectVersion(rsqlQuery3, 10, 0);
         ProjectVersionRest jaxbProjectVersion = ((List<ProjectVersionRest>) res2.getEntity()).get(0);
 
@@ -1701,8 +1740,10 @@ public class LicenseResourceTest {
 
         // Find all the project version licenses for project jaxb
         String rsql = "projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name=='"
-                + ProjectEcosystemRest.MAVEN.getName() + "';projectVersionLicenseCheck.projectVersion.project.key=='"
-                + jaxbProjectKey + "';projectVersionLicenseCheck.projectVersion.version=='" + jaxbProjectVersionName + "'";
+                + QueryUtils.escapeReservedChars(ProjectEcosystemRest.MAVEN.getName())
+                + "';projectVersionLicenseCheck.projectVersion.project.key=='" + QueryUtils.escapeReservedChars(jaxbProjectKey)
+                + "';projectVersionLicenseCheck.projectVersion.version=='"
+                + QueryUtils.escapeReservedChars(jaxbProjectVersionName) + "'";
 
         List<ProjectVersionLicenseRest> projectVersionLicenseRestList = (List<ProjectVersionLicenseRest>) projectVersionLicenseEndpoint
                 .getAllProjectVersionLicense(rsql, 100, 0).getEntity();

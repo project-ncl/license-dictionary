@@ -101,29 +101,56 @@ public class ImportEndpoint {
     public void importLicenseAliases(Map<String, String[]> rhAlias) {
         log.debug("Import license aliases ...");
 
-        Map<String, Collection<LicenseAliasRest>> licensesAliasByName = new HashMap<String, Collection<LicenseAliasRest>>();
+        Map<LicenseRest, Collection<LicenseRest>> primaryVsSecondaryLicensesMap = new HashMap<LicenseRest, Collection<LicenseRest>>();
         rhAlias.forEach((alias, aliases) -> {
 
             try {
-                LicenseRest licenseRest = pickLicenseByName(alias);
-                List<LicenseAliasRest> licenseAliases = new ArrayList<LicenseAliasRest>();
-                Arrays.stream(aliases).forEach(al -> {
-                    licenseAliases
-                            .add(LicenseAliasRest.Builder.newBuilder().licenseId(licenseRest.getId()).aliasName(al).build());
-                });
-
-                if (!licensesAliasByName.containsKey(alias)) {
-                    licensesAliasByName.put(alias, licenseAliases);
+                if (alias.startsWith("#")) {
+                    log.debugf("skipping the commented alias: %s", alias);
+                } else if (aliases == null || aliases.length == 0) {
+                    log.debugf("skipping empty list of secondary aliases for primary alias: %s", alias);
                 } else {
-                    log.info("## multiple version of alias " + alias);
-                }
 
+                    // Every license has been imported with an alias corresponding to its entry in the *url_rh_license.json file
+                    Optional<LicenseRest> maybeLicense = findLicenseByAlias(alias);
+                    if (maybeLicense.isPresent()) {
+
+                        LicenseRest licenseRest = maybeLicense.get();
+                        List<LicenseRest> secondaryLicenses = new ArrayList<LicenseRest>();
+
+                        log.infof("LicenseRest --> findLicenseByAlias found: %s for primary alias: %s", licenseRest, alias);
+
+                        Arrays.stream(aliases).forEach(secondaryAlias -> {
+                            Optional<LicenseRest> secondaryLicense = findLicenseByAlias(secondaryAlias);
+                            if (secondaryLicense.isPresent()) {
+                                // Secondary alias with an entry in *url_rh_license.json file
+                                secondaryLicenses.add(secondaryLicense.get());
+                            } else {
+                                log.infof("Secondary AliasName NOT FOUND!!! %s", secondaryAlias);
+                                // Secondary alias without an entry in *url_rh_license.json file (can be e.g. a SPDX
+                                // abbreviation)
+                                LicenseRest fakeSecondaryLicense = LicenseRest.Builder.newBuilder().build();
+                                fakeSecondaryLicense
+                                        .addAlias(LicenseAliasRest.Builder.newBuilder().aliasName(secondaryAlias).build());
+                                secondaryLicenses.add(fakeSecondaryLicense);
+                            }
+                        });
+
+                        if (!secondaryLicenses.isEmpty()) {
+                            primaryVsSecondaryLicensesMap.put(licenseRest, secondaryLicenses);
+                        }
+                    } else {
+                        log.infof("Primary AliasName NOT FOUND!!! %s", alias);
+                    }
+                }
             } catch (NoSuchElementException exc) {
                 log.infof("No license found with alias %s", alias);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
 
-        store.replaceAllLicenseAliasesWith(licensesAliasByName);
+        store.replaceAllLicenseAliasesWith(primaryVsSecondaryLicensesMap);
     }
 
     @ApiOperation(value = "Import the project icense json file", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
@@ -136,12 +163,36 @@ public class ImportEndpoint {
         projectLicenseStore.importProjectLicenses(jsonProjectLicenses);
     }
 
-    private LicenseRest pickLicenseByName(String alias) {
+    private Optional<LicenseRest> findLicenseByAlias(String alias) {
+        return store.getLicenseForNameAlias(alias);
+    }
+
+    private Optional<LicenseRest> findLicenseByName(String alias) {
+
+        // Look for Fedora Name
         Optional<LicenseRest> optionalLicenseRest = store.getLicenseForFedoraName(alias);
+
         if (!optionalLicenseRest.isPresent()) {
+            // Look for Fedora abbreviation
+            optionalLicenseRest = store.getLicenseForFedoraAbbreviation(alias);
+        }
+
+        if (!optionalLicenseRest.isPresent()) {
+            // Look for SPDX Name
             optionalLicenseRest = store.getLicenseForSpdxName(alias);
         }
-        return optionalLicenseRest.get();
+
+        if (!optionalLicenseRest.isPresent()) {
+            // Look for SPDX abbreviation
+            optionalLicenseRest = store.getLicenseForSpdxAbbreviation(alias);
+        }
+
+        // Look for aliasName (for licenses with empty Fedora and SPDX names)
+        if (!optionalLicenseRest.isPresent()) {
+            optionalLicenseRest = store.getLicenseForNameAlias(alias);
+        }
+
+        return optionalLicenseRest;
     }
 
     private void isSingleName(Map<String, Collection<LicenseRest>> licenseDataByName) {

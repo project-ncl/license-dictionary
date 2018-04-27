@@ -26,7 +26,6 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -39,8 +38,7 @@ import lombok.ToString;
 
 @Entity(name = "LicenseAlias")
 @Table(name = "license_alias", indexes = {
-        @Index(name = LicenseAlias.IDX_NAME_LICENSE_ALIAS_LICENSE, columnList = "license_id") }, uniqueConstraints = {
-                @UniqueConstraint(name = LicenseAlias.UC_NAME_ALIAS_NAME, columnNames = { "alias_name" }) })
+        @Index(name = LicenseAlias.IDX_NAME_LICENSE_ALIAS_LICENSE, columnList = "license_id") })
 
 @ToString
 @EqualsAndHashCode

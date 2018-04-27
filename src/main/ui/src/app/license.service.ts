@@ -35,7 +35,7 @@ export class LicenseService {
 
     findLicenses(searchTerm: string, maxCount: number, offset: number): Observable<LicenseList> {
         let params = new HttpParams()
-            .set('searchTerm', searchTerm)
+            .set('search', searchTerm)
             .set('offset', offset.toString())
             .set('count', maxCount.toString());
 
@@ -47,7 +47,7 @@ export class LicenseService {
 
     findLicensesByCode(code: string, maxCount: number, offset: number): Observable<LicenseList> {
         let params = new HttpParams()
-            .set('code', code)
+            .set('query', "code=='" + this.escapeRsqlArgument(code) + "'")
             .set('offset', offset.toString())
             .set('count', maxCount.toString());
 
@@ -59,7 +59,7 @@ export class LicenseService {
 
     findLicensesByFedoraName(fedoraName: string, maxCount: number, offset: number): Observable<LicenseList> {
         let params = new HttpParams()
-            .set('fedoraName', fedoraName)
+            .set('query', "fedoraName=='" + this.escapeRsqlArgument(fedoraName) + "'")
             .set('offset', offset.toString())
             .set('count', maxCount.toString());
 
@@ -71,7 +71,7 @@ export class LicenseService {
 
     findLicensesBySpdxName(spdxName: string, maxCount: number, offset: number): Observable<LicenseList> {
         let params = new HttpParams()
-            .set('spdxName', spdxName)
+            .set('query', "spdxName=='" + this.escapeRsqlArgument(spdxName) + "'")
             .set('offset', offset.toString())
             .set('count', maxCount.toString());
 
@@ -124,6 +124,12 @@ export class LicenseService {
     getLicenseApprovalStatus(id): Observable<LicenseApprovalStatus> {
 
         return this.http.get<LicenseApprovalStatus>(RestConfigService.LICENSE_STATUS_ENDPOINT + `/${id}`);
+    }
+
+    escapeRsqlArgument(argument: string) {
+        return argument.replace("'", "\\'").replace("!", "\\!").replace("|", "\\|").replace("\"", "\\\"")
+                .replace(";", "\\;").replace(",", "\\,").replace("=", "\\=").replace("~", "\\~").replace("<", "\\<")
+                .replace(">", "\\>");
     }
 
     private responseToLicenseList = (response, _) => {

@@ -41,7 +41,7 @@
 		<div class="input-group input-group-md add-on">
 			<input appAutofocus type="text" class="form-control search-query"
 				[(ngModel)]="searchTerm" (keyup.enter)="searchForLicenses(0)"
-				placeholder="Enter a search term" name="name" />
+				placeholder="Enter a search term (search will be exact match; use * as wildcard)" name="name" />
 			<div class="input-group-btn">
 				<button class="btn btn-default" type="button"
 					(click)="searchForLicenses(0)">

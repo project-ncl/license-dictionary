@@ -41,4 +41,17 @@ public class QueryUtils {
         }
     }
 
+    public static String escapeReservedChars(String rsqlArgument) {
+        // From https://github.com/jirutka/rsql-parser/blob/v2.1.0/src/main/java/cz/jirutka/rsql/parser/RSQLParser.java
+        // reserved = '"' | "'" | "(" | ")" | ";" | "," | "=" | "!" | "~" | "<" | ">" | " ";
+
+        if (rsqlArgument == null) {
+            return null;
+        }
+
+        return rsqlArgument.replace("'", "\\'").replace("!", "\\!").replace("|", "\\|").replace("\"", "\\\"")
+                .replace(";", "\\;").replace(",", "\\,").replace("=", "\\=").replace("~", "\\~").replace("<", "\\<")
+                .replace(">", "\\>");
+    }
+
 }

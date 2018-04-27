@@ -48,6 +48,7 @@ import org.jboss.license.dictionary.model.ProjectVersion;
 import org.jboss.license.dictionary.model.ProjectVersionLicense;
 import org.jboss.license.dictionary.model.ProjectVersionLicenseCheck;
 import org.jboss.license.dictionary.model.ProjectVersionLicenseHint;
+import org.jboss.license.dictionary.utils.QueryUtils;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -65,22 +66,19 @@ public class ProjectLicenseStore {
         Project entity = fullMapper.map(projectRest, Project.class);
         entity = dbStore.saveProject(entity);
 
-        projectRest = fullMapper.map(entity, ProjectRest.class);
-        return projectRest;
+        return fullMapper.map(entity, ProjectRest.class);
     }
 
     public ProjectRest updateProject(ProjectRest projectRest) {
         Project entity = fullMapper.map(projectRest, Project.class);
         entity = dbStore.updateProject(entity);
 
-        projectRest = fullMapper.map(entity, ProjectRest.class);
-        return projectRest;
+        return fullMapper.map(entity, ProjectRest.class);
     }
 
     @Transactional
     public boolean deleteProject(Integer projectId) {
-        boolean result = dbStore.deleteProject(projectId);
-        return result;
+        return dbStore.deleteProject(projectId);
     }
 
     public Optional<ProjectRest> getProjectById(Integer projectId) {
@@ -103,8 +101,7 @@ public class ProjectLicenseStore {
         ProjectEcosystem entity = fullMapper.map(projectEcosystemRest, ProjectEcosystem.class);
         entity = dbStore.saveProjectEcosystem(entity);
 
-        projectEcosystemRest = fullMapper.map(entity, ProjectEcosystemRest.class);
-        return projectEcosystemRest;
+        return fullMapper.map(entity, ProjectEcosystemRest.class);
     }
 
     public Optional<ProjectEcosystemRest> getProjectEcosystemById(Integer projectEcosystemId) {
@@ -128,8 +125,7 @@ public class ProjectLicenseStore {
         ProjectVersion entity = fullMapper.map(projectVersionRest, ProjectVersion.class);
         entity = dbStore.saveProjectVersion(entity);
 
-        projectVersionRest = fullMapper.map(entity, ProjectVersionRest.class);
-        return projectVersionRest;
+        return fullMapper.map(entity, ProjectVersionRest.class);
     }
 
     public Optional<ProjectVersionRest> getProjectVersionById(Integer projectVersionId) {
@@ -162,8 +158,7 @@ public class ProjectLicenseStore {
         ProjectVersionLicenseCheck entity = fullMapper.map(projectVersionLicenseCheckRest, ProjectVersionLicenseCheck.class);
         entity = dbStore.saveProjectVersionLicenseCheck(entity);
 
-        projectVersionLicenseCheckRest = fullMapper.map(entity, ProjectVersionLicenseCheckRest.class);
-        return projectVersionLicenseCheckRest;
+        return fullMapper.map(entity, ProjectVersionLicenseCheckRest.class);
     }
 
     //
@@ -171,8 +166,7 @@ public class ProjectLicenseStore {
         ProjectVersionLicense entity = fullMapper.map(projectVersionLicenseRest, ProjectVersionLicense.class);
         entity = dbStore.saveProjectVersionLicense(entity);
 
-        projectVersionLicenseRest = fullMapper.map(entity, ProjectVersionLicenseRest.class);
-        return projectVersionLicenseRest;
+        return fullMapper.map(entity, ProjectVersionLicenseRest.class);
     }
 
     public Optional<ProjectVersionLicenseRest> getProjectVersionLicenseById(Integer projectVersionLicenseId) {
@@ -205,15 +199,14 @@ public class ProjectLicenseStore {
         ProjectVersionLicenseHint entity = fullMapper.map(projectVersionLicenseHint, ProjectVersionLicenseHint.class);
         entity = dbStore.saveProjectVersionLicenseHint(entity);
 
-        projectVersionLicenseHint = fullMapper.map(entity, ProjectVersionLicenseHintRest.class);
-        return projectVersionLicenseHint;
+        return fullMapper.map(entity, ProjectVersionLicenseHintRest.class);
     }
 
     @Transactional
     public void importProjectLicenses(JsonProjectLicense[] jsonProjectLicenses) {
         log.infof("started appending %d Project Licenses...", jsonProjectLicenses.length);
 
-        String rsql = "name=='" + ProjectEcosystem.MAVEN + "'";
+        String rsql = "name=='" + QueryUtils.escapeReservedChars(ProjectEcosystem.MAVEN) + "'";
         List<ProjectEcosystem> ecosystems = dbStore.getAllProjectEcosystem(Optional.of(rsql));
         ProjectEcosystem ecosystem = ecosystems.get(0);
         if (ecosystem == null) {
@@ -301,9 +294,27 @@ public class ProjectLicenseStore {
 
             // Retrieve the license as first action, so that if no license is found, no data is stored in DB,
             // to avoid incomplete information stored
-            List<LicenseRest> licenses = licenseStore
-                    .findByExactSearchTerm(projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
-                    .stream().collect(Collectors.toList());
+            String searchRsql = "fedoraName=='"
+                    + QueryUtils.escapeReservedChars(
+                            projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
+                    + "',fedoraAbbreviation=='"
+                    + QueryUtils.escapeReservedChars(
+                            projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
+                    + "',spdxName=='"
+                    + QueryUtils.escapeReservedChars(
+                            projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
+                    + "',spdxAbbreviation=='"
+                    + QueryUtils.escapeReservedChars(
+                            projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
+                    + "',code=='"
+                    + QueryUtils.escapeReservedChars(
+                            projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
+                    + "',aliases.aliasName=='" + QueryUtils.escapeReservedChars(
+                            projectVersionLicenseHintRest.getProjectVersionLicense().getLicense().getSpdxName())
+                    + "'";
+
+            List<LicenseRest> licenses = licenseStore.getAllLicense(Optional.of(searchRsql)).stream()
+                    .collect(Collectors.toList());
 
             if (licenses == null || licenses.isEmpty()) {
                 log.infof("\n\n*** NO LICENSE FOUND WITH NAME, SKIPPING ... %s ",
@@ -322,8 +333,9 @@ public class ProjectLicenseStore {
             log.debugf("### Finding already existing projects with ecosystem: %s and key: %s ",
                     mappedProject.getProjectEcosystem().getName(), mappedProject.getKey());
 
-            String rsqlQuery = "projectEcosystem.name=='" + mappedProject.getProjectEcosystem().getName() + "';key=='"
-                    + mappedProject.getKey() + "'";
+            String rsqlQuery = "projectEcosystem.name=='"
+                    + QueryUtils.escapeReservedChars(mappedProject.getProjectEcosystem().getName()) + "';key=='"
+                    + QueryUtils.escapeReservedChars(mappedProject.getKey()) + "'";
             List<Project> projectList = dbStore.getAllProject(Optional.of(rsqlQuery));
             Project project = (projectList != null && !projectList.isEmpty()) ? projectList.get(0) : null;
 
@@ -332,7 +344,7 @@ public class ProjectLicenseStore {
                 log.debugf("### Finding already existing project ecosystems with name: %s ",
                         mappedProject.getProjectEcosystem().getName());
 
-                String rsql2 = "name=='" + mappedProject.getProjectEcosystem().getName() + "'";
+                String rsql2 = "name=='" + QueryUtils.escapeReservedChars(mappedProject.getProjectEcosystem().getName()) + "'";
                 List<ProjectEcosystem> ecosystems2 = dbStore.getAllProjectEcosystem(Optional.of(rsql2));
                 ProjectEcosystem projectEcosystem = (ecosystems2 != null && !ecosystems2.isEmpty()) ? ecosystems2.get(0) : null;
 
@@ -359,7 +371,7 @@ public class ProjectLicenseStore {
                     mappedProjectVersion.getVersion(), mappedProjectVersion.getProject().getId());
 
             String rsqlQuery3 = "project.id==" + mappedProjectVersion.getProject().getId() + ";version=='"
-                    + mappedProjectVersion.getVersion() + "'";
+                    + QueryUtils.escapeReservedChars(mappedProjectVersion.getVersion()) + "'";
 
             List<ProjectVersion> projectVersions = dbStore.getAllProjectVersion(Optional.of(rsqlQuery3));
             ProjectVersion projectVersion = (projectVersions != null && !projectVersions.isEmpty()) ? projectVersions.get(0)
@@ -429,7 +441,8 @@ public class ProjectLicenseStore {
             if (projectVersionLicenseHintRest.getProjectVersionLicense().getScope() != null
                     && !projectVersionLicenseHintRest.getProjectVersionLicense().getScope().isEmpty()) {
 
-                String rsqlPVLic = "scope=='" + projectVersionLicenseHintRest.getProjectVersionLicense().getScope()
+                String rsqlPVLic = "scope=='"
+                        + QueryUtils.escapeReservedChars(projectVersionLicenseHintRest.getProjectVersionLicense().getScope())
                         + "';license.id==" + license.getId() + ";projectVersionLicenseCheck.id=="
                         + projectVersionLicenseCheck.getId();
 
@@ -459,7 +472,7 @@ public class ProjectLicenseStore {
                     LicenseHintType.class);
 
             log.debugf("### Finding already existing license hint type with name: %s ", mappedLicenseHintType.getName());
-            String rsqlQuery2 = "name=='" + mappedLicenseHintType.getName() + "'";
+            String rsqlQuery2 = "name=='" + QueryUtils.escapeReservedChars(mappedLicenseHintType.getName()) + "'";
             List<LicenseHintType> licenseHintTypeList = dbStore.getAllLicenseHintType(Optional.of(rsqlQuery2));
             LicenseHintType licenseHintType = (licenseHintTypeList != null && !licenseHintTypeList.isEmpty())
                     ? licenseHintTypeList.get(0) : null;
@@ -480,7 +493,8 @@ public class ProjectLicenseStore {
                     projectVersionLicenseHintRest.getValue(), projectVersionLicense.getId(), licenseHintType.getId());
 
             String rsql3 = "projectVersionLicense.id==" + projectVersionLicense.getId() + ";licenseHintType.id=="
-                    + licenseHintType.getId() + ";value=='" + projectVersionLicenseHintRest.getValue() + "'";
+                    + licenseHintType.getId() + ";value=='"
+                    + QueryUtils.escapeReservedChars(projectVersionLicenseHintRest.getValue()) + "'";
             List<ProjectVersionLicenseHint> projectVersionLicenseHintList = dbStore
                     .getAllProjectVersionLicenseHint(Optional.of(rsql3));
             if (projectVersionLicenseHintList == null || projectVersionLicenseHintList.isEmpty()) {
