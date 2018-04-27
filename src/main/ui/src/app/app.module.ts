@@ -32,6 +32,8 @@ import { ListComponent } from './list/list.component';
 import { EditComponent } from './edit/edit.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { ImportComponent } from './import/import.component';
+import { ImportProjectLicenseComponent } from './import/import.project-license.component';
+
 import { ViewComponent } from './view/view.component';
 import { LoaderComponent } from './loader/loader.component';
 
@@ -57,7 +59,9 @@ const appRoutes: Routes = [
     { path: 'edit/:id', component: EditComponent },
     { path: 'view/:id', component: ViewComponent },
     { path: 'confirm', component: ConfirmationComponent },
-    { path: 'import', component: ImportComponent }
+    { path: 'import', component: ImportComponent },
+    { path: 'import-project-license', component: ImportProjectLicenseComponent }
+    
 ];
 
 @NgModule({
@@ -67,6 +71,7 @@ const appRoutes: Routes = [
         EditComponent,
         ConfirmationComponent,
         ImportComponent,
+        ImportProjectLicenseComponent,
         ViewComponent,
         ExistingLicenseCodeValidatorDirective,
         ExistingLicenseFedoraNameValidatorDirective,
