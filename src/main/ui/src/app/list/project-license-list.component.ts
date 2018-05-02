@@ -19,8 +19,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from "@angular/router";
 import { License } from "../license.service";
-import { ProjectEcosystem, Project, ProjectVersion, LicenseDeterminationType, DeterminationDate,
-    ProjectVersionLicenseCheck, ProjectVersionLicense, ProjectVersionLicenseList, ProjectLicenseService } from "../project-license.service";
+import { ProjectVersionLicense, ProjectVersionLicenseList, ProjectLicenseService } from "../project-license.service";
 import { LoaderService } from '../loader/loader.service';
 
 @Component({
@@ -111,6 +110,10 @@ export class ProjectLicenseListComponent implements OnInit {
             ret.push(i);
         }
         return ret;
+    };
+
+    view = id => {
+        this.router.navigate(["/view-project-license", id]);
     };
 
     private showLoader(): void {

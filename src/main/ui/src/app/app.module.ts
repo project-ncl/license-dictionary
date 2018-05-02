@@ -36,6 +36,7 @@ import { ImportComponent } from './import/import.component';
 import { ImportProjectLicenseComponent } from './import/import.project-license.component';
 
 import { ViewComponent } from './view/view.component';
+import { ProjectLicenseViewComponent } from './view/project-license-view.component';
 import { LoaderComponent } from './loader/loader.component';
 
 // Services
@@ -60,6 +61,7 @@ const appRoutes: Routes = [
     { path: 'edit', component: EditComponent },
     { path: 'edit/:id', component: EditComponent },
     { path: 'view/:id', component: ViewComponent },
+    { path: 'view-project-license/:id', component: ProjectLicenseViewComponent },
     { path: 'confirm', component: ConfirmationComponent },
     { path: 'import', component: ImportComponent },
     { path: 'import-project-license', component: ImportProjectLicenseComponent },
@@ -76,6 +78,7 @@ const appRoutes: Routes = [
         ConfirmationComponent,
         ImportComponent,
         ImportProjectLicenseComponent,
+        ProjectLicenseViewComponent,
         ViewComponent,
         ExistingLicenseCodeValidatorDirective,
         ExistingLicenseFedoraNameValidatorDirective,

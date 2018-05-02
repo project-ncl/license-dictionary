@@ -21,13 +21,17 @@ import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 
-import { License } from "./license.service";
+import { License, EmptyLicense } from "./license.service";
 import { RestConfigService } from "./rest-config.service";
 
 @Injectable()
 export class ProjectLicenseService {
 
     constructor(private http: HttpClient) {
+    }
+
+    getProjectLicense(id): Observable<ProjectVersionLicense> {
+        return this.http.get<ProjectVersionLicense>(RestConfigService.PROJECT_LICENSE_ENDPOINT + `/${id}`)
     }
 
     findProjectVersionLicenses(searchTerm: string, maxCount: number, offset: number): Observable<ProjectVersionLicenseList> {
@@ -121,5 +125,55 @@ export interface ProjectVersionLicenseList {
     entries: ProjectVersionLicense[],
     totalCount: number,
     offset: number
+}
+
+export class EmptyProjectEcosystem implements ProjectEcosystem {
+    id: number;
+    name: string
+}
+
+export class EmptyProject implements Project {
+    id: number;
+    key: string;
+    projectEcosystem: EmptyProjectEcosystem
+}
+
+export class EmptyProjectVersion implements ProjectVersion {
+    id: number;
+    scmUrl: string;
+    scmRevision: string;
+    version: string;
+    project: EmptyProject
+}
+
+export class EmptyLicenseDeterminationType implements LicenseDeterminationType {
+    id: number;
+    name: string;
+    description: string
+}
+
+export class EmptyDeterminationDate implements DeterminationDate {
+    dayOfYear: number;
+    year: number;
+    month: string;
+    dayOfMonth: number;
+    dayOfWeek: string;
+    monthValue: number
+}
+
+export class EmptyProjectVersionLicenseCheck implements ProjectVersionLicenseCheck {
+    id: number;
+    determinedByUser: string;
+    determinationDate: EmptyDeterminationDate;
+    notes: string;
+    projectVersion: EmptyProjectVersion;
+    licenseDeterminationType: EmptyLicenseDeterminationType
+}
+
+export class EmptyProjectVersionLicense implements ProjectVersionLicense {
+    id: number;
+    scope: string;
+    license: EmptyLicense;
+    projectVersionLicenseCheck: EmptyProjectVersionLicenseCheck
 }
 
