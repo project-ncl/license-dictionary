@@ -29,6 +29,7 @@ import { MatChipsModule, MatIconModule, MatInputModule, MatProgressBarModule,
 // Components
 import { AppComponent } from './app.component';
 import { ListComponent } from './list/list.component';
+import { ProjectLicenseListComponent } from './list/project-license-list.component';
 import { EditComponent } from './edit/edit.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { ImportComponent } from './import/import.component';
@@ -40,6 +41,7 @@ import { LoaderComponent } from './loader/loader.component';
 // Services
 import { AuthService } from './auth.service';
 import { LicenseService } from "./license.service";
+import { ProjectLicenseService } from "./project-license.service";
 import { ConfirmationService } from "./confirmation.service";
 import { HttpHeadersInterceptor } from "./http-config.service";
 import { LoaderService } from './loader/loader.service';
@@ -60,14 +62,16 @@ const appRoutes: Routes = [
     { path: 'view/:id', component: ViewComponent },
     { path: 'confirm', component: ConfirmationComponent },
     { path: 'import', component: ImportComponent },
-    { path: 'import-project-license', component: ImportProjectLicenseComponent }
-    
+    { path: 'import-project-license', component: ImportProjectLicenseComponent },
+    { path: 'project-licenses', component: ProjectLicenseListComponent }
+
 ];
 
 @NgModule({
     declarations: [
         AppComponent,
         ListComponent,
+        ProjectLicenseListComponent,
         EditComponent,
         ConfirmationComponent,
         ImportComponent,
@@ -98,6 +102,7 @@ const appRoutes: Routes = [
     providers: [
         AuthService,
         LicenseService,
+        ProjectLicenseService,
         ConfirmationService,
         LoaderService,
         NotificationService,
