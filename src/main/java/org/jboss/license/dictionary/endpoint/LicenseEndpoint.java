@@ -69,6 +69,7 @@ import io.swagger.annotations.ApiResponses;
 public class LicenseEndpoint extends AbstractEndpoint {
 
     private static final Logger log = Logger.getLogger(LicenseEndpoint.class);
+    private static final String GENERIC_SEARCH_STRING = "fedoraName=='%s',fedoraAbbreviation=='%s',spdxName=='%s',spdxAbbreviation=='%s',code=='%s',aliases.aliasName=='%s'";
 
     @Inject
     private LicenseStore licenseStore;
@@ -96,11 +97,8 @@ public class LicenseEndpoint extends AbstractEndpoint {
 
         if (nonNullCount(search) == 1) {
             String escapedSearch = QueryUtils.escapeReservedChars(search);
-            StringBuilder sb = new StringBuilder().append("fedoraName=='").append(escapedSearch)
-                    .append("',fedoraAbbreviation=='").append(escapedSearch).append("',spdxName=='")
-                    .append(escapedSearch + "',spdxAbbreviation=='" + escapedSearch + "',code=='" + escapedSearch)
-                    .append("',aliases.aliasName=='").append(escapedSearch).append("'");
-            query = sb.toString();
+            query = String.format(GENERIC_SEARCH_STRING, escapedSearch, escapedSearch, escapedSearch, escapedSearch,
+                    escapedSearch, escapedSearch);
         }
 
         try {

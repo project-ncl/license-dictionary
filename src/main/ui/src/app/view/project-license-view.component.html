@@ -1,0 +1,217 @@
+<!--
+
+    JBoss, Home of Professional Open Source.
+    Copyright 2017 Red Hat, Inc., and individual contributors
+    as indicated by the @author tags.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<ol class="breadcrumb">
+	<li><a href="/project-licenses">Project Version Licenses</a></li>
+	<li class="active">View Project Version License</li>
+</ol>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="page-header">
+			<h1 class="header-title">
+				<div
+					*ngIf="(projectversionlicense && projectversionlicense.scope && projectversionlicense.scope !== '') && (projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion)">
+					Project
+					{{projectversionlicense.scope}}:{{projectversionlicense.projectVersionLicenseCheck.projectVersion.version}}</div>
+				<div
+					*ngIf="(!projectversionlicense || !projectversionlicense.scope || projectversionlicense.scope === '') && projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project">
+					Project
+					{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.key}}:{{projectversionlicense.projectVersionLicenseCheck.projectVersion.version}}
+				</div>
+			</h1>
+		</div>
+	</div>
+</div>
+<br>
+<div class="row">
+	<div class="col-md-12 col-lg-12">
+		<table class="col-md-12 col-lg-12">
+			<tbody>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Project
+							key</label></td>
+					<td>
+						<div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.scope && projectversionlicense.scope !== ''">
+							{{projectversionlicense.scope}}</div>
+						<div class="col-sm-10"
+							*ngIf="(!projectversionlicense || !projectversionlicense.scope || projectversionlicense.scope === '') && projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project">
+							{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.key}}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Project
+							version</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion">{{projectversionlicense.projectVersionLicenseCheck.projectVersion.version}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Project
+							url</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion">{{projectversionlicense.projectVersionLicenseCheck.projectVersion.scmUrl}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Project
+							revision</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion">{{projectversionlicense.projectVersionLicenseCheck.projectVersion.scmRevision}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Ecosystem</label></td>
+					<td><div class="col-sm-10">
+							<img
+								*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name === 'mvn'"
+								class="logo-image" src="../assets/mvn_icon.jpg"
+								title="{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name}}">
+							<img
+								*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name === 'npm'"
+								class="logo-image" src="../assets/npm_icon.png"
+								title="{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name}}">
+							<img
+								*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name === 'nuget'"
+								class="logo-image" src="../assets/nuget_icon.png"
+								title="{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name}}">
+							<img
+								*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name === 'pypi'"
+								class="logo-image" src="../assets/pypi_icon.png"
+								title="{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name}}">
+							<img
+								*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name === 'gem'"
+								class="logo-image" src="../assets/gems_icon.jpg"
+								title="{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name}}">
+							<img
+								*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.projectVersion && projectversionlicense.projectVersionLicenseCheck.projectVersion.project && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem && projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name === 'github'"
+								class="logo-image" src="../assets/github_icon.png"
+								title="{{projectversionlicense.projectVersionLicenseCheck.projectVersion.project.projectEcosystem.name}}">
+						</div></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Fedora
+							name</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">{{projectversionlicense.license.fedoraName}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Fedora
+							abbreviation</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">{{projectversionlicense.license.fedoraAbbreviation}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Spdx
+							name</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">{{projectversionlicense.license.spdxName}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Spdx
+							abbreviation</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">{{projectversionlicense.license.spdxAbbreviation}}</div></td>
+				</tr>
+				<tr>
+					<td><label style="padding-left: 15px;">Aliases</label></td>
+					<td>
+						<div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">
+							<mat-chip-list name="licenseAliases"
+								[(ngModel)]="projectversionlicense.license.aliasNames">
+							<mat-chip
+								*ngFor="let alias of projectversionlicense.license.aliasNames"
+								color="accent" [selectable]="false" [removable]="false">
+							{{alias}} </mat-chip> </mat-chip-list>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Url</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">
+							<a href="{{projectversionlicense.license.url}}">{{projectversionlicense.license.url}}</a>
+						</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Text
+							url</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license">
+							<a href="{{projectversionlicense.license.textUrl}}">{{projectversionlicense.license.textUrl}}</a>
+						</div></td>
+				</tr>
+				<tr>
+					<td><label style="padding-left: 15px;">Approval status</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.license && projectversionlicense.license.licenseApprovalStatus">
+							<mat-chip class="material-chip status-notapproved"
+								*ngIf="projectversionlicense &&  projectversionlicense.license && projectversionlicense.license.licenseApprovalStatus && projectversionlicense.license.licenseApprovalStatus.name == 'NOT_APPROVED'">
+							<mat-icon>error</mat-icon>&nbsp;{{projectversionlicense.license.licenseApprovalStatus.name}}</mat-chip>
+
+							<mat-chip class="material-chip status-approved"
+								*ngIf="projectversionlicense &&  projectversionlicense.license && projectversionlicense.license.licenseApprovalStatus && projectversionlicense.license.licenseApprovalStatus.name == 'APPROVED'">
+							<mat-icon>check_circle</mat-icon>&nbsp;{{projectversionlicense.license.licenseApprovalStatus.name}}</mat-chip>
+
+							<mat-chip class="material-chip status-unknown"
+								*ngIf="projectversionlicense &&  projectversionlicense.license && projectversionlicense.license.licenseApprovalStatus && projectversionlicense.license.licenseApprovalStatus.name == 'UNKNOWN'">
+							<mat-icon>warning</mat-icon>&nbsp;{{projectversionlicense.license.licenseApprovalStatus.name}}</mat-chip>
+						</div></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Determined
+							by user</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck">{{projectversionlicense.projectVersionLicenseCheck.determinedByUser}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Determination
+							date</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.determinationDate">{{projectversionlicense.projectVersionLicenseCheck.determinationDate.year}}
+							/
+							{{projectversionlicense.projectVersionLicenseCheck.determinationDate.monthValue}}
+							/
+							{{projectversionlicense.projectVersionLicenseCheck.determinationDate.dayOfMonth}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Determination
+							type name</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.licenseDeterminationType">{{projectversionlicense.projectVersionLicenseCheck.licenseDeterminationType.name}}</div></td>
+				</tr>
+				<tr>
+					<td><label class="control-label" style="padding-left: 15px;">Determination
+							type description</label></td>
+					<td><div class="col-sm-10"
+							*ngIf="projectversionlicense && projectversionlicense.projectVersionLicenseCheck && projectversionlicense.projectVersionLicenseCheck.licenseDeterminationType">{{projectversionlicense.projectVersionLicenseCheck.licenseDeterminationType.description}}</div></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+

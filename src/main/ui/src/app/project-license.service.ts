@@ -21,6 +21,7 @@ import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 
+import { License, EmptyLicense } from "./license.service";
 import { RestConfigService } from "./rest-config.service";
 
 @Injectable()
@@ -29,15 +30,31 @@ export class ProjectLicenseService {
     constructor(private http: HttpClient) {
     }
 
-    getProjectLicenses(maxCount: number, offset: number): Observable<ProjectVersionLicenseList> {
+    getProjectLicense(id): Observable<ProjectVersionLicense> {
+        return this.http.get<ProjectVersionLicense>(RestConfigService.PROJECT_LICENSE_ENDPOINT + `/${id}`)
+    }
+
+    findProjectVersionLicenses(searchTerm: string, maxCount: number, offset: number): Observable<ProjectVersionLicenseList> {
+        let params = new HttpParams()
+            .set('search', searchTerm)
+            .set('offset', offset.toString())
+            .set('count', maxCount.toString());
+
+        let projectVersionLicenseListObservable =
+            this.http.get<ProjectVersionLicense[]>(RestConfigService.PROJECT_LICENSE_ENDPOINT, { params: params, observe: 'response' });
+
+        return projectVersionLicenseListObservable.map<HttpResponse<ProjectVersionLicense[]>, ProjectVersionLicenseList>(this.responseToProjectLicenseList);
+    }
+
+    getProjectVersionLicenses(maxCount: number, offset: number): Observable<ProjectVersionLicenseList> {
         let params = new HttpParams()
             .set('count', maxCount.toString())
             .set('offset', offset.toString());
 
-        let licenseListObservable =
+        let projectVersionLicenseListObservable =
             this.http.get<ProjectVersionLicense[]>(RestConfigService.PROJECT_LICENSE_ENDPOINT, { params: params, observe: 'response' });
 
-        return licenseListObservable.map<HttpResponse<ProjectVersionLicense[]>, ProjectVersionLicenseList>(
+        return projectVersionLicenseListObservable.map<HttpResponse<ProjectVersionLicense[]>, ProjectVersionLicenseList>(
             this.responseToProjectLicenseList
         );
     }
@@ -45,13 +62,63 @@ export class ProjectLicenseService {
     private responseToProjectLicenseList = (response, _) => {
         let totalCount: number = +response.headers.get("totalCount");
         let offset: number = +response.headers.get("offset");
-        let project_licenses = response.body;
+        let project_version_licenses = response.body;
         return {
-            entries: project_licenses,
+            entries: project_version_licenses,
             totalCount: totalCount,
             offset: offset
         }
     }
+}
+
+export interface ProjectEcosystem {
+    id: number,
+    name: string
+}
+
+export interface Project {
+    id: number,
+    key: string,
+    projectEcosystem: ProjectEcosystem
+}
+
+export interface ProjectVersion {
+    id: number,
+    scmUrl: string,
+    scmRevision: string,
+    version: string,
+    project: Project
+}
+
+export interface LicenseDeterminationType {
+    id: number,
+    name: string,
+    description: string
+}
+
+export interface DeterminationDate {
+    dayOfYear: number,
+    year: number,
+    month: string,
+    dayOfMonth: number,
+    dayOfWeek: string,
+    monthValue: number
+}
+
+export interface ProjectVersionLicenseCheck {
+    id: number,
+    determinedByUser: string,
+    determinationDate: DeterminationDate,
+    notes: string,
+    projectVersion: ProjectVersion,
+    licenseDeterminationType: LicenseDeterminationType
+}
+
+export interface ProjectVersionLicense {
+    id: number,
+    scope: string,
+    license: License,
+    projectVersionLicenseCheck: ProjectVersionLicenseCheck
 }
 
 export interface ProjectVersionLicenseList {
@@ -60,14 +127,53 @@ export interface ProjectVersionLicenseList {
     offset: number
 }
 
-export interface ProjectVersionLicense {
-    id: number,
-    fedoraAbbreviation: string,
-    fedoraName: string,
-    spdxAbbreviation: string,
-    spdxName: string,
-    url: string,
-    textUrl: string,
-    code: string
+export class EmptyProjectEcosystem implements ProjectEcosystem {
+    id: number;
+    name: string
+}
+
+export class EmptyProject implements Project {
+    id: number;
+    key: string;
+    projectEcosystem: EmptyProjectEcosystem
+}
+
+export class EmptyProjectVersion implements ProjectVersion {
+    id: number;
+    scmUrl: string;
+    scmRevision: string;
+    version: string;
+    project: EmptyProject
+}
+
+export class EmptyLicenseDeterminationType implements LicenseDeterminationType {
+    id: number;
+    name: string;
+    description: string
+}
+
+export class EmptyDeterminationDate implements DeterminationDate {
+    dayOfYear: number;
+    year: number;
+    month: string;
+    dayOfMonth: number;
+    dayOfWeek: string;
+    monthValue: number
+}
+
+export class EmptyProjectVersionLicenseCheck implements ProjectVersionLicenseCheck {
+    id: number;
+    determinedByUser: string;
+    determinationDate: EmptyDeterminationDate;
+    notes: string;
+    projectVersion: EmptyProjectVersion;
+    licenseDeterminationType: EmptyLicenseDeterminationType
+}
+
+export class EmptyProjectVersionLicense implements ProjectVersionLicense {
+    id: number;
+    scope: string;
+    license: EmptyLicense;
+    projectVersionLicenseCheck: EmptyProjectVersionLicenseCheck
 }
 

@@ -44,6 +44,7 @@ import org.jboss.license.dictionary.RestApplication;
 import org.jboss.license.dictionary.api.ProjectVersionLicenseRest;
 import org.jboss.license.dictionary.utils.BadRequestException;
 import org.jboss.license.dictionary.utils.NotFoundException;
+import org.jboss.license.dictionary.utils.QueryUtils;
 import org.jboss.logging.Logger;
 
 import io.swagger.annotations.Api;
@@ -63,6 +64,7 @@ import io.swagger.annotations.ApiResponses;
 public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
 
     private static final Logger log = Logger.getLogger(ProjectVersionLicenseEndpoint.class);
+    private static final String GENERIC_SEARCH_STRING = "scope=='%s',projectVersionLicenseCheck.projectVersion.project.key=='%s',projectVersionLicenseCheck.projectVersion.version=='%s',license.aliases.aliasName=='%s',projectVersionLicenseCheck.licenseDeterminationType.name=='%s'";
 
     @Inject
     private ProjectLicenseStore projectLicenseStore;
@@ -109,6 +111,7 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
     @GET
     public Response getAllProjectVersionLicense(
             @ApiParam(value = "RSQL-type search query (e.g. id==1;version=='1.2.3*')", required = false) @QueryParam("query") String query,
+            @ApiParam(value = "Generic search query applied to project key, project version, aliases and determination type", required = false) @QueryParam("search") String search,
             @ApiParam(value = "Number of results to return", required = false) @QueryParam("count") Integer resultCount,
             @ApiParam(value = "Results offset used for pagination", required = false) @QueryParam("offset") Integer offset) {
 
@@ -116,6 +119,16 @@ public class ProjectVersionLicenseEndpoint extends AbstractEndpoint {
 
         if (offset == null) {
             offset = 0;
+        }
+
+        long queryParamIndicatorCount = nonNullCount(query, search);
+        if (queryParamIndicatorCount > 1) {
+            throw new BadRequestException("Either the rsql or the generic search query parameter can be provided");
+        }
+
+        if (nonNullCount(search) == 1) {
+            String escapedSearch = QueryUtils.escapeReservedChars(search);
+            query = String.format(GENERIC_SEARCH_STRING, escapedSearch, escapedSearch, escapedSearch, escapedSearch, escapedSearch);
         }
 
         try {

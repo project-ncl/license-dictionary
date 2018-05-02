@@ -39,7 +39,7 @@ import { LoaderService } from './loader/loader.service';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-    
+
     notificationService: NotificationService;
     loaderService: LoaderService;
 
@@ -47,7 +47,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         this.notificationService = inj.get(NotificationService);
         this.loaderService = inj.get(LoaderService);
     }
-    
+
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
         console.log('Intercepting Request:', request);
@@ -58,7 +58,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 if (err.error instanceof Error) {
                     // A client-side or network error occurred. Handle it accordingly.
                     console.error('An error occurred:', err.error.message);
-                    this.notificationService.error('An error occurred: '+ err.error.message);
+                    this.notificationService.error('An error occurred: ' + err.error.message);
+                    this.loaderService.hide();
+                } else if (err.status == 401) {
+                    // The backend returned an UNAUTHORIZED response code.
+                    console.error(`Backend returned code ${err.status}, body was: ${err.error}`);
+                    this.notificationService.error(`Authorization required, please login`);
                     this.loaderService.hide();
                 } else {
                     // The backend returned an unsuccessful response code.
