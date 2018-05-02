@@ -1289,7 +1289,7 @@ public class LicenseResourceTest {
 
         try {
             String rsql3 = "projectVersionLicenseCheck.id==" + projectVersionLicenseCheckRest1.getId();
-            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql3, 100, 0);
+            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql3, null, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
             assertThat(results).isNotNull();
@@ -1327,7 +1327,7 @@ public class LicenseResourceTest {
                     + QueryUtils.escapeReservedChars(ecosystem) + "';projectVersionLicenseCheck.projectVersion.project.key=='"
                     + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
                     + QueryUtils.escapeReservedChars(version) + "'";
-            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
+            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, null, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
             assertThat(results).isNotNull();
@@ -1370,7 +1370,7 @@ public class LicenseResourceTest {
                     + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
                     + QueryUtils.escapeReservedChars(version) + "'";
 
-            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
+            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, null, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
             assertThat(results).isNotNull();
@@ -1409,7 +1409,7 @@ public class LicenseResourceTest {
                     + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
                     + QueryUtils.escapeReservedChars(version) + "'";
 
-            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
+            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, null, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
             assertThat(results).isNotNull();
@@ -1453,7 +1453,7 @@ public class LicenseResourceTest {
                     + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
                     + QueryUtils.escapeReservedChars(version) + "'";
 
-            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
+            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, null, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
             assertThat(results).isNotNull();
@@ -1517,7 +1517,7 @@ public class LicenseResourceTest {
                     + QueryUtils.escapeReservedChars(projectKey) + "';projectVersionLicenseCheck.projectVersion.version=='"
                     + QueryUtils.escapeReservedChars(version) + "'";
 
-            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, 100, 0);
+            Response response1 = projectVersionLicenseEndpoint.getAllProjectVersionLicense(rsql, null, 100, 0);
 
             List<ProjectVersionLicenseRest> results = (List<ProjectVersionLicenseRest>) response1.getEntity();
             assertThat(results).isNotNull();
@@ -1746,7 +1746,7 @@ public class LicenseResourceTest {
                 + QueryUtils.escapeReservedChars(jaxbProjectVersionName) + "'";
 
         List<ProjectVersionLicenseRest> projectVersionLicenseRestList = (List<ProjectVersionLicenseRest>) projectVersionLicenseEndpoint
-                .getAllProjectVersionLicense(rsql, 100, 0).getEntity();
+                .getAllProjectVersionLicense(rsql, null, 100, 0).getEntity();
 
         Set<String> mavenKeys = new HashSet<String>();
         Set<String> mavenScopes = new HashSet<String>();
@@ -1760,17 +1760,6 @@ public class LicenseResourceTest {
 
             assertThat(projVersLic.getProjectVersionLicenseCheck().getLicenseDeterminationType().getId()).isIn(3, 5);
 
-            System.out.println("--- projectVersionLicenseId: " + projVersLic.getId());
-            System.out.println("--- scope: " + projVersLic.getScope());
-            System.out.println("--- projectVersionLicenseCheckId: " + projVersLic.getProjectVersionLicenseCheck().getId());
-            System.out.println("--- notes: " + projVersLic.getProjectVersionLicenseCheck().getNotes());
-            System.out.println("--- spdxName: " + projVersLic.getLicense().getSpdxName());
-            System.out.println("--- determinedByUser: " + projVersLic.getProjectVersionLicenseCheck().getDeterminedByUser());
-            System.out.println("--- determinedByDate: " + projVersLic.getProjectVersionLicenseCheck().getDeterminationDate());
-            System.out.println("--- version: " + projVersLic.getProjectVersionLicenseCheck().getProjectVersion().getVersion());
-            System.out.println(
-                    "--- key: " + projVersLic.getProjectVersionLicenseCheck().getProjectVersion().getProject().getKey());
-
             String rsql4 = "projectVersionLicense.id==" + projVersLic.getId();
             List<ProjectVersionLicenseHintRest> projectVersionLicenseHintRests = (List<ProjectVersionLicenseHintRest>) projectVersionLicenseHintEndpoint
                     .getAllProjectVersionLicenseHint(rsql4, 100, 0).getEntity();
@@ -1778,12 +1767,7 @@ public class LicenseResourceTest {
             projectVersionLicenseHintRests.stream().forEach(hint -> {
 
                 assertThat(hint.getLicenseHintType().getId()).isIn(1, 2, 3);
-
-                System.out.println("++++++ license hint type id: " + hint.getLicenseHintType().getId());
-                System.out.println("++++++ value: " + hint.getValue());
             });
-
-            System.out.println("---------------------------");
         });
 
         assertThat(mavenKeys).containsExactlyInAnyOrder("com.sun.xml.bind.mvn:jaxb-parent");
