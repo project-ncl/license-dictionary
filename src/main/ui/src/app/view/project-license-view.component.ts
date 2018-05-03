@@ -18,7 +18,8 @@
 
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
-import { EmptyProjectVersionLicense, ProjectVersionLicense, ProjectVersionLicenseList, ProjectLicenseService } from "../project-license.service";
+import { EmptyProjectVersionLicense, ProjectVersionLicense, ProjectVersionLicenseList,
+    ProjectLicenseService, ProjectVersionLicenseHint, ProjectVersionLicenseHintList } from "../project-license.service";
 import { Location } from "@angular/common";
 import { AuthService } from "../auth.service";
 import { LoaderService } from '../loader/loader.service';
@@ -32,6 +33,7 @@ import { LoaderService } from '../loader/loader.service';
 export class ProjectLicenseViewComponent implements OnInit {
 
     projectversionlicense: ProjectVersionLicense = new EmptyProjectVersionLicense();
+    projectversionlicensehints: ProjectVersionLicenseHint[] = [];
 
     constructor(private route: ActivatedRoute,
         private location: Location,
@@ -51,10 +53,18 @@ export class ProjectLicenseViewComponent implements OnInit {
                 this.projectlicenseService.getProjectLicense(id).subscribe(
                     projectversionlicense => this.projectversionlicense = projectversionlicense
                 );
+
+                this.projectlicenseService.getProjectVersionLicenseHintsByProjectVersionLicense(id, 1000, 0)
+                    .subscribe(pvlh => this.loadProjectVersionLicenseHintList(pvlh));
             }
             this.hideLoader();
         });
     }
+
+    private loadProjectVersionLicenseHintList(projectversionlicensehints: ProjectVersionLicenseHintList) {
+        this.projectversionlicensehints = projectversionlicensehints.entries;
+        this.hideLoader();
+    };
 
     private showLoader(): void {
         this.loaderService.show();
