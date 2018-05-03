@@ -59,6 +59,20 @@ export class ProjectLicenseService {
         );
     }
 
+    getProjectVersionLicenseHintsByProjectVersionLicense(projectVersionLicense: number, maxCount: number, offset: number): Observable<ProjectVersionLicenseHintList> {
+        let params = new HttpParams()
+            .set('query', 'projectVersionLicense.id==' + projectVersionLicense.toString())
+            .set('count', maxCount.toString())
+            .set('offset', offset.toString());
+
+        let projectVersionLicenseHintListObservable =
+            this.http.get<ProjectVersionLicenseHint[]>(RestConfigService.PROJECT_LICENSE_HINT_ENDPOINT, { params: params, observe: 'response' });
+
+        return projectVersionLicenseHintListObservable.map<HttpResponse<ProjectVersionLicenseHint[]>, ProjectVersionLicenseHintList>(
+            this.responseToProjectLicenseHintList
+        );
+    }
+
     private responseToProjectLicenseList = (response, _) => {
         let totalCount: number = +response.headers.get("totalCount");
         let offset: number = +response.headers.get("offset");
@@ -69,19 +83,28 @@ export class ProjectLicenseService {
             offset: offset
         }
     }
+
+    private responseToProjectLicenseHintList = (response, _) => {
+        let totalCount: number = +response.headers.get("totalCount");
+        let offset: number = +response.headers.get("offset");
+        let project_version_license_hints = response.body;
+        return {
+            entries: project_version_license_hints,
+            totalCount: totalCount,
+            offset: offset
+        }
+    }
 }
 
 export interface ProjectEcosystem {
     id: number,
     name: string
 }
-
 export interface Project {
     id: number,
     key: string,
     projectEcosystem: ProjectEcosystem
 }
-
 export interface ProjectVersion {
     id: number,
     scmUrl: string,
@@ -89,13 +112,11 @@ export interface ProjectVersion {
     version: string,
     project: Project
 }
-
 export interface LicenseDeterminationType {
     id: number,
     name: string,
     description: string
 }
-
 export interface DeterminationDate {
     dayOfYear: number,
     year: number,
@@ -104,7 +125,6 @@ export interface DeterminationDate {
     dayOfWeek: string,
     monthValue: number
 }
-
 export interface ProjectVersionLicenseCheck {
     id: number,
     determinedByUser: string,
@@ -113,16 +133,30 @@ export interface ProjectVersionLicenseCheck {
     projectVersion: ProjectVersion,
     licenseDeterminationType: LicenseDeterminationType
 }
-
 export interface ProjectVersionLicense {
     id: number,
     scope: string,
     license: License,
     projectVersionLicenseCheck: ProjectVersionLicenseCheck
 }
+export interface LicenseHintType {
+    id: number,
+    name: string
+}
+export interface ProjectVersionLicenseHint {
+    id: number,
+    value: string,
+    projectVersionLicense: ProjectVersionLicense,
+    licenseHintType: LicenseHintType
+}
 
 export interface ProjectVersionLicenseList {
     entries: ProjectVersionLicense[],
+    totalCount: number,
+    offset: number
+}
+export interface ProjectVersionLicenseHintList {
+    entries: ProjectVersionLicenseHint[],
     totalCount: number,
     offset: number
 }
@@ -131,13 +165,11 @@ export class EmptyProjectEcosystem implements ProjectEcosystem {
     id: number;
     name: string
 }
-
 export class EmptyProject implements Project {
     id: number;
     key: string;
     projectEcosystem: EmptyProjectEcosystem
 }
-
 export class EmptyProjectVersion implements ProjectVersion {
     id: number;
     scmUrl: string;
@@ -145,13 +177,11 @@ export class EmptyProjectVersion implements ProjectVersion {
     version: string;
     project: EmptyProject
 }
-
 export class EmptyLicenseDeterminationType implements LicenseDeterminationType {
     id: number;
     name: string;
     description: string
 }
-
 export class EmptyDeterminationDate implements DeterminationDate {
     dayOfYear: number;
     year: number;
@@ -160,7 +190,6 @@ export class EmptyDeterminationDate implements DeterminationDate {
     dayOfWeek: string;
     monthValue: number
 }
-
 export class EmptyProjectVersionLicenseCheck implements ProjectVersionLicenseCheck {
     id: number;
     determinedByUser: string;
@@ -169,11 +198,19 @@ export class EmptyProjectVersionLicenseCheck implements ProjectVersionLicenseChe
     projectVersion: EmptyProjectVersion;
     licenseDeterminationType: EmptyLicenseDeterminationType
 }
-
 export class EmptyProjectVersionLicense implements ProjectVersionLicense {
     id: number;
     scope: string;
     license: EmptyLicense;
     projectVersionLicenseCheck: EmptyProjectVersionLicenseCheck
 }
-
+export class EmptyLicenseHintType implements LicenseHintType {
+    id: number;
+    name: string
+}
+export class EmptyProjectVersionLicenseHint implements ProjectVersionLicenseHint {
+    id: number;
+    value: string;
+    projectVersionLicense: EmptyProjectVersionLicense;
+    licenseHintType: EmptyLicenseHintType
+}
